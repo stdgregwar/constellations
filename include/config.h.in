@@ -1,0 +1,7 @@
+#ifndef CONFIG_H_IN
+#define CONFIG_H_IN
+
+#define myproject_VERSION_MAJOR @myproject_VERSION_MAJOR@
+#define myproject_VERSION_MINOR @myproject_VERSION_MINOR@
+
+#endif // CONFIG_H_IN
