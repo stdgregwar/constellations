@@ -1,7 +1,18 @@
 #Change this if you need to target a specific CMake version
 cmake_minimum_required(VERSION 2.6)
 project(constellations)
-aux_source_directory(./src SRC_LIST)
+file(
+  GLOB_RECURSE
+  source_files
+  src/*.cpp
+  include/*.h
+)
+
+file(
+    GLOB_RECURSE
+    data
+    data/*
+)
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
@@ -27,12 +38,19 @@ configure_file(
   "${PROJECT_SOURCE_DIR}/include/config.h.in"
   "${PROJECT_BINARY_DIR}/include/config.h"
   )
-include_directories("${PROJECT_BINARY_DIR}")
+
+#include_directories("${PROJECT_BINARY_DIR}")
+include_directories(
+  ${PROJECT_SOURCE_DIR}/include
+  ${PROJECT_BINARY_DIR}/include
+)
+
 
 # Define sources and executable
 set(EXECUTABLE_NAME ${PROJECT_NAME})
-add_executable(${PROJECT_NAME} ${SRC_LIST})
+add_executable(${PROJECT_NAME} ${source_files} ${data})
 
+file(COPY ${data} DESTINATION resources)
 
 # Detect and add SFML
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
@@ -47,7 +65,7 @@ endif()
 
 # Install target
 install(TARGETS ${EXECUTABLE_NAME} DESTINATION bin)
-
+install(DIRECTORY resources DESTINATION bin)
 
 # CPack packaging
 include(InstallRequiredSystemLibraries)
