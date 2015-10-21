@@ -1,6 +1,7 @@
 #include "Core.h"
 #include "config.h"
 #include <string>
+#include "StateConstellation.h"
 
 using namespace std;
 
@@ -19,6 +20,9 @@ bool Core::init(sf::Vector2u size)
 
 bool Core::start()
 {
+    pushState(SharedState(new StateConstellation()));
+    mRenderWindow.setVerticalSyncEnabled(true);
+
     while(mRenderWindow.isOpen())
     {
         for(sf::Event e; mRenderWindow.pollEvent(e);)
@@ -26,6 +30,10 @@ bool Core::start()
             if(e.type == sf::Event::Closed)
                 mRenderWindow.close();
         }
+        mRenderWindow.clear();
+        mStateStack->update(1.0/60);
+        mStateStack->drawAll(mRenderWindow);
+        mRenderWindow.display();
     }
 }
 

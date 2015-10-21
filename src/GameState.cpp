@@ -1,6 +1,6 @@
 #include "GameState.h"
 
-GameState::GameState(SharedState parent) : mParent(parent)
+GameState::GameState() : mVisible(true)
 {
 
 }
@@ -10,17 +10,14 @@ void GameState::setChild(SharedState state)
     mChild = state;
 }
 
-void GameState::setParent(SharedState state)
-{
-    mParent = state;
-}
-
-SharedState GameState::parent()
-{
-    return mParent;
-}
-
 SharedState GameState::child()
 {
     return mChild;
+}
+
+void GameState::drawAll(sf::RenderTarget &target)
+{
+    if(mChild)
+        mChild->drawAll(target);
+    draw(target);
 }

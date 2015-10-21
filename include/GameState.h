@@ -11,7 +11,7 @@ typedef std::shared_ptr<GameState> SharedState;
 class GameState
 {
 public:
-    GameState(SharedState parent);
+    GameState();
     virtual void onBegin() = 0;
     virtual void onEnd() = 0;
     virtual void onResume() = 0;
@@ -19,11 +19,10 @@ public:
     virtual void draw(sf::RenderTarget& target) = 0;
     virtual void update(float delta_s) = 0;
     void setChild(SharedState state);
-    void setParent(SharedState state);
-    SharedState parent();
     SharedState child();
+    void drawAll(sf::RenderTarget& target);
 private:
-    SharedState mParent;
+    bool mVisible;
     SharedState mChild;
 };
 

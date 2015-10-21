@@ -8,10 +8,12 @@ class Planet;
 
 typedef std::shared_ptr<Planet> SharedPlanet;
 
-class Planet : public sf::Drawable, public sf::CircleShape
+class Planet : public sf::CircleShape
 {
 public:
     Planet(const sf::Vector3f& pos, float mass, float radius);
+    Planet(const Planet& other);
+    Planet(const Planet&& other);
     const sf::Vector3f& get3DPos() const;
     void update2DPos(const sf::Transform& trans);
     //void draw(sf::RenderTarget& target) const;
