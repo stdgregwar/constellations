@@ -4,7 +4,6 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
-//typedef std::shared_ptr<GameState> SharedState;
 class GameState;
 
 typedef std::shared_ptr<GameState> SharedState;
