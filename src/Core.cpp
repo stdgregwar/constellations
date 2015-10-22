@@ -20,8 +20,10 @@ bool Core::init(sf::Vector2u size)
 
 bool Core::start()
 {
-    pushState(SharedState(new StateConstellation()));
     mRenderWindow.setVerticalSyncEnabled(true);
+
+    if(mRenderWindow.isOpen())
+        pushState(SharedState(new StateConstellation()));
 
     while(mRenderWindow.isOpen())
     {
@@ -37,11 +39,11 @@ bool Core::start()
     }
 }
 
-Core* Core::get()
+Core &Core::get()
 {
     if(!mInstance)
         new Core();
-    return mInstance;
+    return *mInstance;
 }
 
 void Core::replaceState(SharedState state)

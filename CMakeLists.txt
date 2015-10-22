@@ -50,7 +50,7 @@ include_directories(
 set(EXECUTABLE_NAME ${PROJECT_NAME})
 add_executable(${PROJECT_NAME} ${source_files} ${data})
 
-file(COPY ${data} DESTINATION resources)
+file(COPY ${data} DESTINATION data)
 
 # Detect and add SFML
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
@@ -65,7 +65,7 @@ endif()
 
 # Install target
 install(TARGETS ${EXECUTABLE_NAME} DESTINATION bin)
-install(DIRECTORY resources DESTINATION bin)
+install(DIRECTORY data DESTINATION bin)
 
 # CPack packaging
 include(InstallRequiredSystemLibraries)

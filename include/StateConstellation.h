@@ -6,6 +6,9 @@
 #include "Planet.h"
 #include <list>
 
+/**
+ * @brief The main state of the game where the gameplay happends
+ */
 class StateConstellation : public GameState
 {
 public:
@@ -17,8 +20,8 @@ public:
     void draw(sf::RenderTarget& target);
     void update(float delta_s);
 private:
-    std::list<Planet> mPlanets;
-    std::list<Character> mCharacters;
+    std::list<SharedPlanet> mPlanets;
+    std::list<SharedCharacter> mCharacters;
 };
 
 #endif // STATECONSTELLATION_H

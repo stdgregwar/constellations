@@ -19,5 +19,16 @@ void GameState::drawAll(sf::RenderTarget &target)
 {
     if(mChild)
         mChild->drawAll(target);
-    draw(target);
+    if(mVisible)
+        draw(target);
+}
+
+void GameState::setVisible(bool b)
+{
+    mVisible = b;
+}
+
+bool GameState::isVisible()
+{
+    return mVisible;
 }
