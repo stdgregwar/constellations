@@ -112,10 +112,31 @@ Mat4 Mat4::scaling(const sf::Vector3f &s)
 
 Mat4 Mat4::rotation(Axes axe,float angle)
 {
+    float angleRad = angle * 3.1415 / 180;
     Mat4 m;
+    m[3][3] = 1;
     switch(axe)
     {
         case X_AXIS:
+            m[0][0] = 1;
+            m[1][1] = cos(angleRad);
+            m[1][2] = -sin(angleRad);
+            m[2][1] = sin(angleRad);
+            m[2][2] = cos(angleRad);
+            break;
+        case Y_AXIS:
+            m[0][0] = cos(angleRad);
+            m[0][2] = sin(angleRad);
+            m[1][1] = 1;
+            m[2][0] = -sin(angleRad);
+            m[2][2] = cos(angleRad);
+            break;
+        case Z_AXIS:
+            m[0][0] = cos(angleRad);
+            m[0][1] = -sin(angleRad);
+            m[1][0] = sin(angleRad);
+            m[1][1] = cos(angleRad);
+            m[2][2] = 1;
             break;
     };
 }
