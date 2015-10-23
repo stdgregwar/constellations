@@ -65,3 +65,9 @@ void Character::setPhi(float phi)
     mPhi = phi;
     updatePos();
 }
+
+bool Character::collideWith(const sf::Vector2f& p) const
+{
+    //TODO implement pixel perfect collision
+    return false;
+}
