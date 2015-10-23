@@ -6,6 +6,7 @@ Planet::Planet(const sf::Vector3f &pos, float mass, float radius) :
 {
     setFillColor(getColor());
     setOrigin(radius,radius);
+    update2DPos(sf::Transform());
 }
 
 Planet::Planet(const Planet& other) : sf::CircleShape(other), mMass(other.mMass), m3DPos(other.m3DPos)

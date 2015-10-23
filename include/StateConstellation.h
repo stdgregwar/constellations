@@ -13,7 +13,13 @@ class StateConstellation : public GameState
 {
 public:
     StateConstellation();
+
+    /**
+     * @brief Setups the scene and add game actors (planets and characters)..
+     */
     void onBegin();
+
+
     void onEnd();
     void onResume();
     void onPause();

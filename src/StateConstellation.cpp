@@ -7,7 +7,7 @@ StateConstellation::StateConstellation()
 
 void StateConstellation::onBegin()
 {
-    mPlanets.push_back(SharedPlanet(new Planet{{0,0,0},1,20})); //Yes that's how we add a planet
+    mPlanets.push_back(SharedPlanet(new Planet{{-35,30,0},1,20}));
     mCharacters.push_back(SharedCharacter(new Character(mPlanets.back())));
 }
 
