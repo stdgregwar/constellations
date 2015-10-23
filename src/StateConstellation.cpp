@@ -1,5 +1,8 @@
 #include "StateConstellation.h"
 #include "Core.h"
+#include <iostream>
+
+using namespace std;
 
 StateConstellation::StateConstellation()
 {
@@ -13,7 +16,9 @@ void StateConstellation::onBegin()
 
 void StateConstellation::onEnd()
 {
-
+    cout << "Ending constellation state" << endl;
+    mPlanets.clear();
+    mCharacters.clear();
 }
 
 void StateConstellation::onResume()

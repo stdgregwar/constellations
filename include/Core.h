@@ -63,6 +63,8 @@ public:
      * @param state
      */
     void pushState(SharedState state);
+
+    void endGame();
 private:
     sf::RenderWindow mRenderWindow;
     static Core* mInstance;

@@ -60,9 +60,40 @@ float* Mat4::operator[](std::size_t i) const
 
 Mat4& Mat4::operator*=(const Mat4& other)
 {
-    Mat4 r = other*(*this);
-    (*this) = r;
+    (*this) = other*(*this);
     return *this;
+}
+
+Mat4& Mat4::translate(const sf::Vector3f d)
+{
+    return (*this)*=translation(d);
+}
+
+Mat4& Mat4::translate(float x, float y, float z)
+{
+    return (*this)*=translation(sf::Vector3f(x,y,z));
+}
+
+Mat4& Mat4::rotate(float rx, float ry, float rz)
+{
+    rotate(X_AXIS,rx);
+    rotate(Y_AXIS,ry);
+    return rotate(Z_AXIS,rz);
+}
+
+Mat4& Mat4::rotate(Axes axe, float angle)
+{
+    return (*this)*=rotation(axe,angle);
+}
+
+Mat4& Mat4::scale(const sf::Vector3f& scale)
+{
+    return (*this)*=scaling(scale);
+}
+
+Mat4& Mat4::scale(float x, float y, float z)
+{
+    return (*this)*=scaling(sf::Vector3f(x,y,z));
 }
 
 Mat4::~Mat4()

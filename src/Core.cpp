@@ -30,12 +30,16 @@ bool Core::start()
         for(sf::Event e; mRenderWindow.pollEvent(e);)
         {
             if(e.type == sf::Event::Closed)
-                mRenderWindow.close();
+                endGame();
         }
-        mRenderWindow.clear();
-        mStateStack->update(1.0/60);
-        mStateStack->drawAll(mRenderWindow);
-        mRenderWindow.display();
+
+        if(mStateStack)
+        {
+            mRenderWindow.clear();
+            mStateStack->update(1.0/60);
+            mStateStack->drawAll(mRenderWindow);
+            mRenderWindow.display();
+        }
     }
 }
 
@@ -77,4 +81,11 @@ void Core::pushState(SharedState state)
     }
     if(mStateStack)
         mStateStack->onBegin();
+}
+
+void Core::endGame()
+{
+    while(mStateStack)
+        popState();
+    mRenderWindow.close();
 }
