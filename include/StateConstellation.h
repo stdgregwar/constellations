@@ -25,6 +25,10 @@ public:
     void onPause();
     void draw(sf::RenderTarget& target);
     void update(float delta_s);
+
+    sf::Vector2f getGravFieldAt(const sf::Vector2f &p);
+    SharedPlanet collideWithPlanet(const sf::Vector2f &p);
+    SharedCharacter collideWithCharacter(const sf::Vector2f &p);
 private:
     std::list<SharedPlanet> mPlanets;
     std::list<SharedCharacter> mCharacters;
