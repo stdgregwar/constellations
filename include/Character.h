@@ -48,6 +48,8 @@ public:
      * @param states
      */
     void draw(sf::RenderTarget &target, sf::RenderStates states) const;
+
+    bool collideWith(const sf::Vector2f& p) const;
 private:
 
     /**
