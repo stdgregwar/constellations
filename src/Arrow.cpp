@@ -10,7 +10,6 @@
 Arrow::Arrow(const sf::Vector2f &pos, const sf::Vector2f &speed, float timeStamp) : mPos(pos), mSpeed(speed),
                                                                                        mTimeStamp(timeStamp)
 {
-    mArrow = sf::RectangleShape(sf::Vector2f(0.1,15));
 }
 
 bool Arrow::update(float delta_s)
@@ -19,7 +18,6 @@ bool Arrow::update(float delta_s)
     auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
     mSpeed += cstate->getGravFieldAt(mPos)*delta_s;
     mPos += mSpeed*delta_s;
-    mArrow.setPosition(mPos);
     return true;
 }
 

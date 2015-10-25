@@ -35,7 +35,6 @@ private:
     sf::Vector2f mPos;
     sf::Vector2f mSpeed;
     float mTimeStamp;
-    sf::RectangleShape mArrow;
 };
 
 #endif //ARROW_H
