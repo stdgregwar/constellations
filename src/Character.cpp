@@ -68,6 +68,5 @@ void Character::setPhi(float phi)
 
 bool Character::collideWith(const sf::Vector2f& p) const
 {
-    //TODO implement pixel perfect collision
-    return false;
+    return mSprite.getGlobalBounds().contains(p);
 }

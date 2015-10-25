@@ -4,8 +4,11 @@
 #include "GameState.h"
 #include "Character.h"
 #include "Planet.h"
+#include "Arrow.h"
 #include <list>
 
+class StateConstellation;
+typedef std::shared_ptr<StateConstellation> SharedStateConstellation;
 /**
  * @brief The main state of the game where the gameplay happends
  */
@@ -32,6 +35,7 @@ public:
 private:
     std::list<SharedPlanet> mPlanets;
     std::list<SharedCharacter> mCharacters;
+    std::list<SharedArrow> mArrows;
 };
 
 #endif // STATECONSTELLATION_H

@@ -139,4 +139,5 @@ Mat4 Mat4::rotation(Axes axe,float angle)
             m[2][2] = 1;
             break;
     };
+    return m;
 }

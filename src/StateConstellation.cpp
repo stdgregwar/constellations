@@ -1,14 +1,14 @@
 #include "StateConstellation.h"
 #include "Core.h"
-
 StateConstellation::StateConstellation()
 {
 }
 
 void StateConstellation::onBegin()
 {
-    mPlanets.push_back(SharedPlanet(new Planet{{-35,30,0},1,20}));
+    mPlanets.push_back(SharedPlanet(new Planet{{-35,30,0},10,20}));
     mCharacters.push_back(SharedCharacter(new Character(mPlanets.back())));
+    mArrows.push_back(SharedArrow(new Arrow({10,0},{0,20},0)));
 }
 
 void StateConstellation::onEnd()
@@ -43,6 +43,11 @@ void StateConstellation::draw(sf::RenderTarget& target)
     {
         target.draw(*c);
     }
+
+    for(SharedArrow& a : mArrows)
+    {
+        target.draw(*a);
+    }
 }
 
 void StateConstellation::update(float delta_s)
@@ -51,6 +56,12 @@ void StateConstellation::update(float delta_s)
     {
         c->rot(0.03);
         c->update(delta_s);
+    }
+
+    for(SharedArrow& a : mArrows)
+    {
+        a->update(delta_s);
+        //TODO add collision support
     }
 }
 
@@ -79,4 +90,5 @@ SharedCharacter StateConstellation::collideWithCharacter(const sf::Vector2f &p)
     {
         if(character->collideWith(p)) return character;
     }
+    return SharedCharacter();
 }
