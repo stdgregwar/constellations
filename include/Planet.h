@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <memory>
+#include "Mat4.h"
 
 class Planet;
 
@@ -28,7 +29,7 @@ public:
      * @brief project 3D position on 2D space
      * @param trans
      */
-    void update2DPos(const sf::Transform& trans);
+    void update2DPos(const Mat4& trans);
     //void draw(sf::RenderTarget& target) const;
 
     /**
@@ -59,6 +60,7 @@ public:
     sf::Color getColor() const;
 private:
     sf::Vector3f m3DPos;
+    float m3DRadius;
     float mMass;
 };
 

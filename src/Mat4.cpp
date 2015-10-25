@@ -6,13 +6,10 @@ using namespace std;
 
 Mat4::Mat4()
 {
-    mElements = new float[16];
-    for(int i = 0; i < 4; i++)
-        for(int j = 0; i < 4; i++)
-            (*this)[i][j] = 0;
+    mElements.resize(16,0);
 }
 
-Mat4::Mat4(const Mat4& other) : Mat4()
+/*Mat4::Mat4(const Mat4& other) : Mat4()
 {
     memcpy(mElements,other.mElements,16*sizeof(float));
 }
@@ -35,7 +32,7 @@ Mat4& Mat4::operator=(Mat4&& other)
     mElements = other.mElements;
     other.mElements = nullptr;
     return *this;
-}
+}*/
 
 Mat4 Mat4::operator*(const Mat4& b) const
 {
@@ -53,25 +50,65 @@ float* Mat4::operator[](std::size_t i)
     return &mElements[i*4];
 }
 
-float* Mat4::operator[](std::size_t i) const
+const float* Mat4::operator[](std::size_t i) const
 {
     return &mElements[i*4];
 }
 
 Mat4& Mat4::operator*=(const Mat4& other)
 {
-    Mat4 r = other*(*this);
-    (*this) = r;
+    (*this) = other*(*this);
     return *this;
+}
+
+sf::Vector3f Mat4::operator*(const sf::Vector3f& vec) const
+{
+    const Mat4& m(*this);
+    return {
+        vec.x * m[0][0] + vec.y * m[0][1] + vec.z * m[0][2] + m[0][3],
+        vec.x * m[1][0] + vec.y * m[1][1] + vec.z * m[1][2] + m[1][3],
+        vec.x * m[2][0] + vec.y * m[2][1] + vec.z * m[2][2] + m[2][3],
+    };
+}
+
+Mat4& Mat4::translate(const sf::Vector3f d)
+{
+    return (*this)*=translation(d);
+}
+
+Mat4& Mat4::translate(float x, float y, float z)
+{
+    return (*this)*=translation(sf::Vector3f(x,y,z));
+}
+
+Mat4& Mat4::rotate(float rx, float ry, float rz)
+{
+    rotate(X_AXIS,rx);
+    rotate(Y_AXIS,ry);
+    return rotate(Z_AXIS,rz);
+}
+
+Mat4& Mat4::rotate(Axes axe, float angle)
+{
+    return (*this)*=rotation(axe,angle);
+}
+
+Mat4& Mat4::scale(const sf::Vector3f& scale)
+{
+    return (*this)*=scaling(scale);
+}
+
+Mat4& Mat4::scale(float x, float y, float z)
+{
+    return (*this)*=scaling(sf::Vector3f(x,y,z));
 }
 
 Mat4::~Mat4()
 {
-    if(mElements)
-        delete mElements;
+    mElements.clear();
 }
 
-Mat4 perpective(float ratio, float angle, float near, float far)
+Mat4 Mat4::perspective(float ratio, float angle, float near, float far)
 {
     constexpr float TO_RADIANS = 3.1415 / 180;
     float zz = far-near;
