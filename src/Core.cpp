@@ -7,7 +7,7 @@ using namespace std;
 
 Core* Core::mInstance = nullptr;
 
-Core::Core()
+Core::Core() : mGlobalTime(0)
 {
     mInstance = this;
 }
@@ -25,6 +25,7 @@ bool Core::start()
     if(mRenderWindow.isOpen())
         pushState(SharedState(new StateConstellation()));
 
+    sf::Clock clk;
     while(mRenderWindow.isOpen())
     {
         for(sf::Event e; mRenderWindow.pollEvent(e);)
@@ -32,15 +33,27 @@ bool Core::start()
             if(e.type == sf::Event::Closed)
                 endGame();
         }
-
+        sf::Time time = clk.restart();
+        mGlobalTime += time.asSeconds();
         if(mStateStack)
         {
             mRenderWindow.clear();
-            mStateStack->update(1.0/60);
+            mStateStack->update(time.asSeconds());
             mStateStack->drawAll(mRenderWindow);
             mRenderWindow.display();
         }
+
     }
+}
+
+float Core::time()
+{
+    return mGlobalTime;
+}
+
+float Core::aspectRatio()
+{
+    return (float)(mRenderWindow.getSize().x) / mRenderWindow.getSize().y;
 }
 
 Core &Core::get()

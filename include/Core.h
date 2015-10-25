@@ -65,8 +65,13 @@ public:
     void pushState(SharedState state);
 
     void endGame();
+
+    float time();
+
+    float aspectRatio();
 private:
     sf::RenderWindow mRenderWindow;
+    float mGlobalTime;
     static Core* mInstance;
     SharedState mStateStack;
 

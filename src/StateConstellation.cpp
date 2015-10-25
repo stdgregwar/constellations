@@ -1,6 +1,7 @@
 #include "StateConstellation.h"
 #include "Core.h"
 #include <iostream>
+#include "Mat4.h"
 
 using namespace std;
 
@@ -10,7 +11,9 @@ StateConstellation::StateConstellation()
 
 void StateConstellation::onBegin()
 {
-    mPlanets.push_back(SharedPlanet(new Planet{{-35,30,0},1,20}));
+    mPlanets.push_back(SharedPlanet(new Planet{{-35,30,0},1,10}));
+    mPlanets.push_back(SharedPlanet(new Planet{{35,-20,0},1,20}));
+    mPlanets.push_back(SharedPlanet(new Planet{{35,20,-20},1,20}));
     mCharacters.push_back(SharedCharacter(new Character(mPlanets.back())));
 }
 
@@ -52,6 +55,14 @@ void StateConstellation::draw(sf::RenderTarget& target)
 
 void StateConstellation::update(float delta_s)
 {
+    Mat4 mat = Mat4::rotation(Mat4::Axes::Y_AXIS,Core::get().time()*100);
+    //mat.rotate(Mat4::Axes::X_AXIS, Core::get().time()*200);
+    mat*= Mat4::perspective(Core::get().aspectRatio(),45,0.1,5000);
+    for(SharedPlanet& p : mPlanets)
+    {
+        p->update2DPos(mat);
+    }
+
     for(SharedCharacter& c: mCharacters)
     {
         c->rot(0.03);
