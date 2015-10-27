@@ -38,6 +38,7 @@ public:
     static Mat4 translation(const sf::Vector3f& r);
     static Mat4 scaling(const sf::Vector3f &scale);
     static Mat4 rotation(Axes axe,float angle);
+    static Mat4 identity();
     ~Mat4();
 private:
     std::vector<float> mElements;

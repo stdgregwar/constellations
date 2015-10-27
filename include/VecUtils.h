@@ -4,6 +4,8 @@
 #include <SFML/System/Vector2.hpp>
 #include <cmath>
 
+constexpr float TO_DEGREES = 180/3.1415;
+
 inline float lenghtSquared(const sf::Vector2f& vec){
     return vec.x*vec.x+vec.y*vec.y;
 }
@@ -24,6 +26,11 @@ inline float distanceSquared(const sf::Vector2f& a, const sf::Vector2f& b)
 inline float distance(const sf::Vector2f& a, const sf::Vector2f& b)
 {
     return sqrt(distanceSquared(a,b));
+}
+
+inline float angle(const sf::Vector2f& v)
+{
+    return atan2(v.y,v.x);
 }
 
 #endif // VECUTILS_H

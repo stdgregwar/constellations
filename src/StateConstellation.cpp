@@ -13,10 +13,10 @@ StateConstellation::StateConstellation()
 void StateConstellation::onBegin()
 {
     mPlanets.push_back(SharedPlanet(new Planet{{-35,30,0},1,10}));
-    mPlanets.push_back(SharedPlanet(new Planet{{35,-20,0},1,20}));
-    mPlanets.push_back(SharedPlanet(new Planet{{35,20,-20},1,20}));
+    mPlanets.push_back(SharedPlanet(new Planet{{35,-20,0},0.75,20}));
+    mPlanets.push_back(SharedPlanet(new Planet{{35,20,-20},0.25,20}));
     mCharacters.push_back(SharedCharacter(new Character(mPlanets.back())));
-    mArrows.push_back(SharedArrow(new Arrow({10,0},{0,20},0)));
+    mArrows.push_back(SharedArrow(new Arrow({100,0},{0,100},0)));
 }
 
 void StateConstellation::onEnd()
@@ -38,8 +38,9 @@ void StateConstellation::onPause()
 
 void StateConstellation::draw(sf::RenderTarget& target)
 {
-    sf::View view = target.getDefaultView();
+    sf::View view;
     view.setCenter(0,0);
+    view.setViewport({0,0,1,1});
     view.setSize(target.getSize().x,target.getSize().y);
     view.zoom(1.f/4);
     target.setView(view);
@@ -64,7 +65,8 @@ void StateConstellation::update(float delta_s)
 {
     Mat4 mat = Mat4::rotation(Mat4::Axes::Y_AXIS,Core::get().time()*100);
     //mat.rotate(Mat4::Axes::X_AXIS, Core::get().time()*200);
-    mat*= Mat4::perspective(Core::get().aspectRatio(),45,0.1,5000);
+    mat *= Mat4::perspective(Core::get().aspectRatio(),45,0.1,5000);
+    //mat = Mat4::identity();
     for(SharedPlanet& p : mPlanets)
     {
         p->update2DPos(mat);
@@ -72,7 +74,7 @@ void StateConstellation::update(float delta_s)
 
     for(SharedCharacter& c: mCharacters)
     {
-        c->rot(0.03);
+        c->rot(delta_s);
         c->update(delta_s);
     }
 
@@ -90,7 +92,7 @@ sf::Vector2f StateConstellation::getGravFieldAt(const sf::Vector2f &p)
     {
         field += planet->get2DField(p);
     }
-    return field;
+    return field*(float)5e2;
 }
 
 SharedPlanet StateConstellation::collideWithPlanet(const sf::Vector2f &p)

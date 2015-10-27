@@ -59,3 +59,8 @@ sf::Color Planet::getColor() const
 {
     return sf::Color(255/mMass,0,0);
 }
+
+sf::Vector2f Planet::getPosOn(float angle)
+{
+    return getPosition() +  sf::Vector2f(cos(angle),sin(angle)) * getRadius();
+}

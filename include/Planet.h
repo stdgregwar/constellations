@@ -58,6 +58,8 @@ public:
      * @return
      */
     sf::Color getColor() const;
+
+    sf::Vector2f getPosOn(float angle);
 private:
     sf::Vector3f m3DPos;
     float m3DRadius;

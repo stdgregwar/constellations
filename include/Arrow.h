@@ -7,6 +7,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <memory>
+#include "Planet.h"
 
 class Arrow;
 
@@ -34,6 +35,10 @@ public:
 private:
     sf::Vector2f mPos;
     sf::Vector2f mSpeed;
+    sf::Sprite mSprite;
+    sf::Texture mTexture;
+    SharedPlanet mPlanet;
+    float mPhi;
     float mTimeStamp;
 };
 

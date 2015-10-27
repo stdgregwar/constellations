@@ -1,6 +1,7 @@
 #include "Core.h"
 #include "config.h"
 #include <string>
+#include <iostream>
 #include "StateConstellation.h"
 
 using namespace std;
@@ -25,6 +26,8 @@ bool Core::start()
     if(mRenderWindow.isOpen())
         pushState(SharedState(new StateConstellation()));
 
+    unsigned substeps = 5;
+
     sf::Clock clk;
     while(mRenderWindow.isOpen())
     {
@@ -38,7 +41,8 @@ bool Core::start()
         if(mStateStack)
         {
             mRenderWindow.clear();
-            mStateStack->update(time.asSeconds());
+            for(int i = 0; i < substeps; i++)
+                mStateStack->update(time.asSeconds()/substeps);
             mStateStack->drawAll(mRenderWindow);
             mRenderWindow.display();
         }
@@ -53,7 +57,7 @@ float Core::time()
 
 float Core::aspectRatio()
 {
-    return (float)(mRenderWindow.getSize().x) / mRenderWindow.getSize().y;
+    return (float)(mRenderWindow.getSize().y) / mRenderWindow.getSize().x;
 }
 
 Core &Core::get()

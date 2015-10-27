@@ -34,8 +34,7 @@ void Character::updatePos()
 {
     constexpr float TO_DEGREES = 180.0/3.1415;
     if(mPlanet) {
-        sf::Vector2f r = sf::Vector2f(cos(mPhi),sin(mPhi)) * mPlanet->getRadius();
-        mSprite.setPosition(mPlanet->getPosition()+r);
+        mSprite.setPosition(mPlanet->getPosOn(mPhi));
         mSprite.setRotation(mPhi*TO_DEGREES+90);
     }
 }

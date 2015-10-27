@@ -127,6 +127,16 @@ Mat4 orthographic(const sf::Vector3f& first, const sf::Vector3f& second)
     return Mat4();
 }
 
+Mat4 Mat4::identity()
+{
+    Mat4 m;
+    for(int i = 0; i < 4; i++)
+    {
+        m[i][i] = i;
+    }
+    return m;
+}
+
 Mat4 Mat4::translation(const sf::Vector3f& r)
 {
     Mat4 m;
