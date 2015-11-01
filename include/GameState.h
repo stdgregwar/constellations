@@ -65,8 +65,23 @@ public:
      */
     void drawAll(sf::RenderTarget& target);
 
+    /**
+     * @brief state wether this state should be displayed or not
+     * @param b
+     */
     void setVisible(bool b);
+
+    /**
+     * @brief return if the state should be displayed
+     * @return
+     */
     bool isVisible();
+
+    /**
+     * @brief every event is passed to the current state trough this method
+     * @param e
+     */
+    virtual void pushEvent(const sf::Event & e) = 0;
 private:
     bool mVisible;
     SharedState mChild;

@@ -6,7 +6,8 @@
 
 using namespace std;
 
-StateConstellation::StateConstellation()
+StateConstellation::StateConstellation() :
+    mIState({nullptr,&StateConstellation::defaultEvent}), mYaw(0), mPitch(0)
 {
 }
 
@@ -63,18 +64,17 @@ void StateConstellation::draw(sf::RenderTarget& target)
 
 void StateConstellation::update(float delta_s)
 {
-    Mat4 mat = Mat4::rotation(Mat4::Axes::Y_AXIS,Core::get().time()*100);
-    //mat.rotate(Mat4::Axes::X_AXIS, Core::get().time()*200);
-    mat *= Mat4::perspective(Core::get().aspectRatio(),45,0.1,5000);
-    //mat = Mat4::identity();
-    for(SharedPlanet& p : mPlanets)
-    {
-        p->update2DPos(mat);
-    }
+    if(mIState.uf)
+        (*this.*mIState.uf)(delta_s); //Call ptr on function
 
+    defaultUpdate(delta_s);
+}
+
+void StateConstellation::defaultUpdate(float delta_s)
+{
     for(SharedCharacter& c: mCharacters)
     {
-        c->rot(delta_s);
+        c->rot(0);
         c->update(delta_s);
     }
 
@@ -83,6 +83,45 @@ void StateConstellation::update(float delta_s)
         a->update(delta_s);
         //TODO add collision support
     }
+}
+
+void StateConstellation::rotUpdate(float delta_s)
+{
+    constexpr float s = 1;
+    sf::Vector2i rel = mMousePos - mOldMousePos;
+    mYaw = rel.x*s;
+    mPitch = -rel.y*s;
+    Mat4 mat = Mat4::rotation(Mat4::Axes::Y_AXIS,mYaw);
+    mat.rotate(Mat4::Axes::X_AXIS, mPitch);
+    //mat *= Mat4::perspective(Core::get().aspectRatio(),45,0.1,5000);
+    //mat = Mat4::identity();
+    for(SharedPlanet& p : mPlanets)
+    {
+        p->update2DPos(mat);
+    }
+}
+
+void StateConstellation::pushEvent(const sf::Event &e)
+{
+    if(mIState.ef)
+        (*this.*mIState.ef)(e);
+}
+
+void StateConstellation::defaultEvent(const sf::Event &e)
+{
+    if(e.type == sf::Event::MouseButtonPressed && e.mouseButton.button == sf::Mouse::Right){
+        //const sf::Event::MouseButtonEvent& me = e;
+        mOldMousePos = {e.mouseButton.x,e.mouseButton.y};
+        mIState = {&StateConstellation::rotUpdate,&StateConstellation::rotEvent};
+    }
+}
+
+void StateConstellation::rotEvent(const sf::Event &e)
+{
+    if(e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Right)
+        mIState = {nullptr,&StateConstellation::defaultEvent};
+    if(e.type == sf::Event::MouseMoved)
+        mMousePos = {e.mouseMove.x,e.mouseMove.y};
 }
 
 sf::Vector2f StateConstellation::getGravFieldAt(const sf::Vector2f &p)

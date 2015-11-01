@@ -33,6 +33,9 @@ bool Core::start()
     {
         for(sf::Event e; mRenderWindow.pollEvent(e);)
         {
+            if(mStateStack)
+                mStateStack->pushEvent(e);
+
             if(e.type == sf::Event::Closed)
                 endGame();
         }
