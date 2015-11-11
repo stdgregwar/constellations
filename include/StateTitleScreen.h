@@ -2,6 +2,7 @@
 #define STATETITLESCREEN_H
 
 #include <GameState.h>
+#include "ParticleSystem.h"
 
 class StateTitleScreen : public GameState
 {
@@ -52,6 +53,7 @@ private:
     sf::Text mTitle;
     sf::Text mStartText;
     sf::Text mExitText;
+    ParticleSystem mBackground;
 };
 
 #endif // STATETITLESCREEN_H

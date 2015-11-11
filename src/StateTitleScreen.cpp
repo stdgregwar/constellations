@@ -23,6 +23,11 @@ void StateTitleScreen::onBegin()
     mTitle.setPosition(300,50);
     mTitle.setCharacterSize(156);
     mStartText.setPosition(1280/2-100,720/2);
+
+    sf::Texture tex;
+    tex.loadFromFile("data/stars_w_4.png");
+    mBackground.setTexture(tex,4);
+    mBackground.uniformDistribution({0,0,1280,720}, 150);
 }
 
 void StateTitleScreen::update(float delta_s)
@@ -47,11 +52,13 @@ void StateTitleScreen::onPause()
 
 void StateTitleScreen::launchStateConstellation()
 {
+    setVisible(false);
     Core::get().pushState(SharedState(new StateConstellation()));
 }
 
 void StateTitleScreen::draw(sf::RenderTarget &target)
 {
+    target.draw(mBackground);
     target.draw(mTitle);
     target.draw(mStartText);
 }
