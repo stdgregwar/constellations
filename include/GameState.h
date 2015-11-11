@@ -48,6 +48,12 @@ public:
     virtual void update(float delta_s) = 0;
 
     /**
+     * @brief every event is passed to the current state trough this method
+     * @param e
+     */
+    virtual void pushEvent(const sf::Event & e) = 0;
+
+    /**
      * @brief Set child state
      * @param state
      */
@@ -77,11 +83,7 @@ public:
      */
     bool isVisible();
 
-    /**
-     * @brief every event is passed to the current state trough this method
-     * @param e
-     */
-    virtual void pushEvent(const sf::Event & e) = 0;
+
 private:
     bool mVisible;
     SharedState mChild;

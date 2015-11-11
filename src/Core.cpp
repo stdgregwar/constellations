@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include "StateConstellation.h"
+#include "StateTitleScreen.h"
 
 using namespace std;
 
@@ -26,7 +27,7 @@ bool Core::start()
     mRenderWindow.setVerticalSyncEnabled(true);
 
     if(mRenderWindow.isOpen())
-        pushState(SharedState(new StateConstellation()));
+        pushState(SharedState(new StateTitleScreen()));
 
     unsigned substeps = 5;
 
