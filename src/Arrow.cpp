@@ -46,7 +46,7 @@ void Arrow::draw(sf::RenderTarget &target, sf::RenderStates states) const
 }
 
 
-sf::Vector2f Arrow::getPos()
+const sf::Vector2f& Arrow::getPos()
 {
     return mPos;
 }

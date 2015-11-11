@@ -2,12 +2,19 @@
 #define KEYBOARDCONTROLLER_H
 
 #include "Controller.h"
+#include "Action.h"
+#include <map>
 
+typedef std::map<sf::Keyboard::Key, Action::ACTION_TYPE> KeyMapping;
+
+/**
+ * @brief Controller using keyboard event
+ */
 class KeyboardController : public Controller
 {
 public:
-    KeyboardController();
-    void update(float delta_s);
+    KeyboardController(SharedCharacter c);
+    bool onEvent(const sf::Event& e);
 };
 
 #endif // KEYBOARDCONTROLLER_H

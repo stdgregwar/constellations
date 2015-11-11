@@ -1,8 +1,10 @@
 #include "StateConstellation.h"
 #include "Core.h"
 
+
 #include <iostream>
 #include "Mat4.h"
+#include "KeyboardController.h"
 
 using namespace std;
 
@@ -16,15 +18,28 @@ void StateConstellation::onBegin()
     mPlanets.push_back(SharedPlanet(new Planet{{-35,30,0},1,10}));
     mPlanets.push_back(SharedPlanet(new Planet{{35,-20,0},0.75,20}));
     mPlanets.push_back(SharedPlanet(new Planet{{35,20,-20},0.25,20}));
-    mCharacters.push_back(SharedCharacter(new Character(mPlanets.back())));
+    mPlayers.push_back(SharedController(new KeyboardController(SharedCharacter(new Character(mPlanets.back())))));
     mArrows.push_back(SharedArrow(new Arrow({100,0},{0,100},0)));
+
+    //FIRST FIX
+    Mat4 mat = Mat4::identity();
+    for(SharedPlanet& p : mPlanets)
+    {
+        p->update2DPos(mat);
+    }
+    for(SharedController& c : mPlayers)
+    {
+        c->character()->rot(0);
+    }
+
+    mCurrentPlayer = mPlayers.begin();
 }
 
 void StateConstellation::onEnd()
 {
     cout << "Ending constellation state" << endl;
     mPlanets.clear();
-    mCharacters.clear();
+    mPlayers.clear();
 }
 
 void StateConstellation::onResume()
@@ -51,9 +66,9 @@ void StateConstellation::draw(sf::RenderTarget& target)
         target.draw(*p);
     }
 
-    for(SharedCharacter& c : mCharacters)
+    for(SharedController& c : mPlayers)
     {
-        target.draw(*c);
+        target.draw(*c->character());
     }
 
     for(SharedArrow& a : mArrows)
@@ -72,10 +87,9 @@ void StateConstellation::update(float delta_s)
 
 void StateConstellation::defaultUpdate(float delta_s)
 {
-    for(SharedCharacter& c: mCharacters)
-    {
-        c->rot(0);
-        c->update(delta_s);
+    for(SharedController& c : mPlayers)
+    {       
+        c->character()->update(delta_s);
     }
 
     for(SharedArrow& a : mArrows)
@@ -87,7 +101,7 @@ void StateConstellation::defaultUpdate(float delta_s)
 
 void StateConstellation::rotUpdate(float delta_s)
 {
-    constexpr float s = 1;
+    constexpr float s = 0.5;
     sf::Vector2i rel = mMousePos - mOldMousePos;
     mYaw = rel.x*s;
     mPitch = -rel.y*s;
@@ -99,10 +113,15 @@ void StateConstellation::rotUpdate(float delta_s)
     {
         p->update2DPos(mat);
     }
+    for(SharedController& c : mPlayers)
+    {
+        c->character()->rot(0);
+    }
 }
 
 void StateConstellation::pushEvent(const sf::Event &e)
 {
+    (*mCurrentPlayer)->onEvent(e);
     if(mIState.ef)
         (*this.*mIState.ef)(e);
 }
@@ -145,9 +164,24 @@ SharedPlanet StateConstellation::collideWithPlanet(const sf::Vector2f &p)
 
 SharedCharacter StateConstellation::collideWithCharacter(const sf::Vector2f &p)
 {
-    for(SharedCharacter& character : mCharacters)
+    for(SharedController c : mPlayers)
     {
-        if(character->collideWith(p)) return character;
+        if(c->character()->collideWith(p)) return c->character();
     }
     return SharedCharacter();
+}
+
+void StateConstellation::onNewRound()
+{
+    cout << "New ROUND!!" << endl;
+}
+
+void StateConstellation::nextPlayer()
+{
+    mCurrentPlayer++;
+    if(mCurrentPlayer == mPlayers.end())
+    {
+        mCurrentPlayer = mPlayers.begin();
+        onNewRound();
+    }
 }

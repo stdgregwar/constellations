@@ -5,12 +5,7 @@ Controller::Controller(SharedCharacter c) : mCharacter(c)
 
 }
 
-void Controller::setCharacter(SharedCharacter c)
-{
-    mCharacter = c;
-}
-
-SharedCharacter Controller::getCharacter()
+SharedCharacter Controller::character()
 {
     return mCharacter;
 }

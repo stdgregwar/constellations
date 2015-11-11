@@ -29,8 +29,7 @@ public:
     */
     void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
-    //TODO check machin-truc par référence et autres
-    sf::Vector2f getPos();
+    const sf::Vector2f& getPos();
 
 private:
     sf::Vector2f mPos;

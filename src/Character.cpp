@@ -54,9 +54,26 @@ void Character::updateFrame()
 
 void Character::update(float delta_s)
 {
+    for(Action a; mActionQueue.pollAction(a);)
+    {
+        switch(a.type)
+        {
+            case Action::MOVE_X:
+                mActionSpeed.x += a.move.distance;
+                break;
+            default:
+                break;
+        }
+    }
     mFrameTime+=delta_s;
     mFrame = (int)(mFrameTime*10)%3;
+    rot(mActionSpeed.x*delta_s);
     updateFrame();
+}
+
+void Character::queueAction(const Action &a)
+{
+    mActionQueue.queue(a);
 }
 
 void Character::setPhi(float phi)

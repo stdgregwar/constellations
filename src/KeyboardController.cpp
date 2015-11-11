@@ -1,14 +1,39 @@
 #include "KeyboardController.h"
+#include <iostream>
 
-KeyboardController::KeyboardController()
+using namespace std;
+
+KeyboardController::KeyboardController(SharedCharacter c) : Controller(c)
 {
 }
 
-void KeyboardController::update(float delta_s)
+bool KeyboardController::onEvent(const sf::Event& e)
 {
-    constexpr float vr = 1;
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-        getCharacter()->rot(vr*delta_s);
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-        getCharacter()->rot(-vr*delta_s);
+    Action a;
+    a.type = Action::NONE;
+    constexpr float vr = 4;
+    if(e.type == sf::Event::KeyPressed)
+    {
+        if(e.key.code == sf::Keyboard::Left)
+            a.move.distance = -vr;
+        if(e.key.code == sf::Keyboard::Right)
+            a.move.distance = vr;
+
+        cout << "Keypressed" << endl;
+        a.type = Action::MOVE_X;
+    }
+    if(e.type == sf::Event::KeyReleased)
+    {
+        if(e.key.code == sf::Keyboard::Left)
+            a.move.distance = +vr;
+        if(e.key.code == sf::Keyboard::Right)
+            a.move.distance = -vr;
+
+        a.type = Action::MOVE_X;
+        cout << "Keyreleased" << endl;
+    }
+
+    if(a.type != Action::NONE)
+        character()->queueAction(a);
+    return false;
 }

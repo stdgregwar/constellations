@@ -5,7 +5,7 @@
 #include <GameState.h>
 
 /**
- * @brief Main application class representing the whole game logic with a StateStack.
+ * @brief Main application class representing the whole game logic with a StateStack. Singleton class.
  */
 class Core
 {
@@ -64,10 +64,21 @@ public:
      */
     void pushState(SharedState state);
 
+    /**
+     * @brief pop all states and close the window
+     */
     void endGame();
 
+    /**
+     * @brief return global timer
+     * @return global timer
+     */
     float time();
 
+    /**
+     * @brief return aspect ratio of the window
+     * @return aspect ratio
+     */
     float aspectRatio();
 private:
     sf::RenderWindow mRenderWindow;

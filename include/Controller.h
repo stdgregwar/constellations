@@ -2,6 +2,10 @@
 #define CONTROLLER_H
 
 #include "Character.h"
+#include <memory>
+
+class Controller;
+typedef std::shared_ptr<Controller> SharedController;
 
 /**
  * @brief Interface specifying the controllers that drive the characters
@@ -9,15 +13,15 @@
 class Controller
 {
 public:
-    Controller(SharedCharacter c = SharedCharacter());
-    void setCharacter(SharedCharacter c);
-    SharedCharacter getCharacter();
+    Controller(SharedCharacter c);
 
     /**
-     * @brief Called each tick by the gamestate
-     * @param delta_s
+     * @brief called with events of the window
+     * @param e sfml event forwarded from window
+     * @return bool if it want to end it's turn
      */
-    virtual void update(float delta_s) = 0;
+    virtual bool onEvent(const sf::Event& e) = 0;
+    SharedCharacter character();
 private:
     SharedCharacter mCharacter;
 };

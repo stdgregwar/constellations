@@ -4,6 +4,7 @@
 #include "GameState.h"
 #include "Character.h"
 #include "Planet.h"
+#include "Controller.h"
 #include "Arrow.h"
 #include <list>
 
@@ -49,17 +50,42 @@ public:
     void rotEvent(const sf::Event& e);
     void defaultEvent(const sf::Event& e);
 
+    /**
+     * @brief get vectorial gravitational field at given point p
+     * @param p point to sample grav field
+     * @return grav field
+     */
     sf::Vector2f getGravFieldAt(const sf::Vector2f &p);
+
+    /**
+     * @brief check wether a given point is in a planet
+     * @param p point
+     * @return nullptr or the first planet colliding with point
+     */
     SharedPlanet collideWithPlanet(const sf::Vector2f &p);
+
+    /**
+     * @brief check wether a given point is in a character
+     * @param p point
+     * @return nullptr or the first intersected character
+     */
     SharedCharacter collideWithCharacter(const sf::Vector2f &p);
+
+    void onNewRound();
+
+    void nextPlayer();
 private:
+    typedef std::list<SharedController> Players;
+
     InternalState mIState;
     sf::Vector2i mOldMousePos;
     sf::Vector2i mMousePos;
     float mYaw;
     float mPitch;
+
     std::list<SharedPlanet> mPlanets;
-    std::list<SharedCharacter> mCharacters;
+    Players mPlayers;
+    Players::iterator mCurrentPlayer;
     std::list<SharedArrow> mArrows;
 };
 

@@ -2,6 +2,7 @@
 #define CHARACTER_H
 
 #include "Planet.h"
+#include "Action.h"
 #include <SFML/Graphics/Sprite.hpp>
 #include <memory>
 
@@ -54,6 +55,8 @@ public:
      * @param p
      */
     bool collideWith(const sf::Vector2f& p) const;
+
+    void queueAction(const Action& a);
 private:
 
     /**
@@ -64,10 +67,11 @@ private:
     SharedPlanet mPlanet;
     int mFrame;
     float mFrameTime;
+    sf::Vector2f mActionSpeed;
     bool mWalking;
     sf::Texture mTex;
     float mPhi;
-
+    ActionQueue mActionQueue;
 };
 
 #endif // CHARACTER_H

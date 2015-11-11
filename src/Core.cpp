@@ -15,7 +15,9 @@ Core::Core() : mGlobalTime(0)
 
 bool Core::init(sf::Vector2u size)
 {
+
     mRenderWindow.create(sf::VideoMode(1280,720),"Constellations " + to_string(myproject_VERSION_MAJOR) + "." + to_string(myproject_VERSION_MINOR) ,sf::Style::Resize | sf::Style::Default);
+    mRenderWindow.setKeyRepeatEnabled(false);
     return mRenderWindow.isOpen();
 }
 
