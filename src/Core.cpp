@@ -106,6 +106,10 @@ void Core::pushState(SharedState state)
         mStateStack->onBegin();
 }
 
+const sf::RenderWindow& Core::renderWindow(){return mRenderWindow;}
+
+Properties& Core::globalDict(){return mGlobalDict;}
+
 void Core::endGame()
 {
     while(mStateStack)

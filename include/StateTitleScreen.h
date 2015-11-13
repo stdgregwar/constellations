@@ -54,6 +54,7 @@ private:
     sf::Text mStartText;
     sf::Text mExitText;
     ParticleSystem mBackground;
+    sf::View mView;
 };
 
 #endif // STATETITLESCREEN_H

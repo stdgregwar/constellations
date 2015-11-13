@@ -33,6 +33,8 @@ void StateConstellation::onBegin()
     }
 
     mCurrentPlayer = mPlayers.begin();
+
+    cout << Core::get().globalDict();
 }
 
 void StateConstellation::onEnd()

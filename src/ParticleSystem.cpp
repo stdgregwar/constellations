@@ -32,8 +32,6 @@ void ParticleSystem::uniformDistribution(sf::FloatRect rect, unsigned count)
         mVertexArray[j+4].position = {r.left,r.top+r.height};
         mVertexArray[j+5].position = {r.left+r.width,r.top+r.height};
 
-
-
         mParticles.push_back({phase(gen),&mVertexArray[i*6]});
     }
 }

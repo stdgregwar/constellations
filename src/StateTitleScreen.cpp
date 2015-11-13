@@ -28,6 +28,7 @@ void StateTitleScreen::onBegin()
     tex.loadFromFile("data/stars_w_4.png");
     mBackground.setTexture(tex,4);
     mBackground.uniformDistribution({0,0,1280,720}, 150);
+    mView = Core::get().renderWindow().getDefaultView();
 }
 
 void StateTitleScreen::update(float delta_s)
@@ -52,6 +53,10 @@ void StateTitleScreen::onPause()
 
 void StateTitleScreen::launchStateConstellation()
 {
+    Core::get().globalDict().add({
+                                     {"uneProp", 0.123},
+                                     {"une string", "Voila"}
+                                 });
     setVisible(false);
     Core::get().pushState(SharedState(new StateConstellation()));
 }
@@ -72,16 +77,25 @@ void StateTitleScreen::pushEvent(const sf::Event &e)
                 launchStateConstellation();
             if(e.key.code == sf::Keyboard::Escape)
                 Core::get().endGame();
-        break;
+            break;
         case sf::Event::MouseButtonReleased:
-            if(mStartText.getGlobalBounds().contains(e.mouseButton.x,e.mouseButton.y))
+        {
+            sf::Vector2f mapPos = Core::get().renderWindow().mapPixelToCoords({e.mouseButton.x,e.mouseButton.y},mView);
+            if(mStartText.getGlobalBounds().contains(mapPos))
                 launchStateConstellation();
-        break;
+            break;
+        }
         case sf::Event::MouseMoved:
-            if(mStartText.getGlobalBounds().contains(e.mouseMove.x,e.mouseMove.y))
+        {
+            sf::Vector2f mapPos = Core::get().renderWindow().mapPixelToCoords({e.mouseMove.x,e.mouseMove.y},mView);
+            if(mStartText.getGlobalBounds().contains(mapPos))
                 mStartText.setColor(sf::Color::Yellow);
             else
                 mStartText.setColor(sf::Color::White);
-        break;
+            break;
+        }
+        case sf::Event::Resized:
+            mView = Core::get().renderWindow().getDefaultView();
+            break;
     }
 }

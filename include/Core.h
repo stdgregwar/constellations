@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <GameState.h>
+#include "Properties.h"
 
 /**
  * @brief Main application class representing the whole game logic with a StateStack. Singleton class.
@@ -80,12 +81,20 @@ public:
      * @return aspect ratio
      */
     float aspectRatio();
+
+    /**
+     * @brief get const view of renderwindow
+     * @return
+     */
+    const sf::RenderWindow& renderWindow();
+
+    Properties& globalDict();
 private:
     sf::RenderWindow mRenderWindow;
     float mGlobalTime;
     static Core* mInstance;
     SharedState mStateStack;
-
+    Properties mGlobalDict;
 };
 
 #endif // CORE_H
