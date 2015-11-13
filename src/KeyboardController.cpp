@@ -40,10 +40,8 @@ bool KeyboardController::onEvent(const sf::Event& e)
             if (e.type == sf::Event::KeyReleased)
             {
                 if (e.key.code == sf::Keyboard::Left && releaseKey(e.key.code))
-                    cout << "key Released" << endl;
                     a.move.distance = +vr;
                 if (e.key.code == sf::Keyboard::Right && releaseKey(e.key.code))
-                    cout << "key Released" << endl;
                     a.move.distance = -vr;
 
                 a.type = Action::MOVE_X;
@@ -84,11 +82,11 @@ bool KeyboardController::pressKey(sf::Keyboard::Key key)
 {
     KeysState::iterator it = mKeysState.find(key);
     if(it == mKeysState.end()){
-        it->second = true;
+        mKeysState.emplace(KeysState::value_type(key,true));
         return true;
     }
     if(!it->second){
-
+        it->second = true;
         return true;
     }
     return false;
