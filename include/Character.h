@@ -72,6 +72,8 @@ private:
     sf::Texture mTex;
     float mPhi;
     ActionQueue mActionQueue;
+    bool mAiming;
+    sf::Vector2f mArrowVec;
 };
 
 #endif // CHARACTER_H

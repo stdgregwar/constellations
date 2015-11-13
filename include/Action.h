@@ -20,6 +20,7 @@ public:
         MOVE_Y,
         JUMP,
         AIM,
+        CANCEL,
         THROW,
         PUT
     };

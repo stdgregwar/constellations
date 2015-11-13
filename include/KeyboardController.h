@@ -6,6 +6,7 @@
 #include <map>
 
 typedef std::map<sf::Keyboard::Key, Action::ACTION_TYPE> KeyMapping;
+typedef std::map<sf::Keyboard::Key, bool> KeysState;
 
 /**
  * @brief Controller using keyboard event
@@ -15,6 +16,20 @@ class KeyboardController : public Controller
 public:
     KeyboardController(SharedCharacter c);
     bool onEvent(const sf::Event& e);
+private:
+    enum STATE
+    {
+        AIM,
+        MOVE
+    };
+
+    bool pressKey(sf::Keyboard::Key key);
+    bool releaseKey(sf::Keyboard::Key key);
+
+    STATE mState;
+    sf::Vector2i mOldMousePos;
+    sf::Vector2i mMousePos;
+    KeysState mKeysState;
 };
 
 #endif // KEYBOARDCONTROLLER_H

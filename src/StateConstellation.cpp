@@ -123,7 +123,9 @@ void StateConstellation::rotUpdate(float delta_s)
 
 void StateConstellation::pushEvent(const sf::Event &e)
 {
-    (*mCurrentPlayer)->onEvent(e);
+    if ((*mCurrentPlayer)->onEvent(e)){
+        nextPlayer();
+    }
     if(mIState.ef)
         (*this.*mIState.ef)(e);
 }

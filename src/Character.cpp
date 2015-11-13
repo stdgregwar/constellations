@@ -1,7 +1,10 @@
 #include "Character.h"
+#include "VecUtils.h"
 #include <cmath>
+#include <iostream>
+using namespace std;
 
-Character::Character(SharedPlanet planet) : mPlanet(planet), mFrame(0), mWalking(true)
+Character::Character(SharedPlanet planet) : mPlanet(planet), mFrame(0), mWalking(true), mAiming(false)
 {
     setPhi(0);
     mTex.loadFromFile("data/chara_w_6.png");
@@ -12,7 +15,7 @@ Character::Character(SharedPlanet planet) : mPlanet(planet), mFrame(0), mWalking
 }
 
 Character::Character(const Character& other)
-    : mTex(other.mTex), mSprite(other.mSprite), mPlanet(other.mPlanet), mFrame(0), mWalking(other.mWalking)
+    : mTex(other.mTex), mSprite(other.mSprite), mPlanet(other.mPlanet), mFrame(0), mWalking(other.mWalking), mAiming(other.mAiming)
 {
     setPhi(other.mPhi);
 }
@@ -42,6 +45,18 @@ void Character::updatePos()
 void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     target.draw(mSprite,states);
+    if(mAiming)
+    {
+        sf::Vector2f height = {0,mSprite.getGlobalBounds().height};
+        height = VECUTILS_H::rotate(height,mPhi- 90/TO_DEGREES);
+
+        sf::Vertex line[] =
+                {
+                        mSprite.getPosition()+height,
+                        mSprite.getPosition()+height+mArrowVec
+                };
+        target.draw(line,2,sf::Lines);
+    }
 }
 
 void Character::updateFrame()
@@ -59,7 +74,20 @@ void Character::update(float delta_s)
         switch(a.type)
         {
             case Action::MOVE_X:
+                mAiming = false;
                 mActionSpeed.x += a.move.distance;
+                break;
+            case Action::AIM:
+                mActionSpeed.x = 0;
+                mAiming = true;
+                mArrowVec = VECUTILS_H::clamp(a.aim.direction,50);
+
+                break;
+            case Action::THROW:
+                mAiming = false;
+                break;
+            case Action::CANCEL:
+                mAiming = false;
                 break;
             default:
                 break;

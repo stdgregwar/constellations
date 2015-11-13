@@ -6,21 +6,23 @@
 
 constexpr float TO_DEGREES = 180/3.1415;
 
-inline float lenghtSquared(const sf::Vector2f& vec){
+inline float lengthSquared(const sf::Vector2f &vec){
     return vec.x*vec.x+vec.y*vec.y;
 }
 
-inline float lenght(const sf::Vector2f& vec) {
-    return sqrt(lenghtSquared(vec));
+inline float lenght(const sf::Vector2f& vec)
+{
+    return sqrt(lengthSquared(vec));
 }
 
-inline sf::Vector2f normalise(const sf::Vector2f& vec){
+inline sf::Vector2f normalise(const sf::Vector2f& vec)
+{
     return vec / lenght(vec);
 }
 
 inline float distanceSquared(const sf::Vector2f& a, const sf::Vector2f& b)
 {
-    return lenghtSquared(a-b);
+    return lengthSquared(a - b);
 }
 
 inline float distance(const sf::Vector2f& a, const sf::Vector2f& b)
@@ -31,6 +33,25 @@ inline float distance(const sf::Vector2f& a, const sf::Vector2f& b)
 inline float angle(const sf::Vector2f& v)
 {
     return atan2(v.y,v.x);
+}
+
+inline sf::Vector2f clamp(sf::Vector2f vect,float size)
+{
+    if(lenght(vect) > size){
+        return normalise(vect) * size;
+    }
+    return vect;
+}
+
+inline sf::Vector2f rotate(sf::Vector2f vect, float angle)
+{
+    float cs = std::cos(angle);
+    float sn = std::sin(angle);
+
+
+    float px = vect.x * cs - vect.y * sn;
+    float py = vect.x * sn + vect.y * cs;
+    return sf::Vector2f{px,py};
 }
 
 #endif // VECUTILS_H
