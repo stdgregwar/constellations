@@ -57,6 +57,8 @@ public:
     bool collideWith(const sf::Vector2f& p) const;
 
     void queueAction(const Action& a);
+
+
 private:
 
     /**

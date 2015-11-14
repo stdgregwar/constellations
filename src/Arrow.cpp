@@ -7,6 +7,9 @@
 #include "Core.h"
 #include "VecUtils.h"
 
+#include <iostream>
+using namespace std;
+
 Arrow::Arrow(const sf::Vector2f &pos, const sf::Vector2f &speed, float timeStamp)
     : mPos(pos), mSpeed(speed), mTimeStamp(timeStamp)
 {

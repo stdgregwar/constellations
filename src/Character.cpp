@@ -44,7 +44,7 @@ void Character::updatePos()
         mSprite.setRotation(mPhi*TO_DEGREES+90);
         //TODO position of arrow depedent of texture height, may not be a good solution
         sf::Vector2f height = {0,mSprite.getTextureRect().height};
-        height = VECUTILS_H::rotate(height,mPhi- 90/TO_DEGREES);
+        height = rotate(height,mPhi- 90/TO_DEGREES);
         mArrowStartingPoint = mSprite.getPosition() + height;
     }
 }
@@ -55,9 +55,9 @@ void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
     if(mAiming)
     {
 
-        sf::Vector2f arrowLeft = VECUTILS_H::perpendicularNorm(mArrowVec);
-        sf::Vector2f arrowRight = -VECUTILS_H::rotate(arrowLeft,45/TO_DEGREES)*5.0f;
-        arrowLeft = VECUTILS_H::rotate(arrowLeft,-45/TO_DEGREES) * 5.0f;
+        sf::Vector2f arrowLeft = perpendicularNorm(mArrowVec);
+        sf::Vector2f arrowRight = -rotate(arrowLeft,45/TO_DEGREES)*5.0f;
+        arrowLeft = rotate(arrowLeft,-45/TO_DEGREES) * 5.0f;
 
         sf::Vertex line[] =
                 {
@@ -96,7 +96,7 @@ void Character::update(float delta_s)
             {
                 mActionSpeed.x = 0;
                 mAiming = true;
-                mArrowVec = VECUTILS_H::clamp(a.aim.direction, 50);
+                mArrowVec = clamp(a.aim.direction, 50);
                 break;
             }
             case Action::THROW:
@@ -107,6 +107,7 @@ void Character::update(float delta_s)
                 sf::Vector2f speed = -mArrowVec * 8.0f;
                 SharedArrow arrow = SharedArrow(new Arrow{mArrowStartingPoint, speed, 0});
                 cstate->pushArrow(arrow);
+                cstate->nextPlayer();
                 break;
             }
             case Action::CANCEL:
