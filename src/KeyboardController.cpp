@@ -58,9 +58,9 @@ bool KeyboardController::onEvent(const sf::Event& e)
                 break;
             }
             if(e.type == sf::Event::MouseMoved)
-                mMousePos = {e.mouseMove.x,e.mouseMove.y};
-                //TODO find a way to smooth the line
-                a.aim.direction = {mMousePos.x - mOldMousePos.x, mMousePos.y - mOldMousePos.y};
+                //TODO tweak smoothing
+                mMousePos = (mMousePos*0.1f+sf::Vector2f{e.mouseMove.x,e.mouseMove.y}*0.9f);
+                a.aim.direction = (mMousePos - mOldMousePos)*0.25f;
             if(e.type == sf::Event::MouseButtonReleased && e.mouseButton.button == sf::Mouse::Left)
             {
                 a.type = Action::THROW;

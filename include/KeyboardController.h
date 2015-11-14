@@ -27,8 +27,8 @@ private:
     bool releaseKey(sf::Keyboard::Key key);
 
     STATE mState;
-    sf::Vector2i mOldMousePos;
-    sf::Vector2i mMousePos;
+    sf::Vector2f mOldMousePos;
+    sf::Vector2f mMousePos;
     KeysState mKeysState;
 };
 

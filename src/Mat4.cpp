@@ -132,7 +132,7 @@ Mat4 Mat4::identity()
     Mat4 m;
     for(int i = 0; i < 4; i++)
     {
-        m[i][i] = i;
+        m[i][i] = 1;
     }
     return m;
 }

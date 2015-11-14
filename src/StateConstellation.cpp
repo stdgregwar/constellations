@@ -15,9 +15,9 @@ StateConstellation::StateConstellation() :
 
 void StateConstellation::onBegin()
 {
-    mPlanets.push_back(SharedPlanet(new Planet{{-35,30,0},1,10}));
-    mPlanets.push_back(SharedPlanet(new Planet{{35,-20,0},0.75,20}));
-    mPlanets.push_back(SharedPlanet(new Planet{{35,20,-20},0.25,20}));
+    mPlanets.push_back(SharedPlanet(new Planet{{-40,30,0},1,10}));
+    mPlanets.push_back(SharedPlanet(new Planet{{-35,40,0},0.75,20}));
+    mPlanets.push_back(SharedPlanet(new Planet{{-20,20,0},0.25,20}));
     mPlayers.push_back(SharedController(new KeyboardController(SharedCharacter(new Character(mPlanets.back())))));
     mArrows.push_back(SharedArrow(new Arrow({100,0},{0,100},0)));
 
@@ -34,7 +34,7 @@ void StateConstellation::onBegin()
 
     mCurrentPlayer = mPlayers.begin();
 
-    cout << Core::get().globalDict();
+//    cout << Core::get().globalDict();
 }
 
 void StateConstellation::onEnd()
