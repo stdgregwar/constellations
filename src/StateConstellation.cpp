@@ -15,13 +15,35 @@ StateConstellation::StateConstellation() :
 
 void StateConstellation::onBegin()
 {
-    mPlanets.push_back(SharedPlanet(new Planet{{-50,-50,0},0.25,20}));
-    mPlanets.push_back(SharedPlanet(new Planet{{-50,50,0},0.25,20}));
-    mPlayers.push_back(SharedController(new KeyboardController(SharedCharacter(new Character(mPlanets.back())))));
-    mPlanets.push_back(SharedPlanet(new Planet{{50,50,0},0.25,20}));
-    mPlanets.push_back(SharedPlanet(new Planet{{50,-50,0},0.25,20}));
-    mPlayers.push_back(SharedController(new KeyboardController(SharedCharacter(new Character(mPlanets.back())))));
-    mArrows.push_back(SharedArrow(new Arrow({100,0},{0,100},0)));
+
+    sf::Texture tex;
+    tex.loadFromFile("data/stars_w_4.png");
+    mBackground.setTexture(tex,4);
+    mBackground.uniformDistribution({-1280,-720,1280*2,720*2},500);
+
+    mPlanets.push_back(SharedPlanet(new Planet({-100,80,0},1,25)));
+    mPlanets.push_back(SharedPlanet(new Planet({140,80,0},0.75,25)));
+    mPlanets.push_back(SharedPlanet(new Planet({0,-160,0},0.25,25)));
+    mPlayers.push_back(SharedController( //Ugliest in-place construction ever
+                           new KeyboardController(
+                               SharedCharacter(
+                                   new Character(
+                                                   mPlanets.back(),sf::Color(255,150,150)
+                                                   )
+                                    )
+                               )
+                           )
+                       );
+    mPlayers.push_back(SharedController( //Same same... but different
+                           new KeyboardController(
+                               SharedCharacter(
+                                   new Character(
+                                       mPlanets.front(),sf::Color(150,150,255))
+                                   )
+                               )
+                           )
+                       );
+    //mArrows.push_back(SharedArrow(new Arrow({100,0},{0,100},0)));
 
     //FIRST FIX
     Mat4 mat = Mat4::identity();
@@ -58,12 +80,16 @@ void StateConstellation::onPause()
 
 void StateConstellation::draw(sf::RenderTarget& target)
 {
+    target.setView(target.getDefaultView());
+    target.draw(mBackground);
+
     sf::View view;
     view.setCenter(0,0);
     view.setViewport({0,0,1,1});
     view.setSize(target.getSize().x,target.getSize().y);
-    view.zoom(1.f/4);
+    view.zoom(1.f/2);
     target.setView(view);
+
 
     for(SharedPlanet& p : mPlanets)
     {

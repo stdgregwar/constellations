@@ -16,7 +16,7 @@ typedef std::shared_ptr<Character> SharedCharacter;
 class Character : public sf::Drawable
 {
 public:
-    Character(SharedPlanet planet);
+    Character(SharedPlanet planet, sf::Color color = sf::Color::White);
     Character(const Character& other);
     Character(const Character&& other);
 
@@ -77,6 +77,7 @@ private:
     bool mAiming;
     sf::Vector2f mArrowVec;
     sf::Vector2f mArrowStartingPoint;
+    sf::Color mColor;
 };
 
 #endif // CHARACTER_H

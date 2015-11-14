@@ -46,7 +46,7 @@ bool Core::start()
         mGlobalTime += time.asSeconds();
         if(mStateStack)
         {
-            mRenderWindow.clear();
+            mRenderWindow.clear(sf::Color(30,10,30));
             for(int i = 0; i < substeps; i++)
                 mStateStack->update(time.asSeconds()/substeps);
             mStateStack->drawAll(mRenderWindow);

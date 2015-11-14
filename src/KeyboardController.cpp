@@ -40,8 +40,6 @@ bool KeyboardController::onEvent(const sf::Event& e)
                     a.move.distance = vr;
                     a.type = Action::MOVE_X;
                 }
-
-//                a.type = Action::MOVE_X;
             }
             if (e.type == sf::Event::KeyReleased)
             {
@@ -55,7 +53,6 @@ bool KeyboardController::onEvent(const sf::Event& e)
                     a.move.distance = -vr;
                     a.type = Action::MOVE_X;
                 }
-
             }
             break;
         }
@@ -87,7 +84,7 @@ bool KeyboardController::onEvent(const sf::Event& e)
 
     if(a.type != Action::NONE)
         character()->queueAction(a);
-    return false;
+    return a.type == Action::THROW;
 }
 
 bool KeyboardController::pressKey(sf::Keyboard::Key key)

@@ -12,7 +12,7 @@ typedef std::shared_ptr<Planet> SharedPlanet;
 /**
  * @brief Represet a planet with 3D coordinates projeted in 2D
  */
-class Planet : public sf::CircleShape
+class Planet : public sf::Sprite
 {
 public:
     Planet(const sf::Vector3f& pos, float mass, float radius);
@@ -60,10 +60,13 @@ public:
     sf::Color getColor() const;
 
     sf::Vector2f getPosOn(float angle);
+
+    float getRadius() const {return m3DRadius;}
 private:
     sf::Vector3f m3DPos;
     float m3DRadius;
     float mMass;
+    sf::Texture mTexture;
 };
 
 #endif // PLANET_H
