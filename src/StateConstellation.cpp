@@ -175,6 +175,11 @@ SharedCharacter StateConstellation::collideWithCharacter(const sf::Vector2f &p)
     return SharedCharacter();
 }
 
+void StateConstellation::pushArrow(SharedArrow a)
+{
+    mArrows.push_back(a);
+}
+
 void StateConstellation::onNewRound()
 {
     cout << "New ROUND!!" << endl;
