@@ -6,6 +6,7 @@
 #include "Planet.h"
 #include "Controller.h"
 #include "Arrow.h"
+#include "ParticleSystem.h"
 #include <list>
 
 class StateConstellation;
@@ -89,6 +90,7 @@ private:
     Players mPlayers;
     Players::iterator mCurrentPlayer;
     std::list<SharedArrow> mArrows;
+    ParticleSystem mBackground;
 };
 
 #endif // STATECONSTELLATION_H

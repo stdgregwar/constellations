@@ -31,20 +31,30 @@ bool KeyboardController::onEvent(const sf::Event& e)
             if (e.type == sf::Event::KeyPressed)
             {
                 if (e.key.code == sf::Keyboard::Left && pressKey(e.key.code))
+                {
                     a.move.distance = -vr;
+                    a.type = Action::MOVE_X;
+                }
                 if (e.key.code == sf::Keyboard::Right && pressKey(e.key.code))
+                {
                     a.move.distance = vr;
+                    a.type = Action::MOVE_X;
+                }
 
-                a.type = Action::MOVE_X;
+
             }
             if (e.type == sf::Event::KeyReleased)
             {
                 if (e.key.code == sf::Keyboard::Left && releaseKey(e.key.code))
+                {
                     a.move.distance = +vr;
+                    a.type = Action::MOVE_X;
+                }
                 if (e.key.code == sf::Keyboard::Right && releaseKey(e.key.code))
+                {
                     a.move.distance = -vr;
-
-                a.type = Action::MOVE_X;
+                    a.type = Action::MOVE_X;
+                }
             }
             break;
         }
@@ -76,7 +86,7 @@ bool KeyboardController::onEvent(const sf::Event& e)
 
     if(a.type != Action::NONE)
         character()->queueAction(a);
-    return false;
+    return a.type == Action::THROW;
 }
 
 bool KeyboardController::pressKey(sf::Keyboard::Key key)

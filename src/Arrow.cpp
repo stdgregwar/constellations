@@ -31,7 +31,7 @@ bool Arrow::update(float delta_s)
             mSprite.setTextureRect({0,0,10,5});
             mPhi = angle(mPos-mPlanet->getPosition());
         }
-        mSpeed += cstate->getGravFieldAt(mPos)*delta_s;
+        mSpeed += cstate->getGravFieldAt(mPos)*delta_s*5.f;
         mPos += mSpeed*delta_s;
         mSprite.setRotation(angle(mSpeed)*TO_DEGREES);
 

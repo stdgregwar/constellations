@@ -7,14 +7,14 @@
 
 using namespace std;
 
-Character::Character(SharedPlanet planet) : mPlanet(planet), mFrame(0), mWalking(true), mAiming(false)
+Character::Character(SharedPlanet planet, sf::Color c) : mPlanet(planet), mFrame(0), mWalking(true), mAiming(false), mColor(c)
 {
     setPhi(0);
     mTex.loadFromFile("data/chara_w_6.png");
     mSprite.setTexture(mTex);
     mSprite.setOrigin(9,28);
     mSprite.setTextureRect({0,0,18,30});
-    //setColor(sf::Color::Red);
+    mSprite.setColor(mColor);
 }
 
 Character::Character(const Character& other)
@@ -28,7 +28,6 @@ Character::Character(const Character&& other)
 {
     setPhi(other.mPhi);
 }
-
 
 void Character::rot(float dphi)
 {
