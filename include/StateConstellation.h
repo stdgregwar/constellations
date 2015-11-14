@@ -71,6 +71,8 @@ public:
      */
     SharedCharacter collideWithCharacter(const sf::Vector2f &p);
 
+    void pushArrow(SharedArrow a);
+
     void onNewRound();
 
     void nextPlayer();

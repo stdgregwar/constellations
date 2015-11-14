@@ -2,6 +2,9 @@
 #include "VecUtils.h"
 #include <cmath>
 #include <iostream>
+#include <Core.h>
+#include <StateConstellation.h>
+
 using namespace std;
 
 Character::Character(SharedPlanet planet) : mPlanet(planet), mFrame(0), mWalking(true), mAiming(false)
@@ -15,7 +18,7 @@ Character::Character(SharedPlanet planet) : mPlanet(planet), mFrame(0), mWalking
 }
 
 Character::Character(const Character& other)
-    : mTex(other.mTex), mSprite(other.mSprite), mPlanet(other.mPlanet), mFrame(0), mWalking(other.mWalking), mAiming(other.mAiming)
+    : mTex(other.mTex), mSprite(other.mSprite), mPlanet(other.mPlanet), mFrame(0), mWalking(other.mWalking), mAiming(other.mAiming), mArrowStartingPoint{0,0}
 {
     setPhi(other.mPhi);
 }
@@ -39,6 +42,10 @@ void Character::updatePos()
     if(mPlanet) {
         mSprite.setPosition(mPlanet->getPosOn(mPhi));
         mSprite.setRotation(mPhi*TO_DEGREES+90);
+        //TODO position of arrow depedent of texture height, may not be a good solution
+        sf::Vector2f height = {0,mSprite.getTextureRect().height};
+        height = VECUTILS_H::rotate(height,mPhi- 90/TO_DEGREES);
+        mArrowStartingPoint = mSprite.getPosition() + height;
     }
 }
 
@@ -47,15 +54,21 @@ void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
     target.draw(mSprite,states);
     if(mAiming)
     {
-        sf::Vector2f height = {0,mSprite.getGlobalBounds().height};
-        height = VECUTILS_H::rotate(height,mPhi- 90/TO_DEGREES);
+
+        sf::Vector2f arrowLeft = VECUTILS_H::perpendicularNorm(mArrowVec);
+        sf::Vector2f arrowRight = -VECUTILS_H::rotate(arrowLeft,45/TO_DEGREES)*5.0f;
+        arrowLeft = VECUTILS_H::rotate(arrowLeft,-45/TO_DEGREES) * 5.0f;
 
         sf::Vertex line[] =
                 {
-                        mSprite.getPosition()+height,
-                        mSprite.getPosition()+height+mArrowVec
+                        mArrowStartingPoint,
+                        mArrowStartingPoint - arrowLeft,
+                        mArrowStartingPoint,
+                        mArrowStartingPoint - arrowRight,
+                        mArrowStartingPoint,
+                        mArrowStartingPoint + mArrowVec
                 };
-        target.draw(line,2,sf::Lines);
+        target.draw(line,6,sf::Lines);
     }
 }
 
@@ -74,21 +87,33 @@ void Character::update(float delta_s)
         switch(a.type)
         {
             case Action::MOVE_X:
+            {
                 mAiming = false;
                 mActionSpeed.x += a.move.distance;
                 break;
+            }
             case Action::AIM:
+            {
                 mActionSpeed.x = 0;
                 mAiming = true;
-                mArrowVec = VECUTILS_H::clamp(a.aim.direction,50);
-
+                mArrowVec = VECUTILS_H::clamp(a.aim.direction, 50);
                 break;
+            }
             case Action::THROW:
+            {
                 mAiming = false;
+                auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
+                //TODO tweak factor or store it somewhere
+                sf::Vector2f speed = -mArrowVec * 8.0f;
+                SharedArrow arrow = SharedArrow(new Arrow{mArrowStartingPoint, speed, 0});
+                cstate->pushArrow(arrow);
                 break;
+            }
             case Action::CANCEL:
+            {
                 mAiming = false;
                 break;
+            }
             default:
                 break;
         }

@@ -74,6 +74,7 @@ private:
     ActionQueue mActionQueue;
     bool mAiming;
     sf::Vector2f mArrowVec;
+    sf::Vector2f mArrowStartingPoint;
 };
 
 #endif // CHARACTER_H

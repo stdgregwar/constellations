@@ -54,5 +54,14 @@ inline sf::Vector2f rotate(sf::Vector2f vect, float angle)
     return sf::Vector2f{px,py};
 }
 
+inline sf::Vector2f perpendicularNorm(sf::Vector2f vect)
+{
+    vect = normalise(vect);
+    float x = vect.x;
+    float y = vect.y;
+
+    return sf::Vector2f{y,-x};
+}
+
 #endif // VECUTILS_H
 
