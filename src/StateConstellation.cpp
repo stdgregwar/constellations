@@ -80,14 +80,15 @@ void StateConstellation::onPause()
 
 void StateConstellation::draw(sf::RenderTarget& target)
 {
-    target.setView(target.getDefaultView());
-    target.draw(mBackground);
-
     sf::View view;
     view.setCenter(0,0);
     view.setViewport({0,0,1,1});
     view.setSize(target.getSize().x,target.getSize().y);
+
+    target.setView(view);
+    target.draw(mBackground);
     view.zoom(1.f/2);
+
     target.setView(view);
 
 
@@ -118,7 +119,7 @@ void StateConstellation::update(float delta_s)
 void StateConstellation::defaultUpdate(float delta_s)
 {
     for(SharedController& c : mPlayers)
-    {       
+    {
         c->character()->update(delta_s);
     }
 

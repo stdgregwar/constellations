@@ -106,7 +106,6 @@ void Character::update(float delta_s)
                 sf::Vector2f speed = -mArrowVec * 8.0f;
                 SharedArrow arrow = SharedArrow(new Arrow{mArrowStartingPoint, speed, 0});
                 cstate->pushArrow(arrow);
-                cstate->nextPlayer();
                 break;
             }
             case Action::CANCEL:
