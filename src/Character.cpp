@@ -61,11 +61,11 @@ void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
         sf::Vertex line[] =
                 {
                         mArrowStartingPoint,
-                        mArrowStartingPoint - arrowLeft,
-                        mArrowStartingPoint,
-                        mArrowStartingPoint - arrowRight,
-                        mArrowStartingPoint,
-                        mArrowStartingPoint + mArrowVec
+                        mArrowStartingPoint - mArrowVec,
+                        mArrowStartingPoint - mArrowVec - arrowLeft,
+                        mArrowStartingPoint - mArrowVec,
+                        mArrowStartingPoint - mArrowVec - arrowRight,
+                        mArrowStartingPoint - mArrowVec
                 };
         target.draw(line,6,sf::Lines);
     }
@@ -106,7 +106,6 @@ void Character::update(float delta_s)
                 sf::Vector2f speed = -mArrowVec * 8.0f;
                 SharedArrow arrow = SharedArrow(new Arrow{mArrowStartingPoint, speed, 0});
                 cstate->pushArrow(arrow);
-                cstate->nextPlayer();
                 break;
             }
             case Action::CANCEL:
