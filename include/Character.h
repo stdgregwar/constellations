@@ -58,9 +58,9 @@ public:
 
     void queueAction(const Action& a);
 
-
+    bool isDead();
+    void hit(int pvs);
 private:
-
     /**
      * @brief updates texture rect to animate sprite
      */
@@ -78,6 +78,7 @@ private:
     sf::Vector2f mArrowVec;
     sf::Vector2f mArrowStartingPoint;
     sf::Color mColor;
+    int mPV;
 };
 
 #endif // CHARACTER_H

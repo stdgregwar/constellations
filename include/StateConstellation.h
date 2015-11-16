@@ -76,6 +76,11 @@ public:
 
     void onNewRound();
 
+    void onWin();
+
+    //Seems very improbable to be called
+    void onEquality();
+
     void nextPlayer();
 private:
     typedef std::list<SharedController> Players;

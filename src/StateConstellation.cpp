@@ -3,6 +3,7 @@
 
 
 #include <iostream>
+#include <algorithm>
 #include "Mat4.h"
 #include "KeyboardController.h"
 
@@ -128,6 +129,28 @@ void StateConstellation::defaultUpdate(float delta_s)
         a->update(delta_s);
         //TODO add collision support
     }
+
+    /*mPlayers.remove_if(
+                [](const SharedController& c)->bool{return c->character()->isDead();}
+    );*/
+    for(Players::iterator it = mPlayers.begin(); it != mPlayers.end(); it++)
+    {
+        if((*it)->character()->isDead()) {
+            if(it == mCurrentPlayer)
+                nextPlayer();
+            mPlayers.erase(it++);
+            if(mPlayers.size() == 1)
+            {
+                onWin();
+            }
+            if(mPlayers.size() == 0)
+            {
+                mCurrentPlayer == mPlayers.end();
+                onEquality();
+            }
+        }
+    }
+
 }
 
 void StateConstellation::rotUpdate(float delta_s)
@@ -152,8 +175,10 @@ void StateConstellation::rotUpdate(float delta_s)
 
 void StateConstellation::pushEvent(const sf::Event &e)
 {
-    if ((*mCurrentPlayer)->onEvent(e)){
-        nextPlayer();
+    if(mCurrentPlayer != mPlayers.end() && mPlayers.size()) {
+        if((*mCurrentPlayer)->onEvent(e)){
+            nextPlayer();
+        }
     }
     if(mIState.ef)
         (*this.*mIState.ef)(e);
@@ -214,9 +239,19 @@ void StateConstellation::onNewRound()
     cout << "New ROUND!!" << endl;
 }
 
+void StateConstellation::onWin()
+{
+    cout << "Player Won" << endl;
+}
+
+void StateConstellation::onEquality()
+{
+    cout << "Everyone is dead...." << endl;
+}
+
 void StateConstellation::nextPlayer()
 {
-    mCurrentPlayer++;
+    Players::iterator last = mCurrentPlayer++;
     if(mCurrentPlayer == mPlayers.end())
     {
         mCurrentPlayer = mPlayers.begin();

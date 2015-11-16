@@ -7,7 +7,7 @@
 
 using namespace std;
 
-Character::Character(SharedPlanet planet, sf::Color c) : mPlanet(planet), mFrame(0), mWalking(true), mAiming(false), mColor(c)
+Character::Character(SharedPlanet planet, sf::Color c) : mPlanet(planet), mFrame(0), mWalking(true), mAiming(false), mColor(c), mPV(25)
 {
     setPhi(0);
     mTex.loadFromFile("data/chara_w_6.png");
@@ -18,13 +18,13 @@ Character::Character(SharedPlanet planet, sf::Color c) : mPlanet(planet), mFrame
 }
 
 Character::Character(const Character& other)
-    : mTex(other.mTex), mSprite(other.mSprite), mPlanet(other.mPlanet), mFrame(0), mWalking(other.mWalking), mAiming(other.mAiming), mArrowStartingPoint{0,0}
+    : mTex(other.mTex), mSprite(other.mSprite), mPlanet(other.mPlanet), mFrame(0), mWalking(other.mWalking), mAiming(other.mAiming), mArrowStartingPoint{0,0}, mPV(other.mPV)
 {
     setPhi(other.mPhi);
 }
 
 Character::Character(const Character&& other)
-    : mTex(other.mTex), mSprite(other.mSprite), mPlanet(other.mPlanet), mFrame(0), mWalking(other.mWalking)
+    : mTex(other.mTex), mSprite(other.mSprite), mPlanet(other.mPlanet), mFrame(0), mWalking(other.mWalking), mPV(other.mPV)
 {
     setPhi(other.mPhi);
 }
@@ -121,6 +121,16 @@ void Character::update(float delta_s)
     mFrame = (int)(mFrameTime*10)%3;
     rot(mActionSpeed.x*delta_s);
     updateFrame();
+}
+
+bool Character::isDead()
+{
+    return mPV <= 0;
+}
+
+void Character::hit(int pvs)
+{
+    mPV -= pvs;
 }
 
 void Character::queueAction(const Action &a)

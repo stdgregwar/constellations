@@ -29,6 +29,9 @@ bool Arrow::update(float delta_s)
     {
         //TODO find which type cstate must be...
         auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
+        SharedCharacter c = cstate->collideWithCharacter(mPos);
+        if(c)
+            c->hit(50);
         mPlanet = cstate->collideWithPlanet(mPos);
         if(mPlanet) {
             mSprite.setTextureRect({0,0,10,5});
