@@ -4,6 +4,8 @@
 #include <SFML/Graphics.hpp>
 #include <GameState.h>
 #include "Properties.h"
+#include "TextureProvider.h"
+#include "ResourceCache.h"
 
 /**
  * @brief Main application class representing the whole game logic with a StateStack. Singleton class.
@@ -89,7 +91,10 @@ public:
     const sf::RenderWindow& renderWindow();
 
     Properties& globalDict();
+
+    TextureCache& textureCache();
 private:
+    TextureCache mTextureCache;
     sf::RenderWindow mRenderWindow;
     float mGlobalTime;
     static Core* mInstance;
