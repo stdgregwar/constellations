@@ -8,6 +8,7 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include "Planet.h"
+#include "Controller.h"
 
 class Arrow;
 
@@ -17,7 +18,7 @@ class Arrow : public sf::Drawable
 {
 public:
 
-    Arrow(const sf::Vector2f &pos, const sf::Vector2f &speed, float timeStamp);
+    Arrow(const sf::Vector2f &pos, const sf::Vector2f &speed, float timeStamp, const PlayerID& ownerID);
     Arrow(const Arrow& other);
 
     bool update(float delta_s);
@@ -32,6 +33,7 @@ public:
     const sf::Vector2f& getPos();
 
 private:
+    PlayerID mOwnerID;
     sf::Vector2f mPos;
     sf::Vector2f mSpeed;
     sf::Sprite mSprite;

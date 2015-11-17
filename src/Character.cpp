@@ -7,7 +7,8 @@
 
 using namespace std;
 
-Character::Character(SharedPlanet planet, sf::Color c) : mPlanet(planet), mFrame(0), mWalking(true), mAiming(false), mColor(c), mPV(25)
+Character::Character(SharedPlanet planet, const PlayerID &id, sf::Color c)
+    : mPlanet(planet), mFrame(0), mWalking(true), mAiming(false), mColor(c), mPV(25), mID(id)
 {
     setPhi(0);
     mTex.loadFromFile("data/chara_w_6.png");
@@ -104,7 +105,7 @@ void Character::update(float delta_s)
                 auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
                 //TODO tweak factor or store it somewhere
                 sf::Vector2f speed = -mArrowVec * 8.0f;
-                SharedArrow arrow = SharedArrow(new Arrow{mArrowStartingPoint, speed, 0});
+                SharedArrow arrow = SharedArrow(new Arrow(mArrowStartingPoint, speed, 0,id()));
                 cstate->pushArrow(arrow);
                 break;
             }
@@ -147,4 +148,9 @@ void Character::setPhi(float phi)
 bool Character::collideWith(const sf::Vector2f& p) const
 {
     return mSprite.getGlobalBounds().contains(p);
+}
+
+const PlayerID& Character::id()
+{
+    return mID;
 }

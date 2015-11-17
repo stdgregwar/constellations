@@ -6,7 +6,6 @@
 
 class Controller;
 typedef std::shared_ptr<Controller> SharedController;
-
 /**
  * @brief Interface specifying the controllers that drive the characters
  */
@@ -22,6 +21,7 @@ public:
      */
     virtual bool onEvent(const sf::Event& e) = 0;
     SharedCharacter character();
+    const PlayerID& id();
 private:
     SharedCharacter mCharacter;
 };

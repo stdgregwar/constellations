@@ -29,7 +29,7 @@ void StateConstellation::onBegin()
                            new KeyboardController(
                                SharedCharacter(
                                    new Character(
-                                                   mPlanets.back(),sf::Color(255,150,150)
+                                                   mPlanets.back(),1,sf::Color(255,150,150)
                                                    )
                                     )
                                )
@@ -39,7 +39,7 @@ void StateConstellation::onBegin()
                            new KeyboardController(
                                SharedCharacter(
                                    new Character(
-                                       mPlanets.front(),sf::Color(150,150,255))
+                                       mPlanets.front(),2,sf::Color(150,150,255))
                                    )
                                )
                            )

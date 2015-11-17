@@ -9,6 +9,7 @@
 class Character;
 
 typedef std::shared_ptr<Character> SharedCharacter;
+typedef unsigned PlayerID;
 
 /**
  * @brief A character on top of a given planet
@@ -16,7 +17,7 @@ typedef std::shared_ptr<Character> SharedCharacter;
 class Character : public sf::Drawable
 {
 public:
-    Character(SharedPlanet planet, sf::Color color = sf::Color::White);
+    Character(SharedPlanet planet, const PlayerID& id, sf::Color color = sf::Color::White);
     Character(const Character& other);
     Character(const Character&& other);
 
@@ -60,6 +61,7 @@ public:
 
     bool isDead();
     void hit(int pvs);
+    const PlayerID& id();
 private:
     /**
      * @brief updates texture rect to animate sprite
@@ -79,6 +81,7 @@ private:
     sf::Vector2f mArrowStartingPoint;
     sf::Color mColor;
     int mPV;
+    PlayerID mID;
 };
 
 #endif // CHARACTER_H
