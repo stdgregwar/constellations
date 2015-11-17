@@ -8,6 +8,7 @@
 #include "Arrow.h"
 #include "ParticleSystem.h"
 #include <list>
+#include <vector>
 
 class StateConstellation;
 typedef std::shared_ptr<StateConstellation> SharedStateConstellation;
@@ -77,6 +78,8 @@ public:
     void onNewRound();
 
     void nextPlayer();
+
+    std::vector<sf::Vector2f> pathForInitials(sf::Vector2f pos, sf::Vector2f speed, int precision);
 private:
     typedef std::list<SharedController> Players;
 

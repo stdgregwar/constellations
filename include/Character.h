@@ -3,6 +3,7 @@
 
 #include "Planet.h"
 #include "Action.h"
+#include "Path.h"
 #include <SFML/Graphics/Sprite.hpp>
 #include <memory>
 
@@ -78,6 +79,7 @@ private:
     sf::Vector2f mArrowVec;
     sf::Vector2f mArrowStartingPoint;
     sf::Color mColor;
+    static Path mPath;
 };
 
 #endif // CHARACTER_H

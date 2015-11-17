@@ -182,7 +182,7 @@ sf::Vector2f StateConstellation::getGravFieldAt(const sf::Vector2f &p)
     {
         field += planet->get2DField(p);
     }
-    return field*(float)5e2;
+    return field*(float)25e2;
 }
 
 SharedPlanet StateConstellation::collideWithPlanet(const sf::Vector2f &p)
@@ -221,4 +221,22 @@ void StateConstellation::nextPlayer()
         mCurrentPlayer = mPlayers.begin();
         onNewRound();
     }
+}
+
+std::vector<sf::Vector2f> StateConstellation::pathForInitials(sf::Vector2f pos, sf::Vector2f speed, int precision)
+{
+    std::vector<sf::Vector2f> path;
+    path.reserve(precision);
+    //TODO tweak
+    float delta_t = 0.01f;
+    for(int i = 0; i < precision; i++)
+    {
+        sf::Vector2f acc = getGravFieldAt(pos);
+        speed += acc * delta_t;
+        pos += speed * delta_t;
+        if(collideWithPlanet(pos))
+            break;
+        path.push_back(pos);
+    }
+    return path;
 }
