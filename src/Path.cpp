@@ -9,8 +9,10 @@
 
 Path::Path(){}
 
-void Path::create(const std::vector<sf::Vector2f> &path, float width,const sf::Color& color)
+void Path::create(const std::vector<sf::Vector2f> &path, float width,const sf::Color& color, float factor)
 {
+    if(path.size() < 2) //Cannot create path with only one point
+        return;
     mVertexArray.resize((path.size() - 1)*6);
     mVertexArray.setPrimitiveType(sf::Triangles);
 
@@ -62,7 +64,7 @@ void Path::create(const std::vector<sf::Vector2f> &path, float width,const sf::C
             mVertexArray[j+k].color = color;
         }
 
-        width *= 0.99;
+        width *= factor;
     }
 
     //Head

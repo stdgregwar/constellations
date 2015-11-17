@@ -57,7 +57,7 @@ void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
     if(mAiming)
     {
         auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
-        mPath.create(cstate->pathForInitials(mArrowStartingPoint,mArrowVec*8.0f,16),2.f,mColor);
+        mPath.create(cstate->pathForInitials(mArrowStartingPoint,mArrowVec*8.0f,16),2.f,mColor,0.999);
         target.draw(mPath);
     }
 }
@@ -86,7 +86,7 @@ void Character::update(float delta_s)
             {
                 mActionSpeed.x = 0;
                 mAiming = true;
-                mArrowVec = clamp(a.aim.direction, 50);
+                mArrowVec = -clamp(a.aim.direction, 50);
                 break;
             }
             case Action::THROW:

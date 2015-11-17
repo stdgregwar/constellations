@@ -186,11 +186,12 @@ void StateConstellation::pushEvent(const sf::Event &e)
 
 void StateConstellation::defaultEvent(const sf::Event &e)
 {
-    if(e.type == sf::Event::MouseButtonPressed && e.mouseButton.button == sf::Mouse::Right){
+    //DEACTIVATED ROTATION FOR NOW
+    /*if(e.type == sf::Event::MouseButtonPressed && e.mouseButton.button == sf::Mouse::Right){
         //const sf::Event::MouseButtonEvent& me = e;
         mOldMousePos = {e.mouseButton.x,e.mouseButton.y};
         mIState = {&StateConstellation::rotUpdate,&StateConstellation::rotEvent};
-    }
+    }*/
 }
 
 void StateConstellation::rotEvent(const sf::Event &e)
@@ -264,12 +265,17 @@ std::vector<sf::Vector2f> StateConstellation::pathForInitials(sf::Vector2f pos, 
     std::vector<sf::Vector2f> path;
     path.reserve(precision);
     //TODO tweak
-    float delta_t = 0.01f;
+    float delta_t = 1.f/60;
+    constexpr unsigned substeps = 5;
+    float udelta = delta_t/substeps;
     for(int i = 0; i < precision; i++)
     {
-        sf::Vector2f acc = getGravFieldAt(pos);
-        speed += acc * delta_t;
-        pos += speed * delta_t;
+        for(int j = 0; j < substeps; j++)
+        {
+            sf::Vector2f acc = getGravFieldAt(pos);
+            speed += acc * udelta;
+            pos += speed * udelta;
+        }
         if(collideWithPlanet(pos))
             break;
         path.push_back(pos);

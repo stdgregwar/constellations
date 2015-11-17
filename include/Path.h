@@ -15,7 +15,7 @@ class Path : public sf::Drawable
 {
 public:
     Path();
-    void create(const std::vector<sf::Vector2f>& path, float width,const sf::Color& color);
+    void create(const std::vector<sf::Vector2f>& path, float width,const sf::Color& color, float factor = 0.99);
     void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 private:
     sf::VertexArray mVertexArray;
