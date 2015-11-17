@@ -1,15 +1,14 @@
 #include "Planet.h"
 #include "VecUtils.h"
 #include <cmath>
+#include "Core.h"
 
 Planet::Planet(const sf::Vector3f &pos, float mass, float radius) :
     mMass(mass), m3DPos(pos), m3DRadius(radius)
 {
     //setFillColor(getColor());
-
-    mTexture.loadFromFile("data/planet.png");
-    setTexture(mTexture);
-    setOrigin(mTexture.getSize().x/2,mTexture.getSize().y/2);
+    setTexture(*Core::get().textureCache().get("data/planet.png"));
+    setOrigin(getTexture()->getSize().x/2,getTexture()->getSize().y/2);
     //update2DPos();
 }
 
@@ -66,4 +65,9 @@ sf::Color Planet::getColor() const
 sf::Vector2f Planet::getPosOn(float angle)
 {
     return getPosition() +  sf::Vector2f(cos(angle),sin(angle)) * getRadius();
+}
+
+Planet::~Planet()
+{
+    Core::get().textureCache().free(getTexture());
 }

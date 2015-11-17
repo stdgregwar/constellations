@@ -20,13 +20,13 @@ Character::Character(SharedPlanet planet, const PlayerID &id, sf::Color c)
 }
 
 Character::Character(const Character& other)
-    : mTex(other.mTex), mSprite(other.mSprite), mPlanet(other.mPlanet), mFrame(0), mWalking(other.mWalking), mAiming(other.mAiming), mArrowStartingPoint{0,0}, mPV(other.mPV)
+    : mSprite(other.mSprite), mPlanet(other.mPlanet), mFrame(0), mWalking(other.mWalking), mAiming(other.mAiming), mArrowStartingPoint{0,0}, mPV(other.mPV)
 {
     setPhi(other.mPhi);
 }
 
 Character::Character(const Character&& other)
-    : mTex(other.mTex), mSprite(other.mSprite), mPlanet(other.mPlanet), mFrame(0), mWalking(other.mWalking), mPV(other.mPV)
+    :  mSprite(other.mSprite), mPlanet(other.mPlanet), mFrame(0), mWalking(other.mWalking), mPV(other.mPV)
 {
     setPhi(other.mPhi);
 }
@@ -52,7 +52,8 @@ void Character::updatePos()
 
 void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
-    target.draw(mSprite,states);
+    updateFrame();
+    target.draw(mSprite);
     if(mAiming)
     {
         auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
@@ -61,8 +62,9 @@ void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
     }
 }
 
-void Character::updateFrame()
+void Character::updateFrame() const
 {
+    mFrame = (int)(Core::get().time()*10)%3;
     if(mWalking)
         mSprite.setTextureRect({18*mFrame,0,18,30});
     else
@@ -107,10 +109,8 @@ void Character::update(float delta_s)
                 break;
         }
     }
-    mFrameTime+=delta_s;
-    mFrame = (int)(mFrameTime*10)%3;
+
     rot(mActionSpeed.x*delta_s);
-    updateFrame();
 }
 
 bool Character::isDead()

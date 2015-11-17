@@ -69,14 +69,12 @@ private:
     /**
      * @brief updates texture rect to animate sprite
      */
-    void updateFrame();
-    sf::Sprite mSprite;
+    void updateFrame() const;
+    mutable sf::Sprite mSprite;
     SharedPlanet mPlanet;
-    int mFrame;
-    float mFrameTime;
+    mutable int mFrame;
     sf::Vector2f mActionSpeed;
     bool mWalking;
-    sf::Texture mTex;
     float mPhi;
     ActionQueue mActionQueue;
     bool mAiming;

@@ -11,6 +11,7 @@ public:
     void setTexture(const sf::Texture& tex, int frames);
     void updateTexCoords() const;
     void draw(sf::RenderTarget &target, sf::RenderStates states) const;
+    virtual ~ParticleSystem();
 private:
     struct Particle
     {

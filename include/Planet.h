@@ -62,11 +62,12 @@ public:
     sf::Vector2f getPosOn(float angle);
 
     float getRadius() const {return m3DRadius;}
+
+    virtual ~Planet();
 private:
     sf::Vector3f m3DPos;
     float m3DRadius;
     float mMass;
-    sf::Texture mTexture;
 };
 
 #endif // PLANET_H

@@ -74,3 +74,8 @@ void ParticleSystem::draw(sf::RenderTarget &target, sf::RenderStates states) con
     updateTexCoords();
     target.draw(mVertexArray,sf::RenderStates(&mTexture));
 }
+
+ParticleSystem::~ParticleSystem()
+{
+    Core::get().textureCache().free(&mTexture);
+}
