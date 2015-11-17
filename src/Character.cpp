@@ -1,11 +1,13 @@
 #include "Character.h"
 #include "VecUtils.h"
+#include "Path.h"
 #include <cmath>
 #include <iostream>
 #include <Core.h>
 #include <StateConstellation.h>
 
 using namespace std;
+Path Character::mPath;
 
 Character::Character(SharedPlanet planet, const PlayerID &id, sf::Color c)
     : mPlanet(planet), mFrame(0), mWalking(true), mAiming(false), mColor(c), mPV(25), mID(id)
@@ -54,21 +56,9 @@ void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
     target.draw(mSprite,states);
     if(mAiming)
     {
-
-        sf::Vector2f arrowLeft = perpendicularNorm(mArrowVec);
-        sf::Vector2f arrowRight = -rotate(arrowLeft,45/TO_DEGREES)*5.0f;
-        arrowLeft = rotate(arrowLeft,-45/TO_DEGREES) * 5.0f;
-
-        sf::Vertex line[] =
-                {
-                        mArrowStartingPoint,
-                        mArrowStartingPoint - arrowLeft,
-                        mArrowStartingPoint,
-                        mArrowStartingPoint - arrowRight,
-                        mArrowStartingPoint,
-                        mArrowStartingPoint + mArrowVec
-                };
-        target.draw(line,6,sf::Lines);
+        auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
+        mPath.create(cstate->pathForInitials(mArrowStartingPoint,mArrowVec*8.0f,16),2.f,mColor);
+        target.draw(mPath);
     }
 }
 
@@ -104,8 +94,8 @@ void Character::update(float delta_s)
                 mAiming = false;
                 auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
                 //TODO tweak factor or store it somewhere
-                sf::Vector2f speed = -mArrowVec * 8.0f;
-                SharedArrow arrow = SharedArrow(new Arrow(mArrowStartingPoint, speed, 0,id()));
+                sf::Vector2f speed = mArrowVec * 8.0f;
+                SharedArrow arrow = SharedArrow(new Arrow{mArrowStartingPoint, speed, 0,id()});
                 cstate->pushArrow(arrow);
                 break;
             }
