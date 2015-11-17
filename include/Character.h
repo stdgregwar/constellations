@@ -63,6 +63,8 @@ public:
     bool isDead();
     void hit(int pvs);
     const PlayerID& id();
+
+    virtual ~Character();
 private:
     /**
      * @brief updates texture rect to animate sprite

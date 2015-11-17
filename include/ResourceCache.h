@@ -10,6 +10,7 @@ template<class R, class I> //Resource and identifier
  */
 class ResourceProvider
 {
+public:
     /**
      * @brief abstract load for provider
      * @param identifier of resource, usually string
@@ -78,7 +79,7 @@ public:
      * @brief free resource given it's ptr
      * @param r
      */
-    void free(R* r)
+    void free(const R* r)
     {
         for(typename Resources::iterator it = mResources.begin(); it != mResources.end(); it++)
         {

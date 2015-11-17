@@ -13,8 +13,7 @@ Character::Character(SharedPlanet planet, const PlayerID &id, sf::Color c)
     : mPlanet(planet), mFrame(0), mWalking(true), mAiming(false), mColor(c), mPV(25), mID(id)
 {
     setPhi(0);
-    mTex.loadFromFile("data/chara_w_6.png");
-    mSprite.setTexture(mTex);
+    mSprite.setTexture(*Core::get().textureCache().get("data/chara_w_6.png"));
     mSprite.setOrigin(9,28);
     mSprite.setTextureRect({0,0,18,30});
     mSprite.setColor(mColor);
@@ -143,4 +142,9 @@ bool Character::collideWith(const sf::Vector2f& p) const
 const PlayerID& Character::id()
 {
     return mID;
+}
+
+Character::~Character()
+{
+    Core::get().textureCache().free(mSprite.getTexture());
 }
