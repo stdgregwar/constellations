@@ -3,6 +3,7 @@
 
 #include <GameState.h>
 #include "ParticleSystem.h"
+#include "Widget.h"
 
 class StateTitleScreen : public GameState
 {
@@ -51,9 +52,9 @@ private:
     sf::Font mTitleFont;
     sf::Font mFont;
     sf::Text mTitle;
-    sf::Text mStartText;
     sf::Text mExitText;
     ParticleSystem mBackground;
+    SharedWidget mMainWidget;
     sf::View mView;
 };
 
