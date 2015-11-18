@@ -48,7 +48,7 @@ include_directories(
 
 # Define sources and executable
 set(EXECUTABLE_NAME ${PROJECT_NAME})
-add_executable(${PROJECT_NAME} ${source_files} ${data})
+add_executable(${PROJECT_NAME} ${source_files} ${data} include/ColorUtils.h)
 
 file(COPY ${data} DESTINATION data)
 

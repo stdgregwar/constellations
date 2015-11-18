@@ -1,5 +1,6 @@
 #include "Character.h"
 #include "VecUtils.h"
+#include "ColorUtils.h"
 #include "Path.h"
 #include <cmath>
 #include <iostream>
@@ -17,6 +18,9 @@ Character::Character(SharedPlanet planet, const PlayerID &id, sf::Color c)
     mSprite.setOrigin(9,28);
     mSprite.setTextureRect({0,0,18,30});
     mSprite.setColor(mColor);
+    mCursor.setTexture(*Core::get().textureCache().get("data/cursor.png"));
+    mCursor.setOrigin(8,mSprite.getTextureRect().height+20);
+    mCursor.setColor(saturate(mColor,.7));
 }
 
 Character::Character(const Character& other)
@@ -57,10 +61,27 @@ void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
     if(mAiming)
     {
         auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
-        mPath.create(cstate->pathForInitials(mArrowStartingPoint,mArrowVec*8.0f,16),2.f,mColor,0.999);
+        mPath.create(cstate->pathForInitials(mArrowStartingPoint,mArrowVec*8.0f,16),2.f,saturate(mColor,.7),0.999);
         target.draw(mPath);
     }
+    auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
+    if(cstate->isCurrentPlayer(mID))
+    {
+        drawCursor(target,states);
+    }
 }
+
+void Character::drawCursor(sf::RenderTarget &target, sf::RenderStates states) const
+{
+    constexpr float TO_DEGREES = 180.0/3.1415;
+    if(mPlanet) {
+        mCursor.setPosition(mPlanet->getPosOn(mPhi));
+        mCursor.setRotation(mPhi*TO_DEGREES+90);
+    }
+    mCursor.setOrigin(8,mSprite.getTextureRect().height+15+sin(Core::get().time()*5)*3);
+    target.draw(mCursor);
+}
+
 
 void Character::updateFrame() const
 {
@@ -147,4 +168,5 @@ const PlayerID& Character::id()
 Character::~Character()
 {
     Core::get().textureCache().free(mSprite.getTexture());
+    Core::get().textureCache().free(mCursor.getTexture());
 }

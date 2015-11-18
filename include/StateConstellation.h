@@ -84,6 +84,8 @@ public:
 
     void nextPlayer();
 
+    bool isCurrentPlayer(const PlayerID& id)  const;
+
     std::vector<sf::Vector2f> pathForInitials(sf::Vector2f pos, sf::Vector2f speed, int precision);
 private:
     typedef std::list<SharedController> Players;

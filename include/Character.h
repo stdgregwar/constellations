@@ -52,6 +52,8 @@ public:
      */
     void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
+    void drawCursor(sf::RenderTarget &target, sf::RenderStates states) const;
+
     /**
      * @brief returns true if point p collides with character
      * @param p
@@ -84,6 +86,7 @@ private:
     int mPV;
     PlayerID mID;
     static Path mPath;
+    mutable sf::Sprite mCursor;
 };
 
 #endif // CHARACTER_H

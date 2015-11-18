@@ -260,6 +260,11 @@ void StateConstellation::nextPlayer()
     }
 }
 
+bool StateConstellation::isCurrentPlayer(const PlayerID& id)  const
+{
+    return (*mCurrentPlayer)->character()->id() == id;
+}
+
 std::vector<sf::Vector2f> StateConstellation::pathForInitials(sf::Vector2f pos, sf::Vector2f speed, int precision)
 {
     std::vector<sf::Vector2f> path;
