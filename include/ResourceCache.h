@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Font.hpp>
 #include <functional>
 
 template<class R, class I> //Templated resource type and provider
@@ -39,6 +40,10 @@ public:
             }
             return res;
         }
+    }
+
+    void put(const I& id, R* val){
+        mResources[id] = {1,val};
     }
 
     /**
@@ -92,6 +97,7 @@ private:
 
 //Useful caches :
 typedef ResourceCache<sf::Texture, std::string> TextureCache;
+typedef ResourceCache<sf::Font, std::string> FontCache;
 
 
 #endif // RESOURCECACHE_H

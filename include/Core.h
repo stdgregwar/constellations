@@ -92,8 +92,10 @@ public:
     Properties& globalDict();
 
     TextureCache& textureCache();
+    FontCache& fontCache();
 private:
     TextureCache mTextureCache;
+    FontCache mFontCache;
     sf::RenderWindow mRenderWindow;
     float mGlobalTime;
     static Core* mInstance;

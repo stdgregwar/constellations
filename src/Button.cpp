@@ -4,7 +4,7 @@
 Button::Button(const sf::Text& text, std::function<void()> c)
     : mText(text), mCallback(c)
 {
-
+    mView = Core::get().renderWindow().getDefaultView();
 }
 
 void Button::draw(sf::RenderTarget &target, sf::RenderStates states) const

@@ -48,6 +48,8 @@ public:
     virtual void pushEvent(const sf::Event & e);
 
     void launchStateConstellation();
+
+    void setPlayerCount(int count);
 private:
     sf::Font mTitleFont;
     sf::Font mFont;

@@ -2,6 +2,7 @@
 #include "Core.h"
 #include "StateConstellation.h"
 #include "Button.h"
+#include "SpinBox.h"
 #include <functional>
 
 StateTitleScreen::StateTitleScreen() : mMainWidget(new Widget())
@@ -10,6 +11,7 @@ StateTitleScreen::StateTitleScreen() : mMainWidget(new Widget())
 
 void StateTitleScreen::onBegin()
 {
+    using namespace std::placeholders;
     mFont.loadFromFile("data/zeldadxt.ttf");
     mTitleFont.loadFromFile("data/gothic.ttf");
 
@@ -27,9 +29,13 @@ void StateTitleScreen::onBegin()
     text.setPosition(1280/2-100,720/2);
 
     mMainWidget->add(new Button(text,std::bind(&StateTitleScreen::launchStateConstellation,this)));
-    text.setPosition(1280/2-100,720/2+60);
+    text.move(0,60);
+    text.setString("Players :");
+    mMainWidget->add(new SpinBox(text,2,2,8,std::bind(&StateTitleScreen::setPlayerCount,this,_1)));
+    text.move(0,60);
     text.setString(L"Quit");
     mMainWidget->add(new Button(text,[]{Core::get().endGame();}));
+
     mMainWidget->show();
 
 
@@ -87,4 +93,9 @@ void StateTitleScreen::pushEvent(const sf::Event &e)
                 Core::get().endGame();
             break;
     }
+}
+
+void StateTitleScreen::setPlayerCount(int count)
+{
+    Core::get().globalDict()["player_count"] = Property(count);
 }
