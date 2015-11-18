@@ -18,7 +18,16 @@ Core::Core() : mGlobalTime(0),
                         delete tex;
                         return nullptr;
                     }
-                })
+                }),
+    mFontCache([](const std::string& id)->sf::Font*{
+                sf::Font* font = new sf::Font();
+                if(font->loadFromFile(id))
+                    return font;
+                else{
+                    delete font;
+                    return nullptr;
+                }
+            })
 {
     mInstance = this;
 }

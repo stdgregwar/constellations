@@ -17,7 +17,7 @@ public:
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const;
     void add(SharedWidget w);
     void add(Widget* w);
-    void show();
+    virtual void show();
     void hide();
     Widgets& children();
     virtual bool onEvent(const sf::Event& e);
