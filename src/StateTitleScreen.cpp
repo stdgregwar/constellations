@@ -15,21 +15,22 @@ void StateTitleScreen::onBegin()
 
     mTitle.setFont(mTitleFont);
     mTitle.setString("Constellations");
-    sf::Text startText;
-    startText.setFont(mFont);
-    startText.setString("Start!");
-    startText.setCharacterSize(50);
+    sf::Text text;
+    text.setFont(mFont);
+    text.setString("Start!");
+    text.setCharacterSize(50);
 
     mExitText.setFont(mFont);
 
     mTitle.setPosition(300,50);
     mTitle.setCharacterSize(156);
-    startText.setPosition(1280/2-100,720/2);
+    text.setPosition(1280/2-100,720/2);
 
-    mMainWidget->add(new Button(startText,std::bind(&StateTitleScreen::launchStateConstellation,this)));
-    startText.setPosition(1280/2-100,720/2+60);
-    startText.setString(L"Quit");
-    mMainWidget->add(new Button(startText,[]{Core::get().endGame();}));
+    mMainWidget->add(new Button(text,std::bind(&StateTitleScreen::launchStateConstellation,this)));
+    text.setPosition(1280/2-100,720/2+60);
+    text.setString(L"Quit");
+    mMainWidget->add(new Button(text,[]{Core::get().endGame();}));
+    mMainWidget->show();
 
 
     mBackground.setTexture(Core::get().textureCache().get("data/stars_w_4.png"),4);
