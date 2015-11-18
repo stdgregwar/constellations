@@ -1,10 +1,11 @@
 #include "StateTitleScreen.h"
 #include "Core.h"
 #include "StateConstellation.h"
+#include "Button.h"
+#include <functional>
 
-StateTitleScreen::StateTitleScreen()
+StateTitleScreen::StateTitleScreen() : mMainWidget(new Widget())
 {
-
 }
 
 void StateTitleScreen::onBegin()
@@ -14,17 +15,25 @@ void StateTitleScreen::onBegin()
 
     mTitle.setFont(mTitleFont);
     mTitle.setString("Constellations");
-    mStartText.setFont(mFont);
-    mStartText.setString("Start!");
-    mStartText.setCharacterSize(50);
+    sf::Text text;
+    text.setFont(mFont);
+    text.setString("Start!");
+    text.setCharacterSize(50);
 
     mExitText.setFont(mFont);
 
     mTitle.setPosition(300,50);
     mTitle.setCharacterSize(156);
-    mStartText.setPosition(1280/2-100,720/2);
+    text.setPosition(1280/2-100,720/2);
 
-    mBackground.setTexture(*Core::get().textureCache().get("data/stars_w_4.png"),4);
+    mMainWidget->add(new Button(text,std::bind(&StateTitleScreen::launchStateConstellation,this)));
+    text.setPosition(1280/2-100,720/2+60);
+    text.setString(L"Quit");
+    mMainWidget->add(new Button(text,[]{Core::get().endGame();}));
+    mMainWidget->show();
+
+
+    mBackground.setTexture(Core::get().textureCache().get("data/stars_w_4.png"),4);
     mBackground.uniformDistribution({0,0,1280,720}, 150);
     mView = Core::get().renderWindow().getDefaultView();
 }
@@ -62,12 +71,13 @@ void StateTitleScreen::launchStateConstellation()
 void StateTitleScreen::draw(sf::RenderTarget &target)
 {
     target.draw(mBackground);
+    target.draw(*mMainWidget.get());
     target.draw(mTitle);
-    target.draw(mStartText);
 }
 
 void StateTitleScreen::pushEvent(const sf::Event &e)
 {
+    mMainWidget->pushEvent(e);
     switch(e.type)
     {
         case sf::Event::KeyReleased:
@@ -75,25 +85,6 @@ void StateTitleScreen::pushEvent(const sf::Event &e)
                 launchStateConstellation();
             if(e.key.code == sf::Keyboard::Escape)
                 Core::get().endGame();
-            break;
-        case sf::Event::MouseButtonReleased:
-        {
-            sf::Vector2f mapPos = Core::get().renderWindow().mapPixelToCoords({e.mouseButton.x,e.mouseButton.y},mView);
-            if(mStartText.getGlobalBounds().contains(mapPos))
-                launchStateConstellation();
-            break;
-        }
-        case sf::Event::MouseMoved:
-        {
-            sf::Vector2f mapPos = Core::get().renderWindow().mapPixelToCoords({e.mouseMove.x,e.mouseMove.y},mView);
-            if(mStartText.getGlobalBounds().contains(mapPos))
-                mStartText.setColor(sf::Color::Yellow);
-            else
-                mStartText.setColor(sf::Color::White);
-            break;
-        }
-        case sf::Event::Resized:
-            mView = Core::get().renderWindow().getDefaultView();
             break;
     }
 }

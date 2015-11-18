@@ -16,10 +16,7 @@ StateConstellation::StateConstellation() :
 
 void StateConstellation::onBegin()
 {
-
-    sf::Texture tex;
-    tex.loadFromFile("data/stars_w_4.png");
-    mBackground.setTexture(tex,4);
+    mBackground.setTexture(Core::get().textureCache().get("data/stars_w_4.png"),4);
     mBackground.uniformDistribution({-1280,-720,1280*2,720*2},500);
 
     mPlanets.push_back(SharedPlanet(new Planet({-100,80,0},1,25)));

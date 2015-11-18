@@ -14,13 +14,13 @@ void ParticleSystem::uniformDistribution(sf::FloatRect rect, unsigned count)
     default_random_engine gen;
     uniform_real_distribution<float> vertical(rect.top,rect.top+rect.height);
     uniform_real_distribution<float> horizontal(rect.left,rect.left+rect.width);
-    uniform_real_distribution<float> size(mTexture.getSize().y*0.5,mTexture.getSize().y*2);
+    uniform_real_distribution<float> size(mTexture->getSize().y*0.5,mTexture->getSize().y*2);
     uniform_real_distribution<float> phase(0,4);
     mParticles.reserve(count);
     mVertexArray.resize(count*6);
     for(int i = 0; i < count; i++)
     {
-        float s = mTexture.getSize().y*2;
+        float s = mTexture->getSize().y*2;
         sf::FloatRect r(horizontal(gen),vertical(gen),s,s);
 
         /**
@@ -47,12 +47,12 @@ void ParticleSystem::uniformDistribution(sf::FloatRect rect, unsigned count)
 void ParticleSystem::updateTexCoords() const
 {
     float time = Core::get().time();
-    float frameWidth = mTexture.getSize().x/mFrames;
+    float frameWidth = mTexture->getSize().x/mFrames;
     for(Particle& p : mParticles)
     {
         int frame = int(time+p.phase)%mFrames;
 
-        sf::FloatRect uv(frame*frameWidth,0,frameWidth,mTexture.getSize().y);
+        sf::FloatRect uv(frame*frameWidth,0,frameWidth,mTexture->getSize().y);
 
         p.vertices[0].texCoords = {uv.left,uv.top}; //First triangle
         p.vertices[1].texCoords = {uv.left,uv.top+uv.height};
@@ -63,7 +63,7 @@ void ParticleSystem::updateTexCoords() const
     }
 }
 
-void ParticleSystem::setTexture(const sf::Texture& tex, int frames)
+void ParticleSystem::setTexture(const sf::Texture* tex, int frames)
 {
     mTexture = tex;
     mFrames = frames;
@@ -72,10 +72,10 @@ void ParticleSystem::setTexture(const sf::Texture& tex, int frames)
 void ParticleSystem::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     updateTexCoords();
-    target.draw(mVertexArray,sf::RenderStates(&mTexture));
+    target.draw(mVertexArray,sf::RenderStates(mTexture));
 }
 
 ParticleSystem::~ParticleSystem()
 {
-    Core::get().textureCache().free(&mTexture);
+    Core::get().textureCache().free(mTexture);
 }
