@@ -3,21 +3,8 @@
 
 #include <string>
 #include <map>
-
-template<class R, class I> //Resource and identifier
-/**
- * @brief Abstract class for loading resources of type R given an identifier of type I
- */
-class ResourceProvider
-{
-public:
-    /**
-     * @brief abstract load for provider
-     * @param identifier of resource, usually string
-     * @return ptr to resource or nullptr if resource could'nt be found
-     */
-    virtual R* load(const I& id) = 0;
-};
+#include <SFML/Graphics/Texture.hpp>
+#include <functional>
 
 template<class R, class I> //Templated resource type and provider
 /**
@@ -32,11 +19,7 @@ class ResourceCache
     };
     typedef std::map<I,Resource> Resources;
 public:
-    /**
-     * @brief Init resource cache with given provider, take ptr ownership
-     * @param provider
-     */
-    ResourceCache(ResourceProvider<R,I>* provider) : mProvider(provider) {}
+    ResourceCache(std::function<R*(const I&)> loader) : mLoader(loader) {}
 
     /**
      * @brief getResource with given ID
@@ -50,7 +33,7 @@ public:
             it->second.refcount++;
             return it->second.ptr;
         } else {
-            R* res = mProvider->load(id);
+            R* res = mLoader(id); //Load res using given function
             if(res) { //Add only if not nullptr
                 mResources[id] = {1,res};
             }
@@ -100,14 +83,15 @@ public:
         {
             delete it->second.ptr;
         }
-        delete mProvider;
     }
 
 private:
     Resources mResources;
-    ResourceProvider<R,I>* mProvider;
+    std::function<R*(const I&)> mLoader;
 };
 
+//Useful caches :
+typedef ResourceCache<sf::Texture, std::string> TextureCache;
 
 
 #endif // RESOURCECACHE_H

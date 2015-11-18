@@ -9,7 +9,16 @@ using namespace std;
 
 Core* Core::mInstance = nullptr;
 
-Core::Core() : mGlobalTime(0), mTextureCache(new TextureProvider())
+Core::Core() : mGlobalTime(0),
+    mTextureCache([](const std::string& id)->sf::Texture*{
+                    sf::Texture* tex = new sf::Texture();
+                    if(tex->loadFromFile(id))
+                        return tex;
+                    else{
+                        delete tex;
+                        return nullptr;
+                    }
+                })
 {
     mInstance = this;
 }

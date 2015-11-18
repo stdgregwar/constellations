@@ -8,7 +8,7 @@ class ParticleSystem : public sf::Drawable
 public:
     ParticleSystem();
     void uniformDistribution(sf::FloatRect rect, unsigned count);
-    void setTexture(const sf::Texture& tex, int frames);
+    void setTexture(const sf::Texture* tex, int frames);
     void updateTexCoords() const;
     void draw(sf::RenderTarget &target, sf::RenderStates states) const;
     virtual ~ParticleSystem();
@@ -21,7 +21,7 @@ private:
 
     sf::VertexArray mVertexArray;
     mutable std::vector<Particle> mParticles;
-    sf::Texture mTexture;
+    const sf::Texture* mTexture;
     int mFrames;
 };
 

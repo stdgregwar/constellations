@@ -24,7 +24,7 @@ void StateTitleScreen::onBegin()
     mTitle.setCharacterSize(156);
     mStartText.setPosition(1280/2-100,720/2);
 
-    mBackground.setTexture(*Core::get().textureCache().get("data/stars_w_4.png"),4);
+    mBackground.setTexture(Core::get().textureCache().get("data/stars_w_4.png"),4);
     mBackground.uniformDistribution({0,0,1280,720}, 150);
     mView = Core::get().renderWindow().getDefaultView();
 }

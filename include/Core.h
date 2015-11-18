@@ -4,7 +4,6 @@
 #include <SFML/Graphics.hpp>
 #include <GameState.h>
 #include "Properties.h"
-#include "TextureProvider.h"
 #include "ResourceCache.h"
 
 /**
