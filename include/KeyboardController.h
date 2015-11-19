@@ -20,8 +20,7 @@ private:
     enum STATE
     {
         AIM,
-        MOVE,
-        WAITING
+        MOVE
     };
 
     bool pressKey(sf::Keyboard::Key key);

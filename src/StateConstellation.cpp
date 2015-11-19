@@ -203,6 +203,8 @@ void StateConstellation::rotEvent(const sf::Event &e)
         mMousePos = {e.mouseMove.x,e.mouseMove.y};
 }
 
+void StateConstellation::waitingEvent(const sf::Event &e) { }
+
 sf::Vector2f StateConstellation::getGravFieldAt(const sf::Vector2f &p)
 {
     sf::Vector2f field;
@@ -233,7 +235,8 @@ SharedCharacter StateConstellation::collideWithCharacter(const sf::Vector2f &p)
 
 void StateConstellation::pushArrow(SharedArrow a)
 {
-    a->setCallback(std::bind(&StateConstellation::nextPlayer, this));
+    mIState = {nullptr,&StateConstellation::waitingEvent};
+    a->setCallback(std::bind(&StateConstellation::onArrowDecayed, this));
     mArrows.push_back(a);
 }
 
@@ -267,6 +270,12 @@ void StateConstellation::nextPlayer()
 bool StateConstellation::isCurrentPlayer(const PlayerID& id)  const
 {
     return (*mCurrentPlayer)->character()->id() == id;
+}
+
+void StateConstellation::onArrowDecayed()
+{
+    mIState = {nullptr,&StateConstellation::defaultEvent};
+    nextPlayer();
 }
 
 std::vector<sf::Vector2f> StateConstellation::pathForInitials(sf::Vector2f pos, sf::Vector2f speed, int precision)

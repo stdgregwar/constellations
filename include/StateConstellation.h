@@ -50,6 +50,7 @@ public:
 
     //Events methods
     void rotEvent(const sf::Event& e);
+    void waitingEvent(const sf::Event &e);
     void defaultEvent(const sf::Event& e);
 
     /**
@@ -85,6 +86,8 @@ public:
     void nextPlayer();
 
     bool isCurrentPlayer(const PlayerID& id)  const;
+
+    void onArrowDecayed();
 
     std::vector<sf::Vector2f> pathForInitials(sf::Vector2f pos, sf::Vector2f speed, int precision);
 private:

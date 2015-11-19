@@ -71,12 +71,12 @@ bool Arrow::hasTimeOut() const
 
 void Arrow::onPut() const
 {
-    if(mCallback) mCallback;
+    if(mCallback) mCallback();
 }
 
 void Arrow::onTimeOut() const
 {
-    if(mCallback) mCallback;
+    if(mCallback) mCallback();
 }
 
 void Arrow::setCallback(std::function<void()> callback)
