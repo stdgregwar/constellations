@@ -161,6 +161,8 @@ Property& Property::operator=(const Property& other)
 
 Property& Property::operator=(const float & f)
 {
+    if(mType == EMPTY)
+        mType = FLOAT;
     if(mType == FLOAT)
         mFloat = f;
     else if(mType == INT)
@@ -173,6 +175,8 @@ Property& Property::operator=(const float & f)
 
 Property& Property::operator=(const double & d)
 {
+    if(mType == EMPTY)
+        mType = FLOAT;
     if(mType == FLOAT)
         mFloat = d;
     else if(mType == INT)
@@ -184,6 +188,8 @@ Property& Property::operator=(const double & d)
 
 Property& Property::operator=(const int& i)
 {
+    if(mType == EMPTY)
+        mType = INT;
     if(mType == FLOAT)
         mFloat = i;
     else if(mType == INT)
@@ -195,6 +201,8 @@ Property& Property::operator=(const int& i)
 
 Property& Property::operator=(const bool& b)
 {
+    if(mType == EMPTY)
+        mType = BOOL;
     if(mType == BOOL)
         mBool = b;
     else
@@ -204,6 +212,11 @@ Property& Property::operator=(const bool& b)
 
 Property& Property::operator=(const std::string& s)
 {
+    if(mType == EMPTY)
+    {
+        mType = STRING;
+        allocateString();
+    }
     if(mType == STRING)
         mString = s;
     else
@@ -213,6 +226,8 @@ Property& Property::operator=(const std::string& s)
 
 Property& Property::operator =(const sf::Vector2f& vec2)
 {
+    if(mType == EMPTY)
+        mType = VEC2;
     if(mType == VEC2)
         mVec2 = vec2;
     else
@@ -222,6 +237,8 @@ Property& Property::operator =(const sf::Vector2f& vec2)
 
 Property& Property::operator=(const sf::FloatRect& rect)
 {
+    if(mType == EMPTY)
+        mType = RECT;
     if(mType == RECT)
         mFloatRect = rect;
     else
@@ -231,6 +248,8 @@ Property& Property::operator=(const sf::FloatRect& rect)
 
 Property& Property::operator=(const sf::IntRect& rect)
 {
+    if(mType == EMPTY)
+        mType = RECT;
     if(mType == RECT)
     {
         mFloatRect.top = rect.top;

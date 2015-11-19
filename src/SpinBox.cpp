@@ -10,6 +10,7 @@ SpinBox::SpinBox(sf::Text caption, int basevalue, int min, int max, std::functio
 {
     mValueText.setString(to_string(mValue));
     mValueText.move(mCaption.getLocalBounds().width+60,0);
+    mCallback(mValue);
 }
 
 void SpinBox::show()
@@ -36,7 +37,7 @@ void SpinBox::draw(sf::RenderTarget &target, sf::RenderStates states) const
 
 void SpinBox::setValue(int val)
 {
-
+    //TODO
 }
 
 void SpinBox::increment()

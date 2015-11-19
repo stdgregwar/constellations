@@ -66,10 +66,6 @@ void StateTitleScreen::onPause()
 
 void StateTitleScreen::launchStateConstellation()
 {
-    Core::get().globalDict().add({
-                                     {"uneProp", 0.123},
-                                     {"une string", "Voila"}
-                                 });
     setVisible(false);
     Core::get().pushState(SharedState(new StateConstellation()));
 }
@@ -97,5 +93,5 @@ void StateTitleScreen::pushEvent(const sf::Event &e)
 
 void StateTitleScreen::setPlayerCount(int count)
 {
-    Core::get().globalDict()["player_count"] = Property(count);
+    Core::get().globalDict()["player_count"] = count;
 }
