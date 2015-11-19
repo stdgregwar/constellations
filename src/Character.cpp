@@ -11,7 +11,7 @@ using namespace std;
 Path Character::mPath;
 
 Character::Character(SharedPlanet planet, const PlayerID &id, sf::Color c)
-    : mPlanet(planet), mFrame(0), mWalking(true), mAiming(false), mColor(c), mPV(25), mID(id)
+    : mPlanet(planet), mFrame(0), mWalking(true), mAiming(false), mColor(c), mPV(100), mID(id), mLastHitTime(0)
 {
     setPhi(0);
     mSprite.setTexture(*Core::get().textureCache().get("data/chara_w_6.png"));
@@ -141,7 +141,11 @@ bool Character::isDead()
 
 void Character::hit(int pvs)
 {
-    mPV -= pvs;
+    if(Core::get().time() - mLastHitTime > 0.5f)
+    {
+        mPV -= pvs;
+        mLastHitTime = Core::get().time();
+    }
 }
 
 void Character::queueAction(const Action &a)

@@ -87,6 +87,7 @@ private:
     PlayerID mID;
     static Path mPath;
     mutable sf::Sprite mCursor;
+    float mLastHitTime;
 };
 
 #endif // CHARACTER_H
