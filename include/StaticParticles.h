@@ -3,15 +3,15 @@
 
 #include <SFML/Graphics.hpp>
 
-class ParticleSystem : public sf::Drawable
+class StaticParticles : public sf::Drawable
 {
 public:
-    ParticleSystem();
+    StaticParticles();
     void uniformDistribution(sf::FloatRect rect, unsigned count);
     void setTexture(const sf::Texture* tex, int frames);
     void updateTexCoords() const;
     void draw(sf::RenderTarget &target, sf::RenderStates states) const;
-    virtual ~ParticleSystem();
+    virtual ~StaticParticles();
 private:
     struct Particle
     {

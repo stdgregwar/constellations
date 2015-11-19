@@ -1,15 +1,15 @@
-#include "ParticleSystem.h"
+#include "StaticParticles.h"
 #include <random>
 #include "Core.h"
 
 using namespace std;
 
-ParticleSystem::ParticleSystem()
+StaticParticles::StaticParticles()
 {
     mVertexArray.setPrimitiveType(sf::Triangles);
 }
 
-void ParticleSystem::uniformDistribution(sf::FloatRect rect, unsigned count)
+void StaticParticles::uniformDistribution(sf::FloatRect rect, unsigned count)
 {
     default_random_engine gen;
     uniform_real_distribution<float> vertical(rect.top,rect.top+rect.height);
@@ -44,7 +44,7 @@ void ParticleSystem::uniformDistribution(sf::FloatRect rect, unsigned count)
     }
 }
 
-void ParticleSystem::updateTexCoords() const
+void StaticParticles::updateTexCoords() const
 {
     float time = Core::get().time();
     float frameWidth = mTexture->getSize().x/mFrames;
@@ -63,19 +63,19 @@ void ParticleSystem::updateTexCoords() const
     }
 }
 
-void ParticleSystem::setTexture(const sf::Texture* tex, int frames)
+void StaticParticles::setTexture(const sf::Texture* tex, int frames)
 {
     mTexture = tex;
     mFrames = frames;
 }
 
-void ParticleSystem::draw(sf::RenderTarget &target, sf::RenderStates states) const
+void StaticParticles::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     updateTexCoords();
     target.draw(mVertexArray,sf::RenderStates(mTexture));
 }
 
-ParticleSystem::~ParticleSystem()
+StaticParticles::~StaticParticles()
 {
     Core::get().textureCache().free(mTexture);
 }

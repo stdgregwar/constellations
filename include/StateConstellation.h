@@ -6,7 +6,7 @@
 #include "Planet.h"
 #include "Controller.h"
 #include "Arrow.h"
-#include "ParticleSystem.h"
+#include "StaticParticles.h"
 #include <list>
 #include <vector>
 
@@ -100,7 +100,7 @@ private:
     Players mPlayers;
     Players::iterator mCurrentPlayer;
     std::list<SharedArrow> mArrows;
-    ParticleSystem mBackground;
+    StaticParticles mBackground;
 };
 
 #endif // STATECONSTELLATION_H

@@ -2,7 +2,7 @@
 #define STATETITLESCREEN_H
 
 #include <GameState.h>
-#include "ParticleSystem.h"
+#include "StaticParticles.h"
 #include "Widget.h"
 
 class StateTitleScreen : public GameState
@@ -55,7 +55,7 @@ private:
     sf::Font mFont;
     sf::Text mTitle;
     sf::Text mExitText;
-    ParticleSystem mBackground;
+    StaticParticles mBackground;
     SharedWidget mMainWidget;
     sf::View mView;
 };
