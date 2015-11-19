@@ -23,14 +23,6 @@ void StaticParticles::uniformDistribution(sf::FloatRect rect, unsigned count)
         float s = mTexture->getSize().y*2;
         sf::FloatRect r(horizontal(gen),vertical(gen),s,s);
 
-        /**
-         * a----b
-         * |   /|
-         * |  / |
-         * | /  |
-         * c----d
-         */
-
         int j=i*6;
 
         mVertexArray[j].position = {r.left,r.top}; //First triangle

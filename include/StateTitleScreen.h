@@ -50,6 +50,9 @@ public:
     void launchStateConstellation();
 
     void setPlayerCount(int count);
+
+    void setPlayerPv(int pv);
+
 private:
     sf::Font mTitleFont;
     sf::Font mFont;

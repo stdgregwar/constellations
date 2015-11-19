@@ -124,7 +124,6 @@ void StateConstellation::defaultUpdate(float delta_s)
     for(SharedArrow& a : mArrows)
     {
         a->update(delta_s);
-        //TODO add collision support
     }
 
     /*mPlayers.remove_if(
@@ -145,6 +144,14 @@ void StateConstellation::defaultUpdate(float delta_s)
                 mCurrentPlayer == mPlayers.end();
                 onEquality();
             }
+        }
+    }
+
+    for(Arrows::iterator it = mArrows.begin(); it != mArrows.end(); it++)
+    {
+        (*it)->isLastDead((*mCurrentPlayer)->character()->id(),std::bind(std::bind(&StateConstellation::nextPlayer, this)));
+        if((*it)->hasTimeOut() && !(*it)->isPut()) {
+            mArrows.erase(it++);
         }
     }
 
@@ -174,7 +181,7 @@ void StateConstellation::pushEvent(const sf::Event &e)
 {
     if(mCurrentPlayer != mPlayers.end() && mPlayers.size()) {
         if((*mCurrentPlayer)->onEvent(e)){
-            nextPlayer();
+//            nextPlayer();
         }
     }
     if(mIState.ef)

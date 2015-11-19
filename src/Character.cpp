@@ -11,7 +11,7 @@ using namespace std;
 Path Character::mPath;
 
 Character::Character(SharedPlanet planet, const PlayerID &id, sf::Color c)
-    : mPlanet(planet), mFrame(0), mWalking(true), mAiming(false), mColor(c), mPV(100), mID(id), mLastHitTime(0)
+    : mPlanet(planet), mFrame(0), mWalking(true), mAiming(false), mColor(c), mPV(Core::get().globalDict()["player_pv"].toInt()*50), mID(id), mLastHitTime(0)
 {
     setPhi(0);
     mSprite.setTexture(*Core::get().textureCache().get("data/chara_w_6.png"));
@@ -22,6 +22,7 @@ Character::Character(SharedPlanet planet, const PlayerID &id, sf::Color c)
     mCursor.setOrigin(8,mSprite.getTextureRect().height+20);
     mCursor.setColor(saturate(mColor,.7));
 }
+
 
 Character::Character(const Character& other)
     : mSprite(other.mSprite), mPlanet(other.mPlanet), mFrame(0), mWalking(other.mWalking), mAiming(other.mAiming), mArrowStartingPoint{0,0}, mPV(other.mPV)
@@ -57,11 +58,13 @@ void Character::updatePos()
 void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     updateFrame();
+    //If invulnerable, make sprite blink
+    mSprite.setColor((!isVulnerable() && int(ceilf(Core::get().time()*6.f))%2==0) ?  sf::Color(mColor.r,mColor.g,mColor.b,0) : mColor);
     target.draw(mSprite);
     if(mAiming)
     {
         auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
-        mPath.create(cstate->pathForInitials(mArrowStartingPoint,mArrowVec*8.0f,16),2.f,saturate(mColor,.7),0.999);
+        mPath.create(cstate->pathForInitials(mArrowStartingPoint,mArrowVec*8.0f,2048),2.f,saturate(mColor,.7),0.999);
         target.draw(mPath);
     }
     auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
@@ -117,7 +120,7 @@ void Character::update(float delta_s)
                 auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
                 //TODO tweak factor or store it somewhere
                 sf::Vector2f speed = mArrowVec * 8.0f;
-                SharedArrow arrow = SharedArrow(new Arrow{mArrowStartingPoint, speed, 0,id()});
+                SharedArrow arrow = SharedArrow(new Arrow{mArrowStartingPoint, speed,id()});
                 cstate->pushArrow(arrow);
                 break;
             }
@@ -134,18 +137,23 @@ void Character::update(float delta_s)
     rot(mActionSpeed.x*delta_s);
 }
 
-bool Character::isDead()
+bool Character::isDead() const
 {
     return mPV <= 0;
 }
 
 void Character::hit(int pvs)
 {
-    if(Core::get().time() - mLastHitTime > 0.5f)
+    if(isVulnerable())
     {
         mPV -= pvs;
         mLastHitTime = Core::get().time();
     }
+}
+
+bool Character::isVulnerable() const
+{
+    return Core::get().time() - mLastHitTime > 1.f;
 }
 
 void Character::queueAction(const Action &a)
@@ -164,7 +172,7 @@ bool Character::collideWith(const sf::Vector2f& p) const
     return mSprite.getGlobalBounds().contains(p);
 }
 
-const PlayerID& Character::id()
+const PlayerID& Character::id() const
 {
     return mID;
 }

@@ -10,8 +10,8 @@
 #include <iostream>
 using namespace std;
 
-Arrow::Arrow(const sf::Vector2f &pos, const sf::Vector2f &speed, float timeStamp, const PlayerID& ownerID)
-    : mPos(pos), mSpeed(speed), mTimeStamp(timeStamp), mOwnerID(ownerID)
+Arrow::Arrow(const sf::Vector2f &pos, const sf::Vector2f &speed, const PlayerID& ownerID)
+    : mPos(pos), mSpeed(speed), mTimeStamp(Core::get().time()), mOwnerID(ownerID), mPut(false)
 {
     mTexture.loadFromFile("data/arrow.png");
     mSprite.setTexture(mTexture);
@@ -36,6 +36,7 @@ bool Arrow::update(float delta_s)
         if(mPlanet) {
             mSprite.setTextureRect({0,0,10,5});
             mPhi = angle(mPos-mPlanet->getPosition());
+            mPut = true;
         }
         mSpeed += cstate->getGravFieldAt(mPos)*delta_s*1.f;
         mPos += mSpeed*delta_s;
@@ -55,4 +56,24 @@ void Arrow::draw(sf::RenderTarget &target, sf::RenderStates states) const
 const sf::Vector2f& Arrow::getPos()
 {
     return mPos;
+}
+
+bool Arrow::hasTimeOut() const
+{
+    return Core::get().time() - mTimeStamp > 15.f;
+}
+
+bool Arrow::isPut() const
+{
+    return mPut;
+}
+
+bool Arrow::isLastDead(PlayerID id,std::function<void()> callback)
+{
+    if((hasTimeOut() || isPut())&& id == mOwnerID)
+    {
+        callback();
+        return true;
+    }
+    return false;
 }

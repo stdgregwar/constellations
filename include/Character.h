@@ -62,9 +62,10 @@ public:
 
     void queueAction(const Action& a);
 
-    bool isDead();
+    bool isDead() const;
     void hit(int pvs);
-    const PlayerID& id();
+    const PlayerID& id() const;
+    bool isVulnerable() const;
 
     virtual ~Character();
 private:

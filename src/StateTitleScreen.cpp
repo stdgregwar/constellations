@@ -33,6 +33,9 @@ void StateTitleScreen::onBegin()
     text.setString("Players :");
     mMainWidget->add(new SpinBox(text,2,2,8,std::bind(&StateTitleScreen::setPlayerCount,this,_1)));
     text.move(0,60);
+    text.setString("Life points :");
+    mMainWidget->add(new SpinBox(text,1,1,10,std::bind(&StateTitleScreen::setPlayerPv,this,_1)));
+    text.move(0,60);
     text.setString(L"Quit");
     mMainWidget->add(new Button(text,[]{Core::get().endGame();}));
 
@@ -95,4 +98,9 @@ void StateTitleScreen::pushEvent(const sf::Event &e)
 void StateTitleScreen::setPlayerCount(int count)
 {
     Core::get().globalDict()["player_count"] = count;
+}
+
+void StateTitleScreen::setPlayerPv(int pv)
+{
+    Core::get().globalDict()["player_pv"] = pv;
 }

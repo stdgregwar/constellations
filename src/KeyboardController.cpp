@@ -80,14 +80,18 @@ bool KeyboardController::onEvent(const sf::Event& e)
                 if(mOldMousePos != sf::Vector2f{e.mouseButton.x,e.mouseButton.y}){
                     a.type = Action::THROW;
                 }
-                mState = MOVE;
+                mState = WAITING;
                 break;
             }
 
             a.type = Action::AIM;
             break;
         }
-
+        case STATE::WAITING:
+        {
+            mState = MOVE;
+            break;
+        }
     }
 
     if(a.type != Action::NONE)
