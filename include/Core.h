@@ -55,6 +55,12 @@ public:
     SharedState popState();
 
     /**
+     * @brief pop state on next tick
+     * @return
+     */
+    SharedState delayedPop();
+
+    /**
      * @brief get currentState
      * @return
      */
@@ -94,6 +100,7 @@ public:
     TextureCache& textureCache();
     FontCache& fontCache();
 private:
+    void popScheduled();
     TextureCache mTextureCache;
     FontCache mFontCache;
     sf::RenderWindow mRenderWindow;
@@ -101,6 +108,7 @@ private:
     static Core* mInstance;
     SharedState mStateStack;
     Properties mGlobalDict;
+    int mScheduledPops;
 };
 
 #endif // CORE_H

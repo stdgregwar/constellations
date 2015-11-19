@@ -240,6 +240,8 @@ void StateConstellation::onNewRound()
 void StateConstellation::onWin()
 {
     cout << "Player Won" << endl;
+    Core::get().delayedPop();
+    //Core::get().popState();
 }
 
 void StateConstellation::onEquality()

@@ -27,7 +27,8 @@ Core::Core() : mGlobalTime(0),
                     delete font;
                     return nullptr;
                 }
-            })
+            }),
+    mScheduledPops(0)
 {
     mInstance = this;
 }
@@ -35,6 +36,12 @@ Core::Core() : mGlobalTime(0),
 TextureCache& Core::textureCache()
 {
     return mTextureCache;
+}
+
+void Core::popScheduled()
+{
+    for(;mScheduledPops>0; --mScheduledPops)
+        popState();
 }
 
 bool Core::init(sf::Vector2u size)
@@ -56,6 +63,8 @@ bool Core::start()
     sf::Clock clk;
     while(mRenderWindow.isOpen())
     {
+        //Pop states if needed
+        popScheduled();
         for(sf::Event e; mRenderWindow.pollEvent(e);)
         {
             if(mStateStack)
@@ -101,13 +110,23 @@ void Core::replaceState(SharedState state)
     pushState(state);
 }
 
+SharedState Core::delayedPop()
+{
+    mScheduledPops++;
+    return mStateStack;
+}
+
 SharedState Core::popState()
 {
     SharedState poped = mStateStack;
     mStateStack = poped->child();
-    if(mStateStack)
-        mStateStack->onResume();
     poped->onEnd();
+    if(mStateStack)
+    {
+        mStateStack->onResume();
+        mStateStack->setVisible(true);
+    }
+
     return poped;
 }
 

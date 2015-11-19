@@ -51,7 +51,7 @@ void StateTitleScreen::update(float delta_s)
 
 void StateTitleScreen::onResume()
 {
-
+    mView = Core::get().renderWindow().getDefaultView();
 }
 
 void StateTitleScreen::onEnd()
@@ -72,6 +72,7 @@ void StateTitleScreen::launchStateConstellation()
 
 void StateTitleScreen::draw(sf::RenderTarget &target)
 {
+    target.setView(mView);
     target.draw(mBackground);
     target.draw(*mMainWidget.get());
     target.draw(mTitle);
