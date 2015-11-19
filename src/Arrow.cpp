@@ -11,7 +11,7 @@
 using namespace std;
 
 Arrow::Arrow(const sf::Vector2f &pos, const sf::Vector2f &speed, const PlayerID& ownerID)
-    : mPos(pos), mSpeed(speed), mTimeStamp(Core::get().time()), mOwnerID(ownerID), mPut(false)
+    : mPos(pos), mSpeed(speed), mTimeStamp(Core::get().time()), mOwnerID(ownerID), mPut(false), mCallback(nullptr)
 {
     mTexture.loadFromFile("data/arrow.png");
     mSprite.setTexture(mTexture);
@@ -37,6 +37,7 @@ bool Arrow::update(float delta_s)
             mSprite.setTextureRect({0,0,10,5});
             mPhi = angle(mPos-mPlanet->getPosition());
             mPut = true;
+            onPut();
         }
         mSpeed += cstate->getGravFieldAt(mPos)*delta_s*1.f;
         mPos += mSpeed*delta_s;
@@ -60,20 +61,25 @@ const sf::Vector2f& Arrow::getPos()
 
 bool Arrow::hasTimeOut() const
 {
-    return Core::get().time() - mTimeStamp > 15.f;
-}
-
-bool Arrow::isPut() const
-{
-    return mPut;
-}
-
-bool Arrow::isLastDead(PlayerID id,std::function<void()> callback)
-{
-    if((hasTimeOut() || isPut())&& id == mOwnerID)
+    if(Core::get().time() - mTimeStamp > 15.f && !mPut)
     {
-        callback();
+        onTimeOut();
         return true;
     }
     return false;
+}
+
+void Arrow::onPut() const
+{
+    if(mCallback) mCallback;
+}
+
+void Arrow::onTimeOut() const
+{
+    if(mCallback) mCallback;
+}
+
+void Arrow::setCallback(std::function<void()> callback)
+{
+    mCallback = callback;
 }

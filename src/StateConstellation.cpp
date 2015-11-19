@@ -149,10 +149,7 @@ void StateConstellation::defaultUpdate(float delta_s)
 
     for(Arrows::iterator it = mArrows.begin(); it != mArrows.end(); it++)
     {
-        (*it)->isLastDead((*mCurrentPlayer)->character()->id(),std::bind(std::bind(&StateConstellation::nextPlayer, this)));
-        if((*it)->hasTimeOut() && !(*it)->isPut()) {
-            mArrows.erase(it++);
-        }
+        if((*it)->hasTimeOut()) mArrows.erase(it++);
     }
 
 }
@@ -236,6 +233,7 @@ SharedCharacter StateConstellation::collideWithCharacter(const sf::Vector2f &p)
 
 void StateConstellation::pushArrow(SharedArrow a)
 {
+    a->setCallback(std::bind(&StateConstellation::nextPlayer, this));
     mArrows.push_back(a);
 }
 

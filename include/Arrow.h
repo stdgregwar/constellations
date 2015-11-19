@@ -30,7 +30,9 @@ public:
     const sf::Vector2f& getPos();
     bool hasTimeOut() const;
     bool isPut() const;
-    bool isLastDead(PlayerID id,std::function<void()> callback);
+    void setCallback(std::function<void()> callback);
+    void onPut() const ;
+    void onTimeOut() const;
 private:
     PlayerID mOwnerID;
     sf::Vector2f mPos;
@@ -41,6 +43,7 @@ private:
     float mPhi;
     float mTimeStamp;
     bool mPut;
+    std::function<void()> mCallback;
 };
 
 #endif //ARROW_H

@@ -31,7 +31,6 @@ private:
     sf::Vector2f mOldMousePos;
     sf::Vector2f mMousePos;
     KeysState mKeysState;
-    void reset();
 };
 
 #endif // KEYBOARDCONTROLLER_H
