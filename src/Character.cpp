@@ -64,7 +64,7 @@ void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
     if(mAiming)
     {
         auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
-        mPath.create(cstate->pathForInitials(mArrowStartingPoint,mArrowVec*8.0f,2048),2.f,saturate(mColor,.7),0.999);
+        mPath.create(cstate->pathForInitials(mArrowStartingPoint,mArrowVec*8.0f,16),2.f,saturate(mColor,.7),0.999);
         target.draw(mPath);
     }
     auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());

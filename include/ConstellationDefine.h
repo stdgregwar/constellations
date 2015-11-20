@@ -22,8 +22,8 @@ struct ConstellationDef
 const std::vector<ConstellationDef> constellations = {
         {
                 {
-                        {{-300,-150, 0}, 0.5, 35, true, 180.f/TO_DEGREES},
-                        {{300, 150, 0}, 0.5, 35, true, 0.f/TO_DEGREES},
+                        {{-200,-150, 0}, 0.5, 35, true, 180.f/TO_DEGREES},
+                        {{200, 150, 0}, 0.5, 35, true, 0.f/TO_DEGREES},
                         {{0,0,0},2,20,false,0.f},
                         {{65,-70,0},2,30,false,0.f},
                         {{-65,70,0},2,35,false,0.f},
