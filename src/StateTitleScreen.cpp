@@ -38,9 +38,22 @@ void StateTitleScreen::onBegin()
     text.move(0,60);
     text.setString(L"Quit");
     mMainWidget->add(new Button(text,[]{Core::get().endGame();}));
-
+    text.move(0,60);
+    text.setString(L"Kaboom!");
+    mMainWidget->add(new Button(text,
+                                std::bind([](DynamicParticles* expl){expl->uniformDistribution({1280/2-100,720/2,150,150},150,{-1000,-1000,2000,2000});},&mExpl)));
     mMainWidget->show();
 
+    //using namespace DynamicParticles;
+    mExpl.setTexture(Core::get().textureCache().get("data/stars_w_4.png"),4);
+    mExpl.setFunctions({
+                      [](DynamicParticles::Particle& p,float time,float dt){p.speed*=.99f;p.pos+=p.speed*dt;},
+                           nullptr, //decay
+                           nullptr, //rotation
+                           [](const DynamicParticles::Particle& p,float time){return 2.f;}, //scale
+                           nullptr, //color
+                           nullptr //frame
+                       });
 
     mBackground.setTexture(Core::get().textureCache().get("data/stars_w_4.png"),4);
     mBackground.uniformDistribution({0,0,1280,720}, 150);
@@ -79,6 +92,7 @@ void StateTitleScreen::draw(sf::RenderTarget &target)
     target.draw(mBackground);
     target.draw(*mMainWidget.get());
     target.draw(mTitle);
+    target.draw(mExpl);
 }
 
 void StateTitleScreen::pushEvent(const sf::Event &e)
