@@ -4,8 +4,6 @@
 #include <SFML/System/Vector2.hpp>
 #include <cmath>
 
-constexpr float TO_DEGREES = 180/3.1415;
-
 inline float lengthSquared(const sf::Vector2f &vec){
     return vec.x*vec.x+vec.y*vec.y;
 }

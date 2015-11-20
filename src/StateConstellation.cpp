@@ -4,8 +4,12 @@
 
 #include <iostream>
 #include <algorithm>
+#include <Constellation.h>
+#include "IntegrationUtils.h"
+#include "ConstellationDefine.h"
 #include "Mat4.h"
 #include "KeyboardController.h"
+#include "MathUtils.h"
 
 using namespace std;
 
@@ -19,29 +23,17 @@ void StateConstellation::onBegin()
     mBackground.setTexture(Core::get().textureCache().get("data/stars_w_4.png"),4);
     mBackground.uniformDistribution({-1280,-720,1280*2,720*2},500);
 
-    mPlanets.push_back(SharedPlanet(new Planet({-100,80,0},1,25)));
-    mPlanets.push_back(SharedPlanet(new Planet({140,80,0},0.75,25)));
-    mPlanets.push_back(SharedPlanet(new Planet({0,-160,0},0.25,25)));
-    mPlayers.push_back(SharedController( //Ugliest in-place construction ever
-                           new KeyboardController(
-                               SharedCharacter(
-                                   new Character(
-                                                   mPlanets.back(),1,sf::Color(255,150,150)
-                                                   )
-                                    )
-                               )
-                           )
-                       );
-    mPlayers.push_back(SharedController( //Same same... but different
-                           new KeyboardController(
-                               SharedCharacter(
-                                   new Character(
-                                       mPlanets.front(),2,sf::Color(150,150,255))
-                                   )
-                               )
-                           )
-                       );
-    //mArrows.push_back(SharedArrow(new Arrow({100,0},{0,100},0)));
+    Constellation constellation;
+    int numbersOfMap = int(constellations.size());
+    int i = rand() % numbersOfMap;
+    int numberOfPlayers = Core::get().globalDict()["player_count"].toInt();
+    while(constellations[i].maxNumberOfPlayers < numberOfPlayers)
+    {
+        i = (i +1)%numbersOfMap;
+    }
+    constellation.buildFromConstellationDef(constellations[i],numberOfPlayers);
+    mPlanets = constellation.getPlanets();
+    mPlayers = constellation.getPlayers();
 
     //FIRST FIX
     Mat4 mat = Mat4::identity();
@@ -176,11 +168,6 @@ void StateConstellation::rotUpdate(float delta_s)
 
 void StateConstellation::pushEvent(const sf::Event &e)
 {
-    if(mCurrentPlayer != mPlayers.end() && mPlayers.size()) {
-        if((*mCurrentPlayer)->onEvent(e)){
-//            nextPlayer();
-        }
-    }
     if(mIState.ef)
         (*this.*mIState.ef)(e);
 }
@@ -193,6 +180,11 @@ void StateConstellation::defaultEvent(const sf::Event &e)
         mOldMousePos = {e.mouseButton.x,e.mouseButton.y};
         mIState = {&StateConstellation::rotUpdate,&StateConstellation::rotEvent};
     }*/
+    if(mCurrentPlayer != mPlayers.end() && mPlayers.size()) {
+        if((*mCurrentPlayer)->onEvent(e)){
+//            nextPlayer();
+        }
+    }
 }
 
 void StateConstellation::rotEvent(const sf::Event &e)
@@ -281,6 +273,7 @@ void StateConstellation::onArrowDecayed()
 std::vector<sf::Vector2f> StateConstellation::pathForInitials(sf::Vector2f pos, sf::Vector2f speed, int precision)
 {
     std::vector<sf::Vector2f> path;
+    auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
     path.reserve(precision);
     //TODO tweak
     float delta_t = 1.f/60;
@@ -290,9 +283,8 @@ std::vector<sf::Vector2f> StateConstellation::pathForInitials(sf::Vector2f pos, 
     {
         for(int j = 0; j < substeps; j++)
         {
-            sf::Vector2f acc = getGravFieldAt(pos);
-            speed += acc * udelta;
-            pos += speed * udelta;
+            using namespace std::placeholders;
+            integrateEC(pos, speed, udelta, std::bind(&StateConstellation::getGravFieldAt, cstate.get(), _1));
         }
         if(collideWithPlanet(pos))
             break;

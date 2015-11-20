@@ -1,11 +1,9 @@
-//
-// Created by raph on 10/23/15.
-//
-
 #include <StateConstellation.h>
 #include "Arrow.h"
 #include "Core.h"
 #include "VecUtils.h"
+#include "IntegrationUtils.h"
+#include "MathUtils.h"
 
 #include <iostream>
 using namespace std;
@@ -39,8 +37,8 @@ bool Arrow::update(float delta_s)
             mPut = true;
             onPut();
         }
-        mSpeed += cstate->getGravFieldAt(mPos)*delta_s*1.f;
-        mPos += mSpeed*delta_s;
+        using namespace std::placeholders;
+        integrateEC(mPos, mSpeed, delta_s, std::bind(&StateConstellation::getGravFieldAt, cstate.get(), _1));
         mSprite.setRotation(angle(mSpeed)*TO_DEGREES);
 
     }
@@ -61,7 +59,7 @@ const sf::Vector2f& Arrow::getPos()
 
 bool Arrow::hasTimeOut() const
 {
-    if(Core::get().time() - mTimeStamp > 15.f && !mPut)
+    if(Core::get().time() - mTimeStamp > 6.f && !mPut)
     {
         onTimeOut();
         return true;

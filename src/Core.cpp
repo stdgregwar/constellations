@@ -79,7 +79,7 @@ bool Core::start()
         {
             mRenderWindow.clear(sf::Color(30,10,30));
             for(int i = 0; i < substeps; i++)
-                mStateStack->update(time.asSeconds()/substeps);
+                mStateStack->update((1/60.f)/substeps);
             mStateStack->drawAll(mRenderWindow);
             mRenderWindow.display();
         }
