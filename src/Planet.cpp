@@ -9,6 +9,7 @@ Planet::Planet(const sf::Vector3f &pos, float mass, float radius) :
     //setFillColor(getColor());
     setTexture(*Core::get().textureCache().get("data/planet.png"));
     setOrigin(getTexture()->getSize().x/2,getTexture()->getSize().y/2);
+    setScale(radius/25.f,radius/25.f);
     //update2DPos();
 }
 

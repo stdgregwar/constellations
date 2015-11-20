@@ -6,14 +6,15 @@
 #include <iostream>
 #include <Core.h>
 #include <StateConstellation.h>
+#include "MathUtils.h"
 
 using namespace std;
 Path Character::mPath;
 
-Character::Character(SharedPlanet planet, const PlayerID &id, sf::Color c)
+Character::Character(SharedPlanet planet, const PlayerID &id, sf::Color c, float phi)
     : mPlanet(planet), mFrame(0), mWalking(true), mAiming(false), mColor(c), mPV(Core::get().globalDict()["player_pv"].toInt()*50), mID(id), mLastHitTime(0)
 {
-    setPhi(0);
+    setPhi(phi);
     mSprite.setTexture(*Core::get().textureCache().get("data/chara_w_6.png"));
     mSprite.setOrigin(9,28);
     mSprite.setTextureRect({0,0,18,30});
@@ -44,7 +45,6 @@ void Character::rot(float dphi)
 
 void Character::updatePos()
 {
-    constexpr float TO_DEGREES = 180.0/3.1415;
     if(mPlanet) {
         mSprite.setPosition(mPlanet->getPosOn(mPhi));
         mSprite.setRotation(mPhi*TO_DEGREES+90);
@@ -104,7 +104,7 @@ void Character::update(float delta_s)
             case Action::MOVE_X:
             {
                 mAiming = false;
-                mActionSpeed.x += a.move.distance;
+                mActionSpeed.x += a.move.distance*(25.f/mPlanet->getRadius());
                 break;
             }
             case Action::AIM:

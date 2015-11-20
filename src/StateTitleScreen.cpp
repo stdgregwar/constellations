@@ -31,7 +31,7 @@ void StateTitleScreen::onBegin()
     mMainWidget->add(new Button(text,std::bind(&StateTitleScreen::launchStateConstellation,this)));
     text.move(0,60);
     text.setString("Players :");
-    mMainWidget->add(new SpinBox(text,2,2,8,std::bind(&StateTitleScreen::setPlayerCount,this,_1)));
+    mMainWidget->add(new SpinBox(text,2,2,4,std::bind(&StateTitleScreen::setPlayerCount,this,_1)));
     text.move(0,60);
     text.setString("Life points :");
     mMainWidget->add(new SpinBox(text,1,1,10,std::bind(&StateTitleScreen::setPlayerPv,this,_1)));
