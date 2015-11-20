@@ -3,6 +3,7 @@
 
 #include <GameState.h>
 #include "StaticParticles.h"
+#include "DynamicParticles.h"
 #include "Widget.h"
 
 class StateTitleScreen : public GameState
@@ -56,6 +57,7 @@ private:
     sf::Text mTitle;
     sf::Text mExitText;
     StaticParticles mBackground;
+    DynamicParticles mExpl;
     SharedWidget mMainWidget;
     sf::View mView;
 };
