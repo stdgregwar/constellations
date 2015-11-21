@@ -23,7 +23,6 @@ void StateConstellation::onBegin()
     mBackground.setTexture(Core::get().textureCache().get("data/stars_w_4.png"),4);
     mBackground.uniformDistribution({-1280,-720,1280*2,720*2},500);
 
-
     Constellation constellation;
     int numbersOfMap = int(constellations.size());
     int i = rand() % numbersOfMap;
