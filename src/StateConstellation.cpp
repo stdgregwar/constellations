@@ -21,7 +21,6 @@ void StateConstellation::onBegin()
 
     mPlanets.push_back(SharedPlanet(new Planet({-100,80,0},1,25)));
     mPlanets.push_back(SharedPlanet(new Planet({140,80,0},0.75,25)));
-    mPlanets.push_back(SharedPlanet(new Planet({0,-160,0},0.25,25)));
     mPlayers.push_back(SharedController( //Ugliest in-place construction ever
                            new KeyboardController(
                                SharedCharacter(
@@ -41,7 +40,17 @@ void StateConstellation::onBegin()
                                )
                            )
                        );
-    //mArrows.push_back(SharedArrow(new Arrow({100,0},{0,100},0)));
+    mPlanets.push_back(SharedPlanet(new Planet({0,-160,0},0.25,25)));
+    mPlayers.push_back(SharedController( //Ugliest in-place construction ever
+                           new KeyboardController(
+                               SharedCharacter(
+                                   new Character(
+                                                   mPlanets.back(),3,sf::Color(255,150,150)
+                                                   )
+                                    )
+                               )
+                           )
+                       );
 
     //FIRST FIX
     Mat4 mat = Mat4::identity();
@@ -57,6 +66,20 @@ void StateConstellation::onBegin()
     mCurrentPlayer = mPlayers.begin();
 
 //    cout << Core::get().globalDict();
+    using namespace std::placeholders;
+    mExpl.setTexture(Core::get().textureCache().get("data/stars_w_4.png"),4);
+    mExpl.setFunctions({
+                       bind([](StateConstellation* s, DynamicParticles::Particle& p,float time,float dt){
+                               if(!s->collideWithPlanet(p.pos)) {
+                                    p.speed+=s->getGravFieldAt(p.pos)*dt;p.pos+=p.speed*dt*0.5f;
+                               }
+                           },this,_1,_2,_3),
+                       nullptr,//[](const DynamicParticles::Particle& p,float time){return min(0.f,1-time*0.25f) == 0.f;}, //decay
+                       [](const DynamicParticles::Particle& p,float time){return time*360;}, //rotation
+                       [](const DynamicParticles::Particle& p,float time){return max(0.f,1-time*0.25f);}, //scale
+                       nullptr, //color
+                       nullptr //frame
+                       });
 }
 
 void StateConstellation::onEnd()
@@ -104,6 +127,7 @@ void StateConstellation::draw(sf::RenderTarget& target)
     {
         target.draw(*a);
     }
+    target.draw(mExpl);
 }
 
 void StateConstellation::update(float delta_s)
@@ -132,7 +156,9 @@ void StateConstellation::defaultUpdate(float delta_s)
     );*/
     for(Players::iterator it = mPlayers.begin(); it != mPlayers.end(); it++)
     {
+        constexpr float eS = 400;
         if((*it)->character()->isDead()) {
+            mExpl.uniformDistribution((*it)->character()->getBounds(),150,{-eS,-eS,2*eS,2*eS});
             if(it == mCurrentPlayer)
                 nextPlayer();
             mPlayers.erase(it++);
@@ -147,7 +173,6 @@ void StateConstellation::defaultUpdate(float delta_s)
             }
         }
     }
-
 }
 
 void StateConstellation::rotUpdate(float delta_s)

@@ -66,6 +66,8 @@ public:
     void hit(int pvs);
     const PlayerID& id();
 
+    sf::FloatRect getBounds() const;
+
     virtual ~Character();
 private:
     /**

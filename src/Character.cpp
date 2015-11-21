@@ -11,7 +11,7 @@ using namespace std;
 Path Character::mPath;
 
 Character::Character(SharedPlanet planet, const PlayerID &id, sf::Color c)
-    : mPlanet(planet), mFrame(0), mWalking(true), mAiming(false), mColor(c), mPV(100), mID(id), mLastHitTime(0)
+    : mPlanet(planet), mFrame(0), mWalking(true), mAiming(false), mColor(c), mPV(10), mID(id), mLastHitTime(0)
 {
     setPhi(0);
     mSprite.setTexture(*Core::get().textureCache().get("data/chara_w_6.png"));
@@ -162,6 +162,12 @@ void Character::setPhi(float phi)
 bool Character::collideWith(const sf::Vector2f& p) const
 {
     return mSprite.getGlobalBounds().contains(p);
+}
+
+
+sf::FloatRect Character::getBounds() const
+{
+    return mSprite.getGlobalBounds();
 }
 
 const PlayerID& Character::id()

@@ -36,7 +36,7 @@ public:
 private:
 
 
-    sf::VertexArray mVertexArray;
+    mutable sf::VertexArray mVertexArray;
     mutable std::vector<Particle> mParticles;
     const sf::Texture* mTexture;
     int mFrames;
