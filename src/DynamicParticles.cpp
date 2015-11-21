@@ -95,20 +95,20 @@ void DynamicParticles::updateParticles() const
 
         if(mFuncs.color)
         {
-            sf::Color col = mFuncs.color(p,time);
+            sf::Color col = mFuncs.color(p,partTime);
             for(int i = 0; i < 6; i++)
             {
                 p.vertices[i].color = col;
             }
         }
-        if(mFuncs.decay && !mFuncs.decay)
+        if(mFuncs.decay && !mFuncs.decay(p,partTime))
             nonDecayed++;
     }
-    /*if(nonDecayed == 0) //Opti : destruct particle and vertex array if simulation ended
+    if(mFuncs.decay && nonDecayed == 0 && mParticles.size()) //Opti : destruct particle and vertex array if simulation ended
     {
         mParticles.clear();
         mVertexArray.clear();
-    }*/
+    }
 }
 
 void DynamicParticles::setTexture(const sf::Texture* tex, int frames)
