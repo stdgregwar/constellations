@@ -57,9 +57,9 @@ void StateConstellation::onBegin()
                                     p.speed+=s->getGravFieldAt(p.pos)*dt;p.pos+=p.speed*dt*0.5f;
                                }
                            },this,_1,_2,_3),
-                       [](const DynamicParticles::Particle& p,float time){return 1-time*0.75f < 0.f;}, //decay
+                       [](const DynamicParticles::Particle& p,float time){return 1-time*0.12f < 0.f;}, //decay
                        [](const DynamicParticles::Particle& p,float time){return time*360;}, //rotation
-                       [](const DynamicParticles::Particle& p,float time){return max(0.f,1-time*0.75f);}, //scale
+                       [](const DynamicParticles::Particle& p,float time){return max(.5f,1-time*0.75f);}, //scale
                        nullptr, //color
                        nullptr //frame
                        });
