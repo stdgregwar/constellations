@@ -46,6 +46,7 @@ void DynamicParticles::setFunctions(const EvolutionFuncs& funcs)
 
 void DynamicParticles::updateParticles() const
 {
+    int nonDecayed = 0;
     float time = Core::get().time();
     float dt = 1/60.f;
     int frameWidth = mTexture->getSize().x/mFrames;
@@ -58,7 +59,7 @@ void DynamicParticles::updateParticles() const
     sd = {hemiWidth,-hemiHeight};
     for(Particle& p : mParticles)
     {
-        float partTime = time-p.birthtime+p.phase;
+        float partTime = time-p.birthtime;//+p.phase;
         //TexCoords :
         int frame = mFuncs.frame ? mFuncs.frame(p,time) : 1;
         sf::FloatRect uv(frame*frameWidth,0,frameWidth,mTexture->getSize().y);
@@ -68,6 +69,7 @@ void DynamicParticles::updateParticles() const
         p.vertices[3].texCoords = {uv.left+uv.width,uv.top}; //Second triangle
         p.vertices[4].texCoords = {uv.left,uv.top+uv.height};
         p.vertices[5].texCoords = {uv.left+uv.width,uv.top+uv.height};
+
         //Position :
         if(mFuncs.move) mFuncs.move(p,partTime,dt);
         //scale
@@ -99,7 +101,14 @@ void DynamicParticles::updateParticles() const
                 p.vertices[i].color = col;
             }
         }
+        if(mFuncs.decay && !mFuncs.decay)
+            nonDecayed++;
     }
+    /*if(nonDecayed == 0) //Opti : destruct particle and vertex array if simulation ended
+    {
+        mParticles.clear();
+        mVertexArray.clear();
+    }*/
 }
 
 void DynamicParticles::setTexture(const sf::Texture* tex, int frames)

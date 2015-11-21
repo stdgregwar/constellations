@@ -23,6 +23,7 @@ void StateConstellation::onBegin()
     mBackground.setTexture(Core::get().textureCache().get("data/stars_w_4.png"),4);
     mBackground.uniformDistribution({-1280,-720,1280*2,720*2},500);
 
+
     Constellation constellation;
     int numbersOfMap = int(constellations.size());
     int i = rand() % numbersOfMap;
@@ -49,6 +50,20 @@ void StateConstellation::onBegin()
     mCurrentPlayer = mPlayers.begin();
 
 //    cout << Core::get().globalDict();
+    using namespace std::placeholders;
+    mExpl.setTexture(Core::get().textureCache().get("data/stars_w_4.png"),4);
+    mExpl.setFunctions({
+                       bind([](StateConstellation* s, DynamicParticles::Particle& p,float time,float dt){
+                               if(!s->collideWithPlanet(p.pos)) {
+                                    p.speed+=s->getGravFieldAt(p.pos)*dt;p.pos+=p.speed*dt*0.5f;
+                               }
+                           },this,_1,_2,_3),
+                       nullptr,//[](const DynamicParticles::Particle& p,float time){return min(0.f,1-time*0.25f) == 0.f;}, //decay
+                       [](const DynamicParticles::Particle& p,float time){return time*360;}, //rotation
+                       [](const DynamicParticles::Particle& p,float time){return max(0.f,1-time*0.25f);}, //scale
+                       nullptr, //color
+                       nullptr //frame
+                       });
 }
 
 void StateConstellation::onEnd()
@@ -96,6 +111,7 @@ void StateConstellation::draw(sf::RenderTarget& target)
     {
         target.draw(*a);
     }
+    target.draw(mExpl);
 }
 
 void StateConstellation::update(float delta_s)
@@ -123,7 +139,9 @@ void StateConstellation::defaultUpdate(float delta_s)
     );*/
     for(Players::iterator it = mPlayers.begin(); it != mPlayers.end(); it++)
     {
+        constexpr float eS = 400;
         if((*it)->character()->isDead()) {
+            mExpl.uniformDistribution((*it)->character()->getBounds(),150,{-eS,-eS,2*eS,2*eS});
             if(it == mCurrentPlayer)
                 nextPlayer();
             mPlayers.erase(it++);
@@ -138,12 +156,10 @@ void StateConstellation::defaultUpdate(float delta_s)
             }
         }
     }
-
     for(Arrows::iterator it = mArrows.begin(); it != mArrows.end(); it++)
     {
         if((*it)->hasTimeOut()) mArrows.erase(it++);
     }
-
 }
 
 void StateConstellation::rotUpdate(float delta_s)

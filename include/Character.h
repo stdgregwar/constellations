@@ -67,6 +67,8 @@ public:
     const PlayerID& id() const;
     bool isVulnerable() const;
 
+    sf::FloatRect getBounds() const;
+
     virtual ~Character();
 private:
     /**

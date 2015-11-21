@@ -49,7 +49,7 @@ void StateTitleScreen::onBegin()
     mExpl.setFunctions({
                       [](DynamicParticles::Particle& p,float time,float dt){p.speed*=.99f;p.pos+=p.speed*dt;},
                            nullptr, //decay
-                           nullptr, //rotation
+                           [](const DynamicParticles::Particle& p,float time){return time*360;}, //rotation
                            [](const DynamicParticles::Particle& p,float time){return 2.f;}, //scale
                            nullptr, //color
                            nullptr //frame

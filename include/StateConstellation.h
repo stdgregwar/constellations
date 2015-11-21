@@ -7,6 +7,7 @@
 #include "Controller.h"
 #include "Arrow.h"
 #include "StaticParticles.h"
+#include "DynamicParticles.h"
 #include <list>
 #include <vector>
 
@@ -105,6 +106,7 @@ private:
     Players::iterator mCurrentPlayer;
     Arrows mArrows;
     StaticParticles mBackground;
+    DynamicParticles mExpl;
 };
 
 #endif // STATECONSTELLATION_H
