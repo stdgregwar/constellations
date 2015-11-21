@@ -58,5 +58,16 @@ inline sf::Vector2f perpendicularNorm(sf::Vector2f vect)
     return sf::Vector2f{vect.y,-vect.x};
 }
 
+//Dot product on operator *
+inline float operator*(const sf::Vector2f& a, const sf::Vector2f& b)
+{
+    return a.x*b.x+a.y*b.y;
+}
+
+inline sf::Vector2f mirror(const sf::Vector2f& d, const sf::Vector2f& n)
+{
+    return d - (2.f*d*n)*n;
+}
+
 #endif // VECUTILS_H
 

@@ -63,6 +63,8 @@ public:
 
     float getRadius() const {return m3DRadius;}
 
+    sf::Vector2f normalAt(const sf::Vector2f& pos);
+
     virtual ~Planet();
 private:
     sf::Vector3f m3DPos;

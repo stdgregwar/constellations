@@ -68,6 +68,11 @@ sf::Vector2f Planet::getPosOn(float angle)
     return getPosition() +  sf::Vector2f(cos(angle),sin(angle)) * getRadius();
 }
 
+sf::Vector2f Planet::normalAt(const sf::Vector2f& pos)
+{
+    return normalise(pos-getPosition());
+}
+
 Planet::~Planet()
 {
     Core::get().textureCache().free(getTexture());

@@ -10,6 +10,7 @@
 #include "Mat4.h"
 #include "KeyboardController.h"
 #include "MathUtils.h"
+#include "VecUtils.h"
 
 using namespace std;
 
@@ -53,13 +54,17 @@ void StateConstellation::onBegin()
     mExpl.setTexture(Core::get().textureCache().get("data/stars_w_4.png"),4);
     mExpl.setFunctions({
                        bind([](StateConstellation* s, DynamicParticles::Particle& p,float time,float dt){
-                               if(!s->collideWithPlanet(p.pos)) {
-                                    p.speed+=s->getGravFieldAt(p.pos)*dt;p.pos+=p.speed*dt*0.5f;
+                               auto pl = s->collideWithPlanet(p.pos);
+                               if(!pl) {
+                                    p.speed+=s->getGravFieldAt(p.pos)*dt;
+                               } else {
+                                    p.speed = mirror(p.speed,pl->normalAt(p.pos))*0.95f;
                                }
+                               p.pos+=p.speed*dt*0.5f;
                            },this,_1,_2,_3),
                        [](const DynamicParticles::Particle& p,float time){return 1-time*0.12f < 0.f;}, //decay
                        [](const DynamicParticles::Particle& p,float time){return time*360;}, //rotation
-                       [](const DynamicParticles::Particle& p,float time){return max(.5f,1-time*0.75f);}, //scale
+                       [](const DynamicParticles::Particle& p,float time){return max(0.f,min(.7f,8-time*1.f));}, //scale
                        nullptr, //color
                        nullptr //frame
                        });
@@ -138,7 +143,7 @@ void StateConstellation::defaultUpdate(float delta_s)
     );*/
     for(Players::iterator it = mPlayers.begin(); it != mPlayers.end(); it++)
     {
-        constexpr float eS = 400;
+        constexpr float eS = 200;
         if((*it)->character()->isDead()) {
             mExpl.uniformDistribution((*it)->character()->getBounds(),150,{-eS,-eS,2*eS,2*eS});
             if(it == mCurrentPlayer)
