@@ -48,6 +48,7 @@ bool Arrow::update(float delta_s)
 
 void Arrow::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
+    mSprite.setColor(((Core::get().time() - mTimeStamp > 4.f) && int(ceilf(Core::get().time()*6.f))%2==0) && !mPut ?  sf::Color(0,0,0,0) : sf::Color(255,255,255,255));
     target.draw(mSprite);
 }
 
