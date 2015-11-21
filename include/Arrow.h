@@ -37,7 +37,7 @@ private:
     PlayerID mOwnerID;
     sf::Vector2f mPos;
     sf::Vector2f mSpeed;
-    sf::Sprite mSprite;
+    mutable sf::Sprite mSprite;
     sf::Texture mTexture;
     SharedPlanet mPlanet;
     float mPhi;
