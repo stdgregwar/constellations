@@ -57,7 +57,6 @@ private:
     sf::Text mTitle;
     sf::Text mExitText;
     StaticParticles mBackground;
-    DynamicParticles mExpl;
     SharedWidget mMainWidget;
     sf::View mView;
 };
