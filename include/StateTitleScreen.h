@@ -55,10 +55,7 @@ public:
     void setPlayerPv(int pv);
 
 private:
-    sf::Font mTitleFont;
-    sf::Font mFont;
     sf::Text mTitle;
-    sf::Text mExitText;
     StaticParticles mBackground;
     SharedWidget mMainWidget;
     sf::View mView;

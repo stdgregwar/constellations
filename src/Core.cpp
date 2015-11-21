@@ -38,6 +38,10 @@ TextureCache& Core::textureCache()
     return mTextureCache;
 }
 
+FontCache& Core::fontCache(){
+    return mFontCache;
+}
+
 void Core::popScheduled()
 {
     for(;mScheduledPops>0; --mScheduledPops)
@@ -53,6 +57,8 @@ bool Core::init(sf::Vector2u size)
 
 bool Core::start()
 {
+    mFontCache.put("default",mFontCache.loadOnly("data/zeldadxt.ttf")); //Load default font in cache
+
     mRenderWindow.setVerticalSyncEnabled(true);
 
     if(mRenderWindow.isOpen())

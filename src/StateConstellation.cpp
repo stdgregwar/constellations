@@ -58,13 +58,13 @@ void StateConstellation::onBegin()
                                if(!pl) {
                                     p.speed+=s->getGravFieldAt(p.pos)*dt;
                                } else {
-                                    p.speed = mirror(p.speed,pl->normalAt(p.pos))*0.99f;
+                                    p.speed = mirror(p.speed,pl->normalAt(p.pos));
                                }
                                p.pos+=p.speed*dt*0.5f;
                            },this,_1,_2,_3),
-                       [](const DynamicParticles::Particle& p,float time){return 1-time*1.f < 0.f;}, //decay
+                       [](const DynamicParticles::Particle& p,float time){return 1-time*0.66f < 0.f;}, //decay
                        [](const DynamicParticles::Particle& p,float time){return 0;}, //rotation
-                       [](const DynamicParticles::Particle& p,float time){return max(0.f,min(.7f,4-time*4.f));}, //scale
+                       [](const DynamicParticles::Particle& p,float time){return max(0.f,min(.7f,6-time*4.f));}, //scale
                        nullptr, //color
                        nullptr //frame
                        });
@@ -143,9 +143,9 @@ void StateConstellation::defaultUpdate(float delta_s)
     );*/
     for(Players::iterator it = mPlayers.begin(); it != mPlayers.end(); it++)
     {
-        constexpr float eS = 800;
+        constexpr float eS = 300;
         if((*it)->character()->isDead()) {
-            mExpl.uniformDistribution((*it)->character()->getBounds(),1200,{-eS,-eS,2*eS,2*eS});
+            mExpl.uniformDistribution((*it)->character()->getBounds(),300,{-eS,-eS,2*eS,2*eS});
             if(it == mCurrentPlayer)
                 nextPlayer();
             mPlayers.erase(it++);

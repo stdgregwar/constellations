@@ -46,6 +46,11 @@ public:
         mResources[id] = {1,val};
     }
 
+    R* loadOnly(const I& id)
+    {
+        return mLoader(id);
+    }
+
     /**
      * @brief free resource with given id
      * @param id
