@@ -61,7 +61,7 @@ void StateConstellation::onBegin()
                                } else {
                                     p.speed = mirror(p.speed,pl->normalAt(p.pos));
                                }
-                               p.pos+=p.speed*dt*0.5f;
+                               p.pos+=p.speed*dt;
                            },this,_1,_2,_3),
                        [](const DynamicParticles::Particle& p,float time){return 1-time*0.66f < 0.f;}, //decay
                        [](const DynamicParticles::Particle& p,float time){return 0;}, //rotation
