@@ -57,7 +57,7 @@ bool Core::init(sf::Vector2u size)
 
 bool Core::start()
 {
-    mFontCache.put("default",mFontCache.loadOnly("data/zeldadxt.ttf")); //Load default font in cache
+    mFontCache.put("default",mFontCache.loadOnly("data/8bitmadness.ttf")); //Load default font in cache
 
     mRenderWindow.setVerticalSyncEnabled(true);
 

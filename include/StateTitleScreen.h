@@ -55,7 +55,7 @@ public:
     void setPlayerPv(int pv);
 
 private:
-    sf::Text mTitle;
+    sf::Sprite mTitle;
     StaticParticles mBackground;
     SharedWidget mMainWidget;
     sf::View mView;

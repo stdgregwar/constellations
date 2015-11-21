@@ -55,6 +55,7 @@ void StateConstellation::onBegin()
     mExpl.setFunctions({
                        bind([](StateConstellation* s, DynamicParticles::Particle& p,float time,float dt){
                                auto pl = s->collideWithPlanet(p.pos);
+                               p.speed*=0.95f;
                                if(!pl) {
                                     p.speed+=s->getGravFieldAt(p.pos)*dt;
                                } else {
@@ -68,6 +69,9 @@ void StateConstellation::onBegin()
                        nullptr, //color
                        nullptr //frame
                        });
+
+    const sf::RenderTarget& target = Core::get().renderWindow();
+    correctViews(target.getSize().x,target.getSize().y);
 }
 
 void StateConstellation::onEnd()
@@ -89,16 +93,11 @@ void StateConstellation::onPause()
 
 void StateConstellation::draw(sf::RenderTarget& target)
 {
-    sf::View view;
-    view.setCenter(0,0);
-    view.setViewport({0,0,1,1});
-    view.setSize(target.getSize().x,target.getSize().y);
-
-    target.setView(view);
+    target.setView(mBackView);
     target.draw(mBackground);
-    view.zoom(1.f/2);
+    //mView.zoom(1.f/2);
 
-    target.setView(view);
+    target.setView(mView);
 
 
     for(SharedPlanet& p : mPlanets)
@@ -143,7 +142,7 @@ void StateConstellation::defaultUpdate(float delta_s)
     );*/
     for(Players::iterator it = mPlayers.begin(); it != mPlayers.end(); it++)
     {
-        constexpr float eS = 300;
+        constexpr float eS = 500;
         if((*it)->character()->isDead()) {
             mExpl.uniformDistribution((*it)->character()->getBounds(),300,{-eS,-eS,2*eS,2*eS});
             if(it == mCurrentPlayer)
@@ -200,6 +199,15 @@ void StateConstellation::defaultEvent(const sf::Event &e)
         mOldMousePos = {e.mouseButton.x,e.mouseButton.y};
         mIState = {&StateConstellation::rotUpdate,&StateConstellation::rotEvent};
     }*/
+
+    switch(e.type)
+    {
+        case sf::Event::Resized:
+            correctViews(e.size.width,e.size.height);
+        break;
+    }
+
+
     if(mCurrentPlayer != mPlayers.end() && mPlayers.size()) {
         if((*mCurrentPlayer)->onEvent(e)){
 //            nextPlayer();
@@ -288,6 +296,38 @@ void StateConstellation::onArrowDecayed()
 {
     mIState = {nullptr,&StateConstellation::defaultEvent};
     nextPlayer();
+}
+
+sf::FloatRect StateConstellation::getBounds(float margin) const
+{
+    float xmin(0),xmax(0),ymin(0),ymax(0);
+    for(const SharedPlanet& p : mPlanets)
+    {
+        xmin = min(xmin,p->get3DPos().x-p->getRadius());
+        xmax = max(xmax,p->get3DPos().x+p->getRadius());
+        ymin = min(ymin,p->get3DPos().y-p->getRadius());
+        ymax = max(ymax,p->get3DPos().y+p->getRadius());
+    }
+    return {xmin-margin,ymin-margin,xmax-xmin+margin,ymax-ymin+margin};
+}
+
+void StateConstellation::correctViews(float vx, float vy)
+{
+    mView.setCenter(0,0);
+    mBackView.setSize(vx,vy);
+    sf::FloatRect bounds = getBounds(100);
+    float bratio = bounds.height / bounds.width;
+    float vratio = vy / vx;
+    if(bratio > vratio)
+    {
+        //Use y as reference
+        mView.setSize(bounds.height/vratio,bounds.height);
+    }
+    else
+    {
+        //Use x as reference
+        mView.setSize(bounds.width,bounds.width*vratio);
+    }
 }
 
 std::vector<sf::Vector2f> StateConstellation::pathForInitials(sf::Vector2f pos, sf::Vector2f speed, int precision)

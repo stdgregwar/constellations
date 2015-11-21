@@ -12,16 +12,20 @@ StateTitleScreen::StateTitleScreen() : mMainWidget(new Widget())
 void StateTitleScreen::onBegin()
 {
     using namespace std::placeholders;
-    mTitle.setFont(*Core::get().fontCache().get("data/gothic.ttf"));
-    mTitle.setString("Constellations");
+    sf::Texture* titleTex = Core::get().textureCache().get("data/constellations.png");
+    mTitle.setOrigin(titleTex->getSize().x/2.f,titleTex->getSize().y/2.f);
+    mTitle.setTexture(*titleTex);
+    mTitle.setScale(2.5f,2.5f);
+    Core::get().textureCache().get("data/constellations.png")->setSmooth(false);
+    //mTitle.setString("Constellations");
     sf::Text text;
     text.setFont(*Core::get().fontCache().get("default"));
     text.setString("Start!");
     text.setCharacterSize(50);
 
-    mTitle.setPosition(300,50);
-    mTitle.setCharacterSize(156);
-    text.setPosition(1280/2-100,720/2);
+    mTitle.setPosition(1280/2,200);
+    //mTitle.setCharacterSize(156);
+    text.setPosition(1280/2-150,720/2);
 
     mMainWidget->add(new Button(text,std::bind(&StateTitleScreen::launchStateConstellation,this)));
     text.move(0,60);

@@ -91,7 +91,10 @@ public:
     void onArrowDecayed();
 
     std::vector<sf::Vector2f> pathForInitials(sf::Vector2f pos, sf::Vector2f speed, int precision);
+
+    sf::FloatRect getBounds(float margin = 0) const;
 private:
+    void correctViews(float vx, float vy);
     typedef std::list<SharedController> Players;
     typedef std::list<SharedArrow> Arrows;
 
@@ -107,6 +110,8 @@ private:
     Arrows mArrows;
     StaticParticles mBackground;
     DynamicParticles mExpl;
+    sf::View mView;
+    sf::View mBackView;
 };
 
 #endif // STATECONSTELLATION_H

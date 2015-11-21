@@ -12,7 +12,7 @@ typedef std::list<SharedController> Players;
 class Constellation {
 public:
     Constellation();
-    void buildFromConstellationDef(ConstellationDef constellationDef, int numberOfPlayers);
+    void buildFromConstellationDef(const ConstellationDef &constellationDef, int numberOfPlayers);
     Players getPlayers();
     std::list<SharedPlanet> getPlanets();
 private:

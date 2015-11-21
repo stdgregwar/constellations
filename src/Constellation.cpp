@@ -3,7 +3,7 @@
 
 Constellation::Constellation() { }
 
-void Constellation::buildFromConstellationDef(ConstellationDef constellationDef, int numberOfPlayers)
+void Constellation::buildFromConstellationDef(const ConstellationDef& constellationDef, int numberOfPlayers)
 {
     int tempNumberOfPlayers = numberOfPlayers;
     int currentPlayerNumber = 0;
