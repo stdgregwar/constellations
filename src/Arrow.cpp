@@ -64,9 +64,9 @@ void Arrow::draw(sf::RenderTarget &target, sf::RenderStates states) const
     if(!(lastMoments() && !mPut && (int(ceilf(Core::get().time()*6.f))%2==0)))
     {
         target.draw(mSprite);
-        if(lastMoments() && !mPut)
-            drawCounter(target,cstate);
     }
+    if(lastMoments() && !mPut)
+        drawCounter(target,cstate);
 }
 
 void Arrow::drawCursor(sf::RenderTarget& target, SConst& cstate) const
