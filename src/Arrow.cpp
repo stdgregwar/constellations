@@ -4,6 +4,7 @@
 #include "VecUtils.h"
 #include "IntegrationUtils.h"
 #include "MathUtils.h"
+#include "VecUtils.h"
 
 #include <iostream>
 using namespace std;
@@ -15,6 +16,9 @@ Arrow::Arrow(const sf::Vector2f &pos, const sf::Vector2f &speed, const PlayerID&
     mTexture.loadFromFile("data/arrow.png");
     mSprite.setTexture(mTexture);
     mSprite.setOrigin(mTexture.getSize().x-6,mTexture.getSize().y/2);
+    sf::Texture* cTex = Core::get().textureCache().get("data/cursor.png");
+    mCursor.setTexture(*cTex);
+    mCursor.setOrigin(cTex->getSize().x/2,cTex->getSize().y/2);
     auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
     float s = cstate->zoomFactor();
     mCounter.setScale(s,s);
@@ -53,17 +57,43 @@ bool Arrow::update(float delta_s)
 void Arrow::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
-    mCounter.setValue(lifetime-Core::get().time()+mTimeStamp);
-    sf::FloatRect bounds = mCounter.bounds();
-    mCounter.setPosition(cstate->clampRect({mPos.x+bounds.left,mPos.y-bounds.top,bounds.width,bounds.height}));
+
+    drawCursor(target,cstate);
+
+
     if(!(lastMoments() && !mPut && (int(ceilf(Core::get().time()*6.f))%2==0)))
     {
         target.draw(mSprite);
         if(lastMoments() && !mPut)
-            target.draw(mCounter);
+            drawCounter(target,cstate);
     }
 }
 
+void Arrow::drawCursor(sf::RenderTarget& target, SConst& cstate) const
+{
+    mCursor.setRotation(angle(mPos)*TO_DEGREES-90);
+    mCursor.setPosition(mPos);
+
+    sf::FloatRect cursorBounds = {mCursor.getLocalBounds().left+mPos.x,
+                                  mCursor.getLocalBounds().top+mPos.y,
+                                  mCursor.getLocalBounds().width,
+                                  mCursor.getLocalBounds().height};
+    sf::Vector2f newCursorPos = mCursor.getOrigin() + cstate->clampRect(cursorBounds);
+
+    if(newCursorPos != sf::Vector2f{cursorBounds.left+mCursor.getOrigin().x,cursorBounds.top+mCursor.getOrigin().y})
+    {
+        mCursor.setPosition(newCursorPos);
+        target.draw(mCursor);
+    }
+}
+
+void Arrow::drawCounter(sf::RenderTarget& target, SConst& cstate) const
+{
+    mCounter.setValue(lifetime-Core::get().time()+mTimeStamp);
+    sf::FloatRect bounds = mCounter.bounds();
+    mCounter.setPosition(sf::Vector2f{7,-14} + cstate->clampRect({mPos.x+bounds.left,mPos.y-bounds.top,bounds.width,bounds.height}));
+    target.draw(mCounter);
+}
 
 const sf::Vector2f& Arrow::getPos()
 {

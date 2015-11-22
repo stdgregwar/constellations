@@ -12,6 +12,10 @@ class Arrow;
 
 typedef std::shared_ptr<Arrow> SharedArrow;
 
+class StateConstellation;
+
+typedef std::shared_ptr<StateConstellation> SConst;
+
 class Arrow : public sf::Drawable
 {
 public:
@@ -36,10 +40,13 @@ public:
     void onTimeOut() const;
 private:
     bool lastMoments() const;
+    void drawCursor(sf::RenderTarget& target, SConst& cstate) const;
+    void drawCounter(sf::RenderTarget& target, SConst& cstate) const;
     PlayerID mOwnerID;
     sf::Vector2f mPos;
     sf::Vector2f mSpeed;
     mutable sf::Sprite mSprite;
+    mutable sf::Sprite mCursor;
     sf::Texture mTexture;
     SharedPlanet mPlanet;
     float mPhi;
