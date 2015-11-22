@@ -5,6 +5,7 @@
 #include <map>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Font.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
 #include <functional>
 
 template<class R, class I> //Templated resource type and provider
@@ -103,6 +104,7 @@ private:
 //Useful caches :
 typedef ResourceCache<sf::Texture, std::string> TextureCache;
 typedef ResourceCache<sf::Font, std::string> FontCache;
+typedef ResourceCache<sf::SoundBuffer, std::string> SoundBufferCache;
 
 
 #endif // RESOURCECACHE_H

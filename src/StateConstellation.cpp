@@ -22,6 +22,11 @@ StateConstellation::StateConstellation() :
 
 void StateConstellation::onBegin()
 {
+    //Sounds
+    mExplHigh.setBuffer(*Core::get().soundBufferCache().get("data/explodehigh.wav"));
+    mExplLow.setBuffer(*Core::get().soundBufferCache().get("data/explodelow.wav"));
+
+    //Textures
     mBackground.setTexture(Core::get().textureCache().get("data/stars_w_4.png"),4);
     mBackground.uniformDistribution({-1280,-720,1280*2,720*2},500);
 
@@ -147,6 +152,8 @@ void StateConstellation::defaultUpdate(float delta_s)
     {
         constexpr float eS = 500;
         if((*it)->character()->isDead()) {
+            mExplLow.play();
+            mExplHigh.play();
             mExpl.uniformDistribution((*it)->character()->getBounds(),300,{-eS,-eS,2*eS,2*eS});
             if(it == mCurrentPlayer)
                 nextPlayer();
@@ -164,7 +171,7 @@ void StateConstellation::defaultUpdate(float delta_s)
     }
     for(Arrows::iterator it = mArrows.begin(); it != mArrows.end(); it++)
     {
-        if((*it)->hasTimeOut()) mArrows.erase(it++);
+        if((*it)->dead()) mArrows.erase(it++);
     }
 }
 
