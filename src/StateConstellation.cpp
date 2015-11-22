@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <Constellation.h>
 #include "IntegrationUtils.h"
+#include <random>
 #include "ConstellationDefine.h"
 #include "Mat4.h"
 #include "KeyboardController.h"
@@ -26,7 +27,9 @@ void StateConstellation::onBegin()
 
     Constellation constellation;
     int numbersOfMap = int(constellations.size());
-    int i = int(Core::get().time()*10000.f) % numbersOfMap;
+    random_device rng;
+    uniform_int_distribution<int> int_dist(0,numbersOfMap-1);
+    int i =  int_dist(rng);
     int numberOfPlayers = Core::get().globalDict()["player_count"].toInt();
     while(constellations[i].maxNumberOfPlayers < numberOfPlayers)
     {
