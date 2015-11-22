@@ -225,26 +225,26 @@ void StateConstellation::rotEvent(const sf::Event &e)
 
 void StateConstellation::waitingEvent(const sf::Event &e) { }
 
-sf::Vector2f StateConstellation::getGravFieldAt(const sf::Vector2f &p)
+sf::Vector2f StateConstellation::getGravFieldAt(const sf::Vector2f &p) const
 {
     sf::Vector2f field;
-    for(SharedPlanet& planet : mPlanets)
+    for(const SharedPlanet& planet : mPlanets)
     {
         field += planet->get2DField(p);
     }
     return field*(float)25e2;
 }
 
-SharedPlanet StateConstellation::collideWithPlanet(const sf::Vector2f &p)
+SharedPlanet StateConstellation::collideWithPlanet(const sf::Vector2f &p) const
 {
-    for(SharedPlanet& planet : mPlanets)
+    for(const SharedPlanet& planet : mPlanets)
     {
         if(planet->collideWith(p)) return planet;
     }
     return SharedPlanet();
 }
 
-SharedCharacter StateConstellation::collideWithCharacter(const sf::Vector2f &p)
+SharedCharacter StateConstellation::collideWithCharacter(const sf::Vector2f &p) const
 {
     for(SharedController c : mPlayers)
     {
@@ -330,7 +330,7 @@ void StateConstellation::correctViews(float vx, float vy)
     }
 }
 
-std::vector<sf::Vector2f> StateConstellation::pathForInitials(sf::Vector2f pos, sf::Vector2f speed, int precision)
+std::vector<sf::Vector2f> StateConstellation::pathForInitials(sf::Vector2f pos, sf::Vector2f speed, int precision) const
 {
     std::vector<sf::Vector2f> path;
     auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
@@ -351,4 +351,20 @@ std::vector<sf::Vector2f> StateConstellation::pathForInitials(sf::Vector2f pos, 
         path.push_back(pos);
     }
     return path;
+}
+
+sf::Vector2f StateConstellation::clampRect(const sf::FloatRect& rect, float margin) const
+{
+    sf::FloatRect bounds = {mView.getCenter().x-mView.getSize().x/2,
+                            mView.getCenter().y-mView.getSize().y/2,
+                            mView.getSize().x,
+                            mView.getSize().y};
+    float x = min(max(bounds.left+margin,rect.left),bounds.left+bounds.width-margin-rect.width);
+    float y = min(max(bounds.top+margin,rect.top),bounds.top+bounds.height-margin-rect.height);
+    return {x,y};
+}
+
+float StateConstellation::zoomFactor() const
+{
+    return mView.getSize().y / Core::get().renderWindow().getSize().y;
 }

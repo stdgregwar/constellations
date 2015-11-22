@@ -9,11 +9,15 @@
 using namespace std;
 
 Arrow::Arrow(const sf::Vector2f &pos, const sf::Vector2f &speed, const PlayerID& ownerID)
-    : mPos(pos), mSpeed(speed), mTimeStamp(Core::get().time()), mOwnerID(ownerID), mPut(false), mCallback(nullptr)
+    : mPos(pos), mSpeed(speed), mTimeStamp(Core::get().time()), mOwnerID(ownerID),
+      mPut(false), mCallback(nullptr), mCounter(sf::Color::Red,50)
 {
     mTexture.loadFromFile("data/arrow.png");
     mSprite.setTexture(mTexture);
     mSprite.setOrigin(mTexture.getSize().x-6,mTexture.getSize().y/2);
+    auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
+    float s = cstate->zoomFactor();
+    mCounter.setScale(s,s);
 }
 
 bool Arrow::update(float delta_s)
@@ -48,8 +52,16 @@ bool Arrow::update(float delta_s)
 
 void Arrow::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
-    mSprite.setColor(((Core::get().time() - mTimeStamp > 4.f) && int(ceilf(Core::get().time()*6.f))%2==0) && !mPut ?  sf::Color(0,0,0,0) : sf::Color(255,255,255,255));
-    target.draw(mSprite);
+    auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
+    mCounter.setValue(lifetime-Core::get().time()+mTimeStamp);
+    sf::FloatRect bounds = mCounter.bounds();
+    mCounter.setPosition(cstate->clampRect({mPos.x+bounds.left,mPos.y-bounds.top,bounds.width,bounds.height}));
+    if(!(lastMoments() && !mPut && (int(ceilf(Core::get().time()*6.f))%2==0)))
+    {
+        target.draw(mSprite);
+        if(lastMoments() && !mPut)
+            target.draw(mCounter);
+    }
 }
 
 
@@ -58,9 +70,14 @@ const sf::Vector2f& Arrow::getPos()
     return mPos;
 }
 
+bool Arrow::lastMoments() const
+{
+    return Core::get().time() - mTimeStamp > lifetime-2;
+}
+
 bool Arrow::hasTimeOut() const
 {
-    if(Core::get().time() - mTimeStamp > 6.f && !mPut)
+    if(Core::get().time() - mTimeStamp > lifetime && !mPut)
     {
         onTimeOut();
         return true;

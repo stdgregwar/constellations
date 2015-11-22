@@ -59,21 +59,21 @@ public:
      * @param p point to sample grav field
      * @return grav field
      */
-    sf::Vector2f getGravFieldAt(const sf::Vector2f &p);
+    sf::Vector2f getGravFieldAt(const sf::Vector2f &p) const;
 
     /**
      * @brief check wether a given point is in a planet
      * @param p point
      * @return nullptr or the first planet colliding with point
      */
-    SharedPlanet collideWithPlanet(const sf::Vector2f &p);
+    SharedPlanet collideWithPlanet(const sf::Vector2f &p) const;
 
     /**
      * @brief check wether a given point is in a character
      * @param p point
      * @return nullptr or the first intersected character
      */
-    SharedCharacter collideWithCharacter(const sf::Vector2f &p);
+    SharedCharacter collideWithCharacter(const sf::Vector2f &p) const;
 
     void pushArrow(SharedArrow a);
 
@@ -90,9 +90,13 @@ public:
 
     void onArrowDecayed();
 
-    std::vector<sf::Vector2f> pathForInitials(sf::Vector2f pos, sf::Vector2f speed, int precision);
+    std::vector<sf::Vector2f> pathForInitials(sf::Vector2f pos, sf::Vector2f speed, int precision) const;
 
     sf::FloatRect getBounds(float margin = 0) const;
+
+    float zoomFactor() const;
+
+    sf::Vector2f clampRect(const sf::FloatRect& rect, float margin = 0) const;
 private:
     void correctViews(float vx, float vy);
     typedef std::list<SharedController> Players;

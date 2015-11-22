@@ -6,6 +6,7 @@
 #include "Planet.h"
 #include "Controller.h"
 #include "Character.h"
+#include "Counter.h"
 
 class Arrow;
 
@@ -14,7 +15,7 @@ typedef std::shared_ptr<Arrow> SharedArrow;
 class Arrow : public sf::Drawable
 {
 public:
-
+    constexpr static float lifetime = 6;
     Arrow(const sf::Vector2f &pos, const sf::Vector2f &speed, const PlayerID& ownerID);
     Arrow(const Arrow& other);
 
@@ -34,6 +35,7 @@ public:
     void onPut() const ;
     void onTimeOut() const;
 private:
+    bool lastMoments() const;
     PlayerID mOwnerID;
     sf::Vector2f mPos;
     sf::Vector2f mSpeed;
@@ -44,6 +46,7 @@ private:
     float mTimeStamp;
     bool mPut;
     std::function<void()> mCallback;
+    mutable Counter mCounter;
 };
 
 #endif //ARROW_H
