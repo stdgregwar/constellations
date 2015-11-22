@@ -45,7 +45,7 @@ void Planet::update2DPos(const Mat4 &trans)
 sf::Vector2f Planet::get2DField(const sf::Vector2f& pos) const
 {
     //TODO check constant
-    return 1.f/distanceSquared(pos,getPosition())*1000 * normalise(getPosition()-pos);
+    return 1.f/distanceSquared(pos,getPosition())*1500 * normalise(getPosition()-pos);
 }
 
 bool Planet::collideWith(SharedPlanet other) const

@@ -315,7 +315,7 @@ void StateConstellation::correctViews(float vx, float vy)
 {
     mView.setCenter(0,0);
     mBackView.setSize(vx,vy);
-    sf::FloatRect bounds = getBounds(100);
+    sf::FloatRect bounds = getBounds(150);
     float bratio = bounds.height / bounds.width;
     float vratio = vy / vx;
     if(bratio > vratio)

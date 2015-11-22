@@ -20,7 +20,7 @@ void Constellation::buildFromConstellationDef(const ConstellationDef& constellat
                                             mPlanets.back(),
                                             currentPlayerNumber,
                                             mColorPool[currentPlayerNumber%mColorPool.size()],
-                                            planet.playerAngle
+                                            (planet.playerAngle-90.f)/TO_DEGREES
                                     )
                             )
                     )
