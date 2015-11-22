@@ -75,30 +75,83 @@ public:
      */
     SharedCharacter collideWithCharacter(const sf::Vector2f &p) const;
 
+    /**
+     * @brief add arrow to the state
+     * @param a
+     */
     void pushArrow(SharedArrow a);
 
+    /**
+     * @brief called when the Player iterator return on the first player
+     */
     void onNewRound();
 
+    /**
+     * @brief called when a player win (alone in player pool)
+     */
     void onWin();
 
     //Seems very improbable to be called
+    /**
+     * @brief should never be called except on a draw with simultaneous death (never in fact)
+     */
     void onEquality();
 
+    /**
+     * @brief increments player iterator to next player
+     */
     void nextPlayer();
 
+    /**
+     * @brief isCurrentPlayer
+     * @param id
+     * @return true if the given player ID is the same as player in player iterator
+     */
     bool isCurrentPlayer(const PlayerID& id)  const;
 
+    /**
+     * @brief called by arrows when they put in a planet or when they time out
+     */
     void onArrowDecayed();
 
+    /**
+     * @brief return a vector of points that would follow an arrow if thrown with given initials conditions
+     * @param pos position
+     * @param speed speed
+     * @param precision max pts count
+     * @return vector of points
+     */
     std::vector<sf::Vector2f> pathForInitials(sf::Vector2f pos, sf::Vector2f speed, int precision) const;
 
+    /**
+     * @brief return the bound of the constellation with given margin
+     * @param margin margin
+     * @return
+     */
     sf::FloatRect getBounds(float margin = 0) const;
 
+    /**
+     * @brief return the amount of zoom of the mainView
+     * @return
+     */
     float zoomFactor() const;
 
-    sf::Vector2f clampRect(const sf::FloatRect& rect, float margin = 0) const;
+    /**
+     * @brief return the top-left point of the given rect after constraining it in the View
+     * @param rect a rect
+     * @param margin a margin
+     * @return
+     */
+    sf::Vector2f clampRect(const sf::FloatRect& rect, float margin = 5) const;
 private:
+
+    /**
+     * @brief correct views ratio and zoom with respect to render target
+     * @param vx
+     * @param vy
+     */
     void correctViews(float vx, float vy);
+
     typedef std::list<SharedController> Players;
     typedef std::list<SharedArrow> Arrows;
 

@@ -48,12 +48,22 @@ public:
      */
     virtual void pushEvent(const sf::Event & e);
 
+    /**
+     * @brief launch the playing state
+     */
     void launchStateConstellation();
 
+    /**
+     * @brief set player count in global dict's property with key "player_count"
+     * @param count
+     */
     void setPlayerCount(int count);
 
+    /**
+     * @brief set players pv's in global dict's property with key "player_pv"
+     * @param pv
+     */
     void setPlayerPv(int pv);
-
 private:
     sf::Sprite mTitle;
     StaticParticles mBackground;

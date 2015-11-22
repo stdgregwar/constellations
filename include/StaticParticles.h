@@ -3,6 +3,9 @@
 
 #include <SFML/Graphics.hpp>
 
+/**
+ * @brief The StaticParticles class
+ */
 class StaticParticles : public sf::Drawable
 {
 public:
