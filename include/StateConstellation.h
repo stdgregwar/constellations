@@ -169,6 +169,9 @@ private:
     DynamicParticles mExpl;
     sf::View mView;
     sf::View mBackView;
+
+    sf::Sound mExplLow;
+    sf::Sound mExplHigh;
 };
 
 #endif // STATECONSTELLATION_H

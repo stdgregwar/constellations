@@ -2,6 +2,7 @@
 #define ARROW_H
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio/Sound.hpp>
 #include <memory>
 #include "Planet.h"
 #include "Controller.h"
@@ -42,13 +43,15 @@ public:
      * @brief tells wether the arrow has liven more than lifetime
      * @return
      */
-    bool hasTimeOut() const;
+    bool hasTimeOut();
 
     /**
      * @brief is put
      * @return true if arrow is put in a planet
      */
     bool isPut() const;
+
+    bool dead();
 
     /**
      * @brief setCallback
@@ -59,12 +62,12 @@ public:
     /**
      * @brief called when the arrow is put and call the callback
      */
-    void onPut() const ;
+    void onPut();
 
     /**
      * @brief called when the arrow time out and call the callback
      */
-    void onTimeOut() const;
+    void onTimeOut();
 private:
 
     /**
@@ -91,13 +94,21 @@ private:
     sf::Vector2f mSpeed;
     mutable sf::Sprite mSprite;
     mutable sf::Sprite mCursor;
-    sf::Texture mTexture;
     SharedPlanet mPlanet;
     float mPhi;
     float mTimeStamp;
     bool mPut;
+    bool mTimeOut;
     std::function<void()> mCallback;
     mutable Counter mCounter;
+
+    //Sounds
+    sf::Sound mSwiftSound;
+    sf::Sound mPutSound;
+    sf::Sound mWarnSound;
+    sf::Sound mTouchSound;
+    sf::Sound mThrowSound;
+    sf::Sound mDeathSound;
 };
 
 #endif //ARROW_H

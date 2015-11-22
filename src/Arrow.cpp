@@ -11,17 +11,31 @@ using namespace std;
 
 Arrow::Arrow(const sf::Vector2f &pos, const sf::Vector2f &speed, const PlayerID& ownerID)
     : mPos(pos), mSpeed(speed), mTimeStamp(Core::get().time()), mOwnerID(ownerID),
-      mPut(false), mCallback(nullptr), mCounter(sf::Color::Red,50)
+      mPut(false), mCallback(nullptr), mCounter(sf::Color::Red,50), mTimeOut(false)
 {
-    mTexture.loadFromFile("data/arrow.png");
-    mSprite.setTexture(mTexture);
-    mSprite.setOrigin(mTexture.getSize().x-6,mTexture.getSize().y/2);
+    //Setup sounds
+    mPutSound.setBuffer(*Core::get().soundBufferCache().get("data/arrowput.wav"));
+    mSwiftSound.setBuffer(*Core::get().soundBufferCache().get("data/arrowswift2.wav"));
+    mWarnSound.setBuffer(*Core::get().soundBufferCache().get("data/arrowwarn.wav"));
+    mTouchSound.setBuffer(*Core::get().soundBufferCache().get("data/explodehigh.wav"));
+    mThrowSound.setBuffer(*Core::get().soundBufferCache().get("data/arrowthrow.wav"));
+    mDeathSound.setBuffer(*Core::get().soundBufferCache().get("data/arrowdeath.wav"));
+
+    //Setup textures
+    sf::Texture* sTex = Core::get().textureCache().get("data/arrow.png");
+    mSprite.setTexture(*sTex);
+    mSprite.setOrigin(sTex->getSize().x-6,sTex->getSize().y/2);
     sf::Texture* cTex = Core::get().textureCache().get("data/cursor.png");
     mCursor.setTexture(*cTex);
     mCursor.setOrigin(cTex->getSize().x/2,cTex->getSize().y/2);
     auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
     float s = cstate->zoomFactor();
     mCounter.setScale(s,s);
+
+    //Launch swift sound
+    mSwiftSound.setLoop(true);
+    mSwiftSound.play();
+    mThrowSound.play();
 }
 
 bool Arrow::update(float delta_s)
@@ -33,22 +47,33 @@ bool Arrow::update(float delta_s)
     }
     else
     {
-        //TODO find which type cstate must be...
-        auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
-        SharedCharacter c = cstate->collideWithCharacter(mPos);
-        if(c && c->id() != mOwnerID)
-            c->hit(50);
-        mPlanet = cstate->collideWithPlanet(mPos);
-        if(mPlanet) {
-            mSprite.setTextureRect({0,0,10,5});
-            mPhi = angle(mPos-mPlanet->getPosition());
-            mPut = true;
-            onPut();
+        if(hasTimeOut())
+        {
+            mSprite.setScale(0,0);
         }
-        using namespace std::placeholders;
-        integrateEC(mPos, mSpeed, delta_s, std::bind(&StateConstellation::getGravFieldAt, cstate.get(), _1));
-        mSprite.setRotation(angle(mSpeed)*TO_DEGREES);
+        else
+        {
+            //TODO find which type cstate must be...
+            auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
+            SharedCharacter c = cstate->collideWithCharacter(mPos);
+            if(c && c->id() != mOwnerID)
+                c->hit(50);
+            mPlanet = cstate->collideWithPlanet(mPos);
+            if(mPlanet) {
+                mSprite.setTextureRect({0,0,10,5});
+                mPhi = angle(mPos-mPlanet->getPosition());
+                mPut = true;
+                onPut();
+            }
+            using namespace std::placeholders;
+            integrateEC(mPos, mSpeed, delta_s, std::bind(&StateConstellation::getGravFieldAt, cstate.get(), _1));
+            mSwiftSound.setVolume(lenght(mSpeed)/30.f);
+            mSprite.setRotation(angle(mSpeed)*TO_DEGREES);
 
+            //Warning sound
+            if(lastMoments() && mWarnSound.getStatus() == sf::Sound::Status::Stopped)
+                mWarnSound.play();
+        }
     }
     mSprite.setPosition(mPos);
     return true;
@@ -58,14 +83,15 @@ void Arrow::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
 
-    drawCursor(target,cstate);
+    if(!mTimeOut)
+        drawCursor(target,cstate);
 
 
     if(!(lastMoments() && !mPut && (int(ceilf(Core::get().time()*6.f))%2==0)))
     {
         target.draw(mSprite);
     }
-    if(lastMoments() && !mPut)
+    if(lastMoments() && !mPut && !mTimeOut)
         drawCounter(target,cstate);
 }
 
@@ -95,6 +121,11 @@ void Arrow::drawCounter(sf::RenderTarget& target, SConst& cstate) const
     target.draw(mCounter);
 }
 
+bool Arrow::dead()
+{
+    return hasTimeOut() && mDeathSound.getStatus() == sf::Sound::Stopped; //Wait for end of sound to destroy arrow
+}
+
 const sf::Vector2f& Arrow::getPos()
 {
     return mPos;
@@ -105,23 +136,30 @@ bool Arrow::lastMoments() const
     return Core::get().time() - mTimeStamp > lifetime-2;
 }
 
-bool Arrow::hasTimeOut() const
+bool Arrow::hasTimeOut()
 {
     if(Core::get().time() - mTimeStamp > lifetime && !mPut)
     {
-        onTimeOut();
+        if(!mTimeOut)
+        {
+            mTimeOut = true;
+            onTimeOut();
+        }
         return true;
     }
     return false;
 }
 
-void Arrow::onPut() const
+void Arrow::onPut()
 {
+    mPutSound.play();
+    mSwiftSound.stop();
     if(mCallback) mCallback();
 }
 
-void Arrow::onTimeOut() const
+void Arrow::onTimeOut()
 {
+    mDeathSound.play();
     if(mCallback) mCallback();
 }
 

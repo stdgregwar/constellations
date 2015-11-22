@@ -28,6 +28,15 @@ Core::Core() : mGlobalTime(0),
                     return nullptr;
                 }
             }),
+    mSoundBufferCache([](const std::string& id)->sf::SoundBuffer*{
+                sf::SoundBuffer* sound = new sf::SoundBuffer();
+                if(sound->loadFromFile(id))
+                    return sound;
+                else{
+                    delete sound;
+                    return nullptr;
+                }
+            }),
     mScheduledPops(0)
 {
     mInstance = this;
@@ -40,6 +49,12 @@ TextureCache& Core::textureCache()
 
 FontCache& Core::fontCache(){
     return mFontCache;
+}
+
+
+SoundBufferCache& Core::soundBufferCache()
+{
+    return mSoundBufferCache;
 }
 
 void Core::popScheduled()

@@ -99,10 +99,12 @@ public:
 
     TextureCache& textureCache();
     FontCache& fontCache();
+    SoundBufferCache& soundBufferCache();
 private:
     void popScheduled();
     TextureCache mTextureCache;
     FontCache mFontCache;
+    SoundBufferCache mSoundBufferCache;
     sf::RenderWindow mRenderWindow;
     float mGlobalTime;
     static Core* mInstance;
