@@ -26,7 +26,7 @@ void StateConstellation::onBegin()
 
     Constellation constellation;
     int numbersOfMap = int(constellations.size());
-    int i = rand() % numbersOfMap;
+    int i = int(Core::get().time()*10000.f) % numbersOfMap;
     int numberOfPlayers = Core::get().globalDict()["player_count"].toInt();
     while(constellations[i].maxNumberOfPlayers < numberOfPlayers)
     {
