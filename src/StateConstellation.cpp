@@ -28,7 +28,7 @@ void StateConstellation::onBegin()
 
     //Textures
     mBackground.setTexture(Core::get().textureCache().get("data/stars_w_4.png"),4);
-    mBackground.uniformDistribution({-1280,-720,1280*2,720*2},500);
+    mBackground.uniformDistribution({-1280*2,-720*2,1280*4,720*4},1200);
 
     Constellation constellation;
     int numbersOfMap = int(constellations.size());
@@ -325,6 +325,7 @@ void StateConstellation::correctViews(float vx, float vy)
 {
     mView.setCenter(0,0);
     mBackView.setSize(vx,vy);
+    //mBackView.zoom(2.f);
     sf::FloatRect bounds = getBounds(150);
     float bratio = bounds.height / bounds.width;
     float vratio = vy / vx;
