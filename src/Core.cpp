@@ -85,6 +85,7 @@ bool Core::start()
     while(mRenderWindow.isOpen())
     {
         //Pop states if needed
+        tickTimers();
         popScheduled();
         for(sf::Event e; mRenderWindow.pollEvent(e);)
         {
@@ -117,6 +118,16 @@ float Core::aspectRatio()
 {
     return (float)(mRenderWindow.getSize().y) / mRenderWindow.getSize().x;
 }
+
+ void Core::tickTimers()
+ {
+     for(auto it = mTimers.begin(); it != mTimers.end(); ++it)
+     {
+         if((*it)->tick(time())) {
+             mTimers.erase(it++);
+         }
+     }
+ }
 
 Core &Core::get()
 {
@@ -166,6 +177,13 @@ void Core::pushState(SharedState state)
     }
     if(mStateStack)
         mStateStack->onBegin();
+}
+
+float Core::addTimer(SharedTimer timer)
+{
+    mTimers.push_back(timer);
+    timer->setTimeStamp(time());
+    return time();
 }
 
 const sf::RenderWindow& Core::renderWindow(){return mRenderWindow;}

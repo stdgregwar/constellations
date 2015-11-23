@@ -3,14 +3,17 @@
 
 #include <SFML/Graphics.hpp>
 #include <GameState.h>
+#include <list>
 #include "Properties.h"
 #include "ResourceCache.h"
+#include "Timer.h"
 
 /**
  * @brief Main application class representing the whole game logic with a StateStack. Singleton class.
  */
 class Core
 {
+    friend class Timer; //For auto timer adding
 public:
     Core();
     /**
@@ -95,12 +98,15 @@ public:
      */
     const sf::RenderWindow& renderWindow();
 
+    //Getters of managers
     Properties& globalDict();
-
     TextureCache& textureCache();
     FontCache& fontCache();
     SoundBufferCache& soundBufferCache();
 private:
+    float addTimer(SharedTimer timer);
+    void tickTimers();
+
     void popScheduled();
     TextureCache mTextureCache;
     FontCache mFontCache;
@@ -111,6 +117,7 @@ private:
     SharedState mStateStack;
     Properties mGlobalDict;
     int mScheduledPops;
+    std::list<SharedTimer> mTimers;
 };
 
 #endif // CORE_H

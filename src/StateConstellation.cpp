@@ -278,7 +278,7 @@ void StateConstellation::onNewRound()
 void StateConstellation::onWin()
 {
     cout << "Player Won" << endl;
-    Core::get().delayedPop();
+    Timer::create(2,[]{Core::get().delayedPop();});
     //Core::get().popState();
 }
 

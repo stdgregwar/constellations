@@ -13,7 +13,9 @@ bool KeyboardController::onEvent(const sf::Event& e)
     Action a;
     a.type = Action::NONE;
 
-
+    //Suicide shortcut for tests :
+    if(e.type == sf::Event::KeyReleased && e.key.code == sf::Keyboard::S)
+        character()->hit(999);
 
     switch(mState)
     {
