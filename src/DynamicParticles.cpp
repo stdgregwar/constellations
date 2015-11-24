@@ -21,7 +21,7 @@ void DynamicParticles::uniformDistribution(sf::FloatRect rect, unsigned count, s
     mParticles.reserve(count);
     mVertexArray.resize(count*6);
     for(int i = 0; i < count; i++)
-    {   
+    {
         sf::Vector2f pos = {horizontal(gen),vertical(gen)};
         sf::Vector2f speed = {verticalSpeed(gen),verticalSpeed(gen)};
 
@@ -48,7 +48,7 @@ void DynamicParticles::updateParticles() const
 {
     int nonDecayed = 0;
     float time = Core::get().time();
-    float dt = 1/60.f;
+    float dt = Core::get().lastDt();
     int frameWidth = mTexture->getSize().x/mFrames;
     float hemiWidth = mTexture->getSize().y*0.5f;
     float hemiHeight = mTexture->getSize().y*0.5f;

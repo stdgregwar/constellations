@@ -97,11 +97,12 @@ bool Core::start()
         }
         sf::Time time = clk.restart();
         mGlobalTime += time.asSeconds();
+        mLastDt = 1/60.f;
         if(mStateStack)
         {
             mRenderWindow.clear(sf::Color(30,10,30));
             for(int i = 0; i < substeps; i++)
-                mStateStack->update((1/60.f)/substeps);
+                mStateStack->update((mLastDt)/substeps);
             mStateStack->drawAll(mRenderWindow);
             mRenderWindow.display();
         }
@@ -195,4 +196,9 @@ void Core::endGame()
     while(mStateStack)
         popState();
     mRenderWindow.close();
+}
+
+float Core::lastDt()
+{
+    return mLastDt;
 }

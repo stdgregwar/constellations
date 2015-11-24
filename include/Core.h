@@ -86,6 +86,7 @@ public:
      */
     float time();
 
+    float lastDt();
     /**
      * @brief return aspect ratio of the window
      * @return aspect ratio
@@ -113,6 +114,7 @@ private:
     SoundBufferCache mSoundBufferCache;
     sf::RenderWindow mRenderWindow;
     float mGlobalTime;
+    float mLastDt;
     static Core* mInstance;
     SharedState mStateStack;
     Properties mGlobalDict;
