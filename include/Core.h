@@ -100,6 +100,8 @@ public:
     const sf::RenderWindow& renderWindow();
 
     float timeStretch(float factor, float duration);
+    bool isStretchin();
+    float timeFactor();
     //Getters of managers
     Properties& globalDict();
     TextureCache& textureCache();
@@ -118,6 +120,7 @@ private:
     float mGlobalTime;
     float mLastDt;
     float mTimeFactor;
+    float mTargetFactor;
     static Core* mInstance;
     SharedState mStateStack;
     Properties mGlobalDict;

@@ -4,12 +4,13 @@
 #include <iostream>
 #include "StateConstellation.h"
 #include "StateTitleScreen.h"
+#include <cmath>
 
 using namespace std;
 
 Core* Core::mInstance = nullptr;
 
-Core::Core() : mGlobalTime(0), mTimeFactor(1),
+Core::Core() : mGlobalTime(0), mTimeFactor(1), mTargetFactor(1),
     mTextureCache([](const std::string& id)->sf::Texture*{
                     sf::Texture* tex = new sf::Texture();
                     if(tex->loadFromFile(id))
@@ -96,6 +97,10 @@ bool Core::start()
                 endGame();
         }
         sf::Time time = clk.restart();
+        if(mTimeFactor > mTargetFactor)
+            mTimeFactor = 0.8f*mTimeFactor+0.2f*mTargetFactor;
+        else
+            mTimeFactor = 0.98f*mTimeFactor+0.02f*mTargetFactor;
         mLastDt = basic_dt*mTimeFactor;
         mGlobalTime += mLastDt;
         if(mStateStack)
@@ -122,8 +127,8 @@ float Core::aspectRatio()
 
 float Core::timeStretch(float factor, float duration)
 {
-    mTimeFactor = factor;
-    Timer::create(duration*factor,bind([](float* fac){*fac = 1;},&mTimeFactor));
+    mTargetFactor = factor;
+    Timer::create(duration*factor,bind([](float* fac){*fac = 1;},&mTargetFactor));
 }
 
  void Core::tickTimers()
@@ -135,6 +140,16 @@ float Core::timeStretch(float factor, float duration)
          }
      }
  }
+
+bool Core::isStretchin()
+{
+    return abs(1-mTimeFactor) > 10e-2;
+}
+
+float Core::timeFactor()
+{
+    return mTimeFactor;
+}
 
 Core &Core::get()
 {

@@ -135,6 +135,10 @@ void StateConstellation::update(float delta_s)
 
 void StateConstellation::defaultUpdate(float delta_s)
 {
+    if(Core::get().isStretchin()) {
+        mExplHigh.setPitch(Core::get().timeFactor());
+        mExplLow.setPitch(Core::get().timeFactor());
+    }
     for(SharedController& c : mPlayers)
     {
         c->character()->update(delta_s);
@@ -233,7 +237,9 @@ void StateConstellation::rotEvent(const sf::Event &e)
         mMousePos = {e.mouseMove.x,e.mouseMove.y};
 }
 
-void StateConstellation::waitingEvent(const sf::Event &e) { }
+void StateConstellation::waitingEvent(const sf::Event &e){
+
+}
 
 sf::Vector2f StateConstellation::getGravFieldAt(const sf::Vector2f &p) const
 {

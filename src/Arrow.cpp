@@ -58,6 +58,7 @@ bool Arrow::update(float delta_s)
             SharedCharacter c = cstate->collideWithCharacter(mPos);
             if(c && c->id() != mOwnerID) {
                 c->hit(50);
+                mTouchSound.play();
                 if(c->isDead())
                     Core::get().timeStretch(0.125f,2.f);
             }
@@ -79,6 +80,14 @@ bool Arrow::update(float delta_s)
         }
     }
     mSprite.setPosition(mPos);
+
+    if(Core::get().isStretchin()) {
+        float tf = Core::get().timeFactor();
+        mSwiftSound.setVolume(60);
+        mSwiftSound.setPitch(tf);
+        mTouchSound.setPitch(tf);
+        mDeathSound.setPitch(tf);
+    }
     return true;
 }
 
