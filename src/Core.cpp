@@ -9,7 +9,7 @@ using namespace std;
 
 Core* Core::mInstance = nullptr;
 
-Core::Core() : mGlobalTime(0),
+Core::Core() : mGlobalTime(0), mTimeFactor(1),
     mTextureCache([](const std::string& id)->sf::Texture*{
                     sf::Texture* tex = new sf::Texture();
                     if(tex->loadFromFile(id))
@@ -96,8 +96,8 @@ bool Core::start()
                 endGame();
         }
         sf::Time time = clk.restart();
-        mGlobalTime += time.asSeconds();
-        mLastDt = 1/60.f;
+        mLastDt = basic_dt*mTimeFactor;
+        mGlobalTime += mLastDt;
         if(mStateStack)
         {
             mRenderWindow.clear(sf::Color(30,10,30));
@@ -118,6 +118,12 @@ float Core::time()
 float Core::aspectRatio()
 {
     return (float)(mRenderWindow.getSize().y) / mRenderWindow.getSize().x;
+}
+
+float Core::timeStretch(float factor, float duration)
+{
+    mTimeFactor = factor;
+    Timer::create(duration*factor,bind([](float* fac){*fac = 1;},&mTimeFactor));
 }
 
  void Core::tickTimers()

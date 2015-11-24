@@ -56,8 +56,11 @@ bool Arrow::update(float delta_s)
             //TODO find which type cstate must be...
             auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
             SharedCharacter c = cstate->collideWithCharacter(mPos);
-            if(c && c->id() != mOwnerID)
+            if(c && c->id() != mOwnerID) {
                 c->hit(50);
+                if(c->isDead())
+                    Core::get().timeStretch(0.125f,2.f);
+            }
             mPlanet = cstate->collideWithPlanet(mPos);
             if(mPlanet) {
                 mSprite.setTextureRect({0,0,10,5});

@@ -99,12 +99,14 @@ public:
      */
     const sf::RenderWindow& renderWindow();
 
+    float timeStretch(float factor, float duration);
     //Getters of managers
     Properties& globalDict();
     TextureCache& textureCache();
     FontCache& fontCache();
     SoundBufferCache& soundBufferCache();
 private:
+    static constexpr float basic_dt = 1/60.f;
     float addTimer(SharedTimer timer);
     void tickTimers();
 
@@ -115,6 +117,7 @@ private:
     sf::RenderWindow mRenderWindow;
     float mGlobalTime;
     float mLastDt;
+    float mTimeFactor;
     static Core* mInstance;
     SharedState mStateStack;
     Properties mGlobalDict;

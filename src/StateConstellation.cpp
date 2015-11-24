@@ -63,9 +63,9 @@ void StateConstellation::onBegin()
     mExpl.setFunctions({
                        bind([](StateConstellation* s, DynamicParticles::Particle& p,float time,float dt){
                                auto pl = s->collideWithPlanet(p.pos);
-                               p.speed*=0.95f;
+
                                if(!pl) {
-                                    p.speed+=s->getGravFieldAt(p.pos)*dt;
+                                    p.speed+=(s->getGravFieldAt(p.pos)-p.speed*4.f)*dt;
                                } else {
                                     p.speed = mirror(p.speed,pl->normalAt(p.pos));
                                }
@@ -150,11 +150,11 @@ void StateConstellation::defaultUpdate(float delta_s)
     );*/
     for(Players::iterator it = mPlayers.begin(); it != mPlayers.end(); it++)
     {
-        constexpr float eS = 500;
+        constexpr float eS = 600;
         if((*it)->character()->isDead()) {
             mExplLow.play();
             mExplHigh.play();
-            mExpl.uniformDistribution((*it)->character()->getBounds(),300,{-eS,-eS,2*eS,2*eS});
+            mExpl.uniformDistribution((*it)->character()->getBounds(),700,{-eS,-eS,2*eS,2*eS});
             if(it == mCurrentPlayer)
                 nextPlayer();
             mPlayers.erase(it++);
@@ -278,6 +278,7 @@ void StateConstellation::onNewRound()
 void StateConstellation::onWin()
 {
     cout << "Player Won" << endl;
+
     Timer::create(2,[]{Core::get().delayedPop();});
     //Core::get().popState();
 }
