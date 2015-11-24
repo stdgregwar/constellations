@@ -12,27 +12,29 @@ using namespace std;
 Path Character::mPath;
 
 Character::Character(SharedPlanet planet, const PlayerID &id, sf::Color c, float phi)
-    : mPlanet(planet), mFrame(0), mWalking(true), mAiming(false), mColor(c), mPV(Core::get().globalDict()["player_pv"].toInt()*50), mID(id), mLastHitTime(0)
+    : mPlanet(planet), mFrame(0), mWalking(true), mAiming(false), mColor(c),
+      mPV(Core::get().globalDict()["player_pv"].toInt()*50), mID(id), mLastHitTime(0),
+      mSkin(*Core::get().textureCache().get("data/skin.png"))
 {
     setPhi(phi);
-    mSprite.setTexture(*Core::get().textureCache().get("data/chara_w_6.png"));
-    mSprite.setOrigin(9,28);
-    mSprite.setTextureRect({0,0,18,30});
-    mSprite.setColor(mColor);
+    //mSkin.setTexture(*Core::get().textureCache().get("data/chara_w_6.png"));
+    mSkin.setOrigin(9,28);
+    //mSkin.setTextureRect({0,0,18,30});
+    //mSkin.setColor(mColor);
     mCursor.setTexture(*Core::get().textureCache().get("data/cursor.png"));
-    mCursor.setOrigin(8,mSprite.getTextureRect().height+20);
+    mCursor.setOrigin(8,mSkin.getTextureRect().height+20);
     mCursor.setColor(saturate(mColor,.7));
 }
 
 
 Character::Character(const Character& other)
-    : mSprite(other.mSprite), mPlanet(other.mPlanet), mFrame(0), mWalking(other.mWalking), mAiming(other.mAiming), mArrowStartingPoint{0,0}, mPV(other.mPV)
+    : mSkin(other.mSkin), mPlanet(other.mPlanet), mFrame(0), mWalking(other.mWalking), mAiming(other.mAiming), mArrowStartingPoint{0,0}, mPV(other.mPV)
 {
     setPhi(other.mPhi);
 }
 
 Character::Character(const Character&& other)
-    :  mSprite(other.mSprite), mPlanet(other.mPlanet), mFrame(0), mWalking(other.mWalking), mPV(other.mPV)
+    :  mSkin(other.mSkin), mPlanet(other.mPlanet), mFrame(0), mWalking(other.mWalking), mPV(other.mPV)
 {
     setPhi(other.mPhi);
 }
@@ -46,12 +48,12 @@ void Character::rot(float dphi)
 void Character::updatePos()
 {
     if(mPlanet) {
-        mSprite.setPosition(mPlanet->getPosOn(mPhi));
-        mSprite.setRotation(mPhi*TO_DEGREES+90);
+        mSkin.setPosition(mPlanet->getPosOn(mPhi));
+        mSkin.setRotation(mPhi*TO_DEGREES+90);
         //TODO position of arrow depedent of texture height, may not be a good solution
-        sf::Vector2f height = {0,mSprite.getTextureRect().height};
+        sf::Vector2f height = {0,mSkin.getTextureRect().height};
         height = rotate(height,mPhi- 90/TO_DEGREES);
-        mArrowStartingPoint = mSprite.getPosition() + height;
+        mArrowStartingPoint = mSkin.getPosition() + height;
     }
 }
 
@@ -59,8 +61,8 @@ void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     updateFrame();
     //If invulnerable, make sprite blink
-    mSprite.setColor((!isVulnerable() && int(ceilf(Core::get().time()*6.f))%2==0) ?  sf::Color(mColor.r,mColor.g,mColor.b,0) : mColor);
-    target.draw(mSprite);
+    mSkin.setColor((!isVulnerable() && int(ceilf(Core::get().time()*6.f))%2==0) ?  sf::Color(mColor.r,mColor.g,mColor.b,0) : mColor);
+    target.draw(mSkin);
     if(mAiming)
     {
         auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
@@ -81,7 +83,7 @@ void Character::drawCursor(sf::RenderTarget &target, sf::RenderStates states) co
         mCursor.setPosition(mPlanet->getPosOn(mPhi));
         mCursor.setRotation(mPhi*TO_DEGREES+90);
     }
-    mCursor.setOrigin(8,mSprite.getTextureRect().height+15+sin(Core::get().time()*5)*3);
+    mCursor.setOrigin(8,mSkin.getTextureRect().height+15+sin(Core::get().time()*5)*3);
     target.draw(mCursor);
 }
 
@@ -90,9 +92,9 @@ void Character::updateFrame() const
 {
     mFrame = (int)(Core::get().time()*10)%3;
     if(mWalking)
-        mSprite.setTextureRect({18*mFrame,0,18,30});
+        mSkin.setTextureRect({18*mFrame,0,18,30});
     else
-        mSprite.setTextureRect({0,0,18,30});
+        mSkin.setTextureRect({0,0,18,30});
 }
 
 void Character::update(float delta_s)
@@ -169,7 +171,7 @@ void Character::setPhi(float phi)
 
 bool Character::collideWith(const sf::Vector2f& p) const
 {
-    return mSprite.getGlobalBounds().contains(p);
+    return mSkin.getGlobalBounds().contains(p);
 }
 
 const PlayerID& Character::id() const
@@ -179,11 +181,11 @@ const PlayerID& Character::id() const
 
 sf::FloatRect Character::getBounds() const
 {
-    return mSprite.getGlobalBounds();
+    return mSkin.getGlobalBounds();
 }
 
 Character::~Character()
 {
-    Core::get().textureCache().free(mSprite.getTexture());
+    Core::get().textureCache().free(mSkin.getTexture());
     Core::get().textureCache().free(mCursor.getTexture());
 }

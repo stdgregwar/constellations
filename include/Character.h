@@ -6,6 +6,7 @@
 #include "Path.h"
 #include <SFML/Graphics/Sprite.hpp>
 #include <memory>
+#include "Skin.h"
 
 class Character;
 
@@ -75,7 +76,7 @@ private:
      * @brief updates texture rect to animate sprite
      */
     void updateFrame() const;
-    mutable sf::Sprite mSprite;
+    Skin mSkin;
     SharedPlanet mPlanet;
     mutable int mFrame;
     sf::Vector2f mActionSpeed;
