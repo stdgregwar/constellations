@@ -6,7 +6,8 @@
 constexpr float TO_DEGREES = 180/3.1415;
 
 inline float frac(float x) {
-    return modf(x,nullptr);
+    double shit;
+    return modf(x,&shit);
 }
 
 inline float triangleWave(float x) {
@@ -17,8 +18,8 @@ inline float smoothCurve(float x) {
     return x * x *( 3.0 - 2.0 * x );
 }
 
-inline float smoothTriangleWave(float x) {
-    return smoothCurve(triangleWave(x));
+inline float stw(float x) {
+    return smoothCurve(triangleWave(x))-0.5f;
 }
 
 #endif //CONSTELLATIONS_MATHUTILS_H

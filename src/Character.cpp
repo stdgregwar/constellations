@@ -14,16 +14,17 @@ Path Character::mPath;
 Character::Character(SharedPlanet planet, const PlayerID &id, sf::Color c, float phi)
     : mPlanet(planet), mFrame(0), mWalking(true), mAiming(false), mColor(c),
       mPV(Core::get().globalDict()["player_pv"].toInt()*50), mID(id), mLastHitTime(0),
-      mSkin(*Core::get().textureCache().get("data/skin.png"))
+      mSkin(Core::get().textureCache().get("data/skin.png"),Animations::basic)
 {
     setPhi(phi);
     //mSkin.setTexture(*Core::get().textureCache().get("data/chara_w_6.png"));
-    mSkin.setOrigin(9,28);
+    //mSkin.setOrigin(9,28);
     //mSkin.setTextureRect({0,0,18,30});
-    //mSkin.setColor(mColor);
+    mSkin.setColor(mColor);
     mCursor.setTexture(*Core::get().textureCache().get("data/cursor.png"));
-    mCursor.setOrigin(8,mSkin.getTextureRect().height+20);
+    mCursor.setOrigin(8,mSkin.height()+20);
     mCursor.setColor(saturate(mColor,.7));
+    mSkin.setAnimation("idle");
 }
 
 
@@ -50,8 +51,15 @@ void Character::updatePos()
     if(mPlanet) {
         mSkin.setPosition(mPlanet->getPosOn(mPhi));
         mSkin.setRotation(mPhi*TO_DEGREES+90);
+        if(mActionSpeed.x)
+        {
+            mSkin.setScale(mActionSpeed.x/abs(mActionSpeed.x),1);
+            mSkin.setAnimation("walk");
+        }
+        else
+            mSkin.setAnimation("idle");
         //TODO position of arrow depedent of texture height, may not be a good solution
-        sf::Vector2f height = {0,mSkin.getTextureRect().height};
+        sf::Vector2f height = {0,mSkin.height()};
         height = rotate(height,mPhi- 90/TO_DEGREES);
         mArrowStartingPoint = mSkin.getPosition() + height;
     }
@@ -61,8 +69,8 @@ void Character::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     updateFrame();
     //If invulnerable, make sprite blink
-    mSkin.setColor((!isVulnerable() && int(ceilf(Core::get().time()*6.f))%2==0) ?  sf::Color(mColor.r,mColor.g,mColor.b,0) : mColor);
-    target.draw(mSkin);
+    if(!(!isVulnerable() && int(ceilf(Core::get().time()*6.f))%2==0))
+        target.draw(mSkin);
     if(mAiming)
     {
         auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
@@ -83,18 +91,18 @@ void Character::drawCursor(sf::RenderTarget &target, sf::RenderStates states) co
         mCursor.setPosition(mPlanet->getPosOn(mPhi));
         mCursor.setRotation(mPhi*TO_DEGREES+90);
     }
-    mCursor.setOrigin(8,mSkin.getTextureRect().height+15+sin(Core::get().time()*5)*3);
+    mCursor.setOrigin(8,mSkin.height()+15+sin(Core::get().time()*5)*3);
     target.draw(mCursor);
 }
 
 
 void Character::updateFrame() const
 {
-    mFrame = (int)(Core::get().time()*10)%3;
+    /*mFrame = (int)(Core::get().time()*10)%3;
     if(mWalking)
         mSkin.setTextureRect({18*mFrame,0,18,30});
     else
-        mSkin.setTextureRect({0,0,18,30});
+        mSkin.setTextureRect({0,0,18,30});*/
 }
 
 void Character::update(float delta_s)
@@ -186,6 +194,5 @@ sf::FloatRect Character::getBounds() const
 
 Character::~Character()
 {
-    Core::get().textureCache().free(mSkin.getTexture());
     Core::get().textureCache().free(mCursor.getTexture());
 }

@@ -76,7 +76,7 @@ private:
      * @brief updates texture rect to animate sprite
      */
     void updateFrame() const;
-    Skin mSkin;
+    mutable Skin mSkin;
     SharedPlanet mPlanet;
     mutable int mFrame;
     sf::Vector2f mActionSpeed;

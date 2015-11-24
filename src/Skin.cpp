@@ -13,6 +13,26 @@ Skin::Skin(sf::Texture* skinTex, const AnimationSet& set)
     mLFoot.setTextureRect({0,32,16,16});
     mRFoot.setTextureRect({0,32,16,16});
     mEyes.setTextureRect({16,32,16,16});
+    mBody.setOrigin(16,32);
+    mLFoot.setOrigin(6,2);
+    mRFoot.setOrigin(10,2);
+    mLFoot.setPosition(0,-12);
+    mRFoot.setPosition(0,-12);
+    mEyes.setOrigin(-32,26);
+    mBody.setScale(0.9,0.9);
+    mEyes.setScale(0.9,0.9);
+}
+
+void Skin::setColor(sf::Color col)
+{
+    mBody.setColor(col);
+}
+
+void Skin::setAnimation(const std::string& name)
+{
+    AnimationSet::iterator it = mAnimationSet.find(name);
+    if(it!=mAnimationSet.end())
+        mAnim = &it->second;
 }
 
 void Skin::draw(sf::RenderTarget &target, sf::RenderStates states) const
@@ -29,6 +49,11 @@ void Skin::defaultAnimation()
         mAnim = nullptr;
 }
 
+sf::FloatRect Skin::getGlobalBounds() const
+{
+    return getTransform().transformRect(mBody.getGlobalBounds());
+}
+
 void Skin::drawBody(sf::RenderTarget &target, sf::RenderStates states) const
 {
     float time = Core::get().time();
@@ -36,13 +61,18 @@ void Skin::drawBody(sf::RenderTarget &target, sf::RenderStates states) const
     {
         mAnim->body(mBody,time);
         mAnim->eyes(mEyes,time);
-        mAnim->lFoot(mLFoot,time);
-        mAnim->rFoot(mRFoot,time);
+        mAnim->lfoot(mLFoot,time);
+        mAnim->rfoot(mRFoot,time);
     }
 
     //Draw order
-    target.draw(mLFoot);
-    target.draw(mBody);
-    target.draw(mEyes);
-    target.draw(mRFoot);
+    target.draw(mLFoot,states);
+    target.draw(mBody,states);
+    target.draw(mEyes,states);
+    target.draw(mRFoot,states);
+}
+
+Skin::~Skin()
+{
+    Core::get().textureCache().free(mTexture);
 }
