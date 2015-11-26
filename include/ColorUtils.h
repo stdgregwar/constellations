@@ -12,12 +12,18 @@
 
 using namespace std;
 
+/**
+ * @brief struct defining rgb color in double
+ */
 typedef struct {
     double r;       // percent
     double g;       // percent
     double b;       // percent
 } rgb;
 
+/**
+ * @brief struct defining hsv color in double
+ */
 typedef struct {
     double h;       // angle in degrees
     double s;       // percent
@@ -27,6 +33,10 @@ typedef struct {
 static hsv   rgb2hsv(rgb in);
 static rgb   hsv2rgb(hsv in);
 
+/**
+ * @brief Covert input rgb color into hsv color
+ * @param rgb input rgb color
+ */
 inline hsv rgb2hsv(rgb in)
 {
     hsv         out;
@@ -71,7 +81,10 @@ inline hsv rgb2hsv(rgb in)
     return out;
 }
 
-
+/**
+ * @brief Covert input hsv color into rgb color
+ * @param hsv input hsv color
+ */
 inline rgb hsv2rgb(hsv in)
 {
     double      hh, p, q, t, ff;
@@ -130,6 +143,12 @@ inline rgb hsv2rgb(hsv in)
     return out;
 }
 
+/**
+ * @brief Saturate the input Sf::Color of given percentage
+ * @param color Sf::Color that will be modified
+ * @param percent double containing new staturation percentage
+ * @return New Sf::Color
+ */
 inline sf::Color saturate(sf::Color color, double percent)
 {
     double r = color.r/255.0;

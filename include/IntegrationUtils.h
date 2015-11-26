@@ -5,7 +5,13 @@
 #include <utility>
 #include <functional>
 
-inline void integrateRG4(sf::Vector2f &position, sf::Vector2f &speed, float dt,
+/**
+ * @brief implementation of the algorithm Runge-Kutta (4 times), could be more precise with fewer steps than Euler
+ * @param position Initial position vector (will be modified)
+ * @param speed Initial speed vector (will be modified)
+ * @param eq equation used to compute the gravitation field
+ */
+inline void integrateRK4(sf::Vector2f &position, sf::Vector2f &speed, float dt,
                          std::function<sf::Vector2f(const sf::Vector2f &p, const sf::Vector2f &v)> const &eq)
 {
 
@@ -25,7 +31,12 @@ inline void integrateRG4(sf::Vector2f &position, sf::Vector2f &speed, float dt,
             position = newPosition;
             speed = newSpeed;
 }
-
+/**
+ * @brief implementation of the euler's method for integration
+ * @param position Initial position vector (will be modified)
+ * @param speed Initial speed vector (will be modified)
+ * @param eq equation used to compute the gravitation field
+ */
 inline void integrateEC(sf::Vector2f &position, sf::Vector2f &speed, float dt,
                         std::function<sf::Vector2f(const sf::Vector2f &p, const sf::Vector2f &v)> const &eq)
 {

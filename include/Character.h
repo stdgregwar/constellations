@@ -47,27 +47,44 @@ public:
     void update(float delta_s);
 
     /**
-     * @brief draw the character on the given rendertarget
+     * @brief draw the character (and if current player its cursor) on the given rendertarget
      * @param target
      * @param states
      */
     void draw(sf::RenderTarget &target, sf::RenderStates states) const;
-
-    void drawCursor(sf::RenderTarget &target, sf::RenderStates states) const;
 
     /**
      * @brief returns true if point p collides with character
      * @param p
      */
     bool collideWith(const sf::Vector2f& p) const;
-
+    /**
+    * @brief Add given action to character's action queue
+    * @param a Action to queue
+    */
     void queueAction(const Action& a);
 
+    /**
+     * @brief Return true if character is dead
+     */
     bool isDead() const;
+    /**
+     * @brief Reduces characters HP from given amounts
+     * @param pvs Amount of HP to remove
+     */
     void hit(int pvs);
+    /**
+     * @brief Give the id of the player
+     */
     const PlayerID& id() const;
+    /**
+     * @brief Return true if character is vulnerable
+     */
     bool isVulnerable() const;
 
+    /**
+     * @brief Return the bounds of the character
+     */
     sf::FloatRect getBounds() const;
 
     virtual ~Character();
@@ -76,6 +93,13 @@ private:
      * @brief updates texture rect to animate sprite
      */
     void updateFrame() const;
+
+    /**
+     * @brief draw a cursor above the character on the given rendertarget
+     * @param target
+    * @param states
+     */
+    void drawCursor(sf::RenderTarget &target, sf::RenderStates states) const;
     mutable Skin mSkin;
     SharedPlanet mPlanet;
     mutable int mFrame;
