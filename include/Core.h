@@ -86,7 +86,12 @@ public:
      */
     float time();
 
+    /**
+     * @brief last delta_t (without substeps) of simulation
+     * @return delta_t
+     */
     float lastDt();
+
     /**
      * @brief return aspect ratio of the window
      * @return aspect ratio
@@ -99,20 +104,72 @@ public:
      */
     const sf::RenderWindow& renderWindow();
 
+    /**
+     * @brief stretch time with given factor duration time
+     * @param factor factor of stretching (>1 is faster, <1 is slower)
+     * @param duration time during which the time is stretch (in seconds)
+     * @return
+     */
     float timeStretch(float factor, float duration);
+
+    /**
+     * @brief tells if the Core is time stretching
+     * @return true if core is stretching
+     */
     bool isStretchin();
+
+    /**
+     * @brief gives current time factor (time stretch factor)
+     * @return time factor
+     */
     float timeFactor();
-    //Getters of managers
+
+
+    ///Getters of managers///
+
+    /**
+     * @brief get the global dictionnary of the core
+     * @return dict
+     */
     Properties& globalDict();
+
+    /**
+     * @brief get the texture ResourceCache
+     * @return tex cache
+     */
     TextureCache& textureCache();
+
+    /**
+     * @brief get the font ResourceCache
+     * @return font cache
+     */
     FontCache& fontCache();
+
+    /**
+     * @brief get the sound buffer ResourceCache
+     * @return soundBufferCache
+     */
     SoundBufferCache& soundBufferCache();
 private:
     static constexpr float basic_dt = 1/60.f;
+
+    /**
+     * @brief add a timer to the core, only used by the friend class timer
+     * @param timer
+     * @return
+     */
     float addTimer(SharedTimer timer);
+
+    /**
+     * @brief update timers
+     */
     void tickTimers();
 
+    /**
+     * @brief pop states scheduled (pop top n states)
+     */
     void popScheduled();
+
     TextureCache mTextureCache;
     FontCache mFontCache;
     SoundBufferCache mSoundBufferCache;

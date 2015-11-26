@@ -13,42 +13,48 @@ class Action
 {
 
 public:
+    /**
+     * @brief type of the action used to discriminate the union of struct
+     */
     enum ACTION_TYPE
     {
-        NONE,
-        MOVE_X,
-        MOVE_Y,
-        JUMP,
-        AIM,
-        CANCEL,
-        THROW,
-        PUT
+        NONE, ///Default type of an action (empty action)
+        MOVE_X, ///Moving action on the x axis
+        MOVE_Y, ///Moving action on the y axis
+        JUMP, ///Jump
+        AIM, ///Aim at some direction
+        CANCEL, ///Cancel action
+        THROW, ///Throw arrow
+        PUT ///Reset character on some position
     };
 
     struct Move{
-        float distance;
+        float distance; ///position offset
     };
 
     struct Jump{
-        float strength;
+        float strength; ///jump height/strenght
     };
 
     struct Aim{
-        sf::Vector2f direction;
+        sf::Vector2f direction; ///direction of the aim
     };
 
     struct Throw{
-        sf::Vector2f direction;
+        sf::Vector2f direction; ///direction of the throw
     };
 
     struct Put{
-        sf::Vector2f position;
-        int planetID;
+        sf::Vector2f position; ///position on which to be put
+        int planetID; ///planet associated with position
     };
 
-    Action(ACTION_TYPE t = PUT) : type(t) {}
-    ACTION_TYPE type;
+    Action(ACTION_TYPE t = NONE) : type(t) {}
+    ACTION_TYPE type; ///Public action type
 
+    /**
+     * @brief Anonymous union containing all events structure (since they are never used simultaneously)
+     */
     union{
         Move move;
         Jump jump;
@@ -58,22 +64,36 @@ public:
     };
 };
 
+/**
+ * @brief Represent a queue of action (with fixed size) to be handled by the character
+ *
+ * TODO: Make thread safe
+ */
 class ActionQueue
 {
 public:
-    static constexpr size_t BUFFERSIZE = 12;
+    static constexpr size_t BUFFERSIZE = 12; ///Fixed size of the queue
 
     ActionQueue()
      : mHead(0), mTail(0)
     {
     }
 
+    /**
+     * @brief queue action
+     * @param a an action
+     */
     void queue(const Action& a)
     {
         mBuffer[mTail] = a;
         mTail = (mTail+1)%BUFFERSIZE;
     }
 
+    /**
+     * @brief poll action
+     * @param an action to fill with the new one
+     * @return true if queue isn't empty
+     */
     bool pollAction(Action& a)
     {
         bool nempty = !empty();
@@ -84,6 +104,10 @@ public:
         return nempty;
     }
 
+    /**
+     * @brief is the queue empty
+     * @return true if the queue is empty
+     */
     bool empty()
     {
         return mHead == mTail;

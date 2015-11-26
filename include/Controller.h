@@ -20,7 +20,17 @@ public:
      * @return bool if it want to end it's turn
      */
     virtual bool onEvent(const sf::Event& e) = 0;
+
+    /**
+     * @brief give the character associated to this controller
+     * @return a character
+     */
     SharedCharacter character();
+
+    /**
+     * @brief give the player ID of this controller
+     * @return a player ID
+     */
     const PlayerID& id();
 private:
     SharedCharacter mCharacter;

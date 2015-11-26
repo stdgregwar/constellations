@@ -9,3 +9,8 @@ SharedCharacter Controller::character()
 {
     return mCharacter;
 }
+
+const PlayerID& Controller::id()
+{
+    return mCharacter->id();
+}
