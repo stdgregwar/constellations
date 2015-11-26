@@ -4,6 +4,14 @@
 #include <list>
 #include "Controller.h"
 #include "MathUtils.h"
+/**
+ * @brief struct representing a planet
+ * @param pos Position (in 3d) of the planet
+ * @param mass Mass of the planet (for example 20 is a very large mass)
+ * @param radius Radius of the planet in pixel
+ * @param hasPlayer bool defining if planet can have player
+ * @param playerAngle Angle of the player on the planet in degrees
+ */
 struct PlanetDef
 {
     sf::Vector3f pos;
@@ -13,13 +21,18 @@ struct PlanetDef
     float playerAngle;
 };
 
+/**
+ * @brief struct representing a constellation, i.e. a list of planet and a max number of players
+ * @param mPlanets list of PlanetDef
+ * @param maxNumberOfPlayers Maximum number of players
+ */
 struct ConstellationDef
 {
     std::vector<PlanetDef> mPlanets;
     int maxNumberOfPlayers;
 };
 /**
- *
+ *@brief Class used to represent a constellation
  * You can define constellations with a list of planet and a max number of players
  *
  * Planet definition :

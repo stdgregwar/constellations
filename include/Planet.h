@@ -59,10 +59,20 @@ public:
      */
     sf::Color getColor() const;
 
+    /**
+     * @brief Get position vector on planet from angle
+     * @param angle Angle on the planet (in radian)
+     */
     sf::Vector2f getPosOn(float angle);
 
+    /**
+     * @brief Give planet radius
+     */
     float getRadius() const {return m3DRadius;}
-
+    /**
+     * @brief Gives normal vector from planet position to given pos
+     * @param pos Position to get vector from
+     */
     sf::Vector2f normalAt(const sf::Vector2f& pos);
 
     virtual ~Planet();
