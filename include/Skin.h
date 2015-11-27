@@ -17,12 +17,12 @@ public:
      * @brief an animation defined by one function for one sprite describing each transformation for each sprite
      */
     struct Animation{
-        std::function<void(sf::Sprite& body, float time)> body;
-        std::function<void(sf::Sprite& lfoot, float time)> lfoot;
-        std::function<void(sf::Sprite& rfoot, float time)> rfoot;
+        std::function<void(sf::Sprite& body, float time)> body; ///Body function
+        std::function<void(sf::Sprite& lfoot, float time)> lfoot; ///left foot function
+        std::function<void(sf::Sprite& rfoot, float time)> rfoot; ///right foot function
         std::function<void(sf::Sprite& lhand, float time)> lhand;
         std::function<void(sf::Sprite& rhand, float time)> rhand;
-        std::function<void(sf::Sprite& eyes, float time)> eyes;
+        std::function<void(sf::Sprite& eyes, float time)> eyes; ///eyes function
     };
 
     typedef std::map<std::string,Animation> AnimationSet; ///Type def for a set of animation
