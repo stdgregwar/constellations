@@ -17,7 +17,6 @@ public:
      * @brief an animation defined by one function for one sprite describing each transformation for each sprite
      */
     struct Animation{
-
         std::function<void(sf::Sprite& body, float time)> body; ///Body function
         std::function<void(sf::Sprite& lfoot, float time)> lfoot; ///left foot function
         std::function<void(sf::Sprite& rfoot, float time)> rfoot; ///right foot function
