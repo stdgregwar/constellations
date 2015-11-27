@@ -17,10 +17,13 @@ public:
      * @brief an animation defined by one function for one sprite describing each transformation for each sprite
      */
     struct Animation{
-        std::function<void(sf::Sprite& body, float time)> body; ///Body function
-        std::function<void(sf::Sprite& lfoot, float time)> lfoot; ///left foot function
-        std::function<void(sf::Sprite& rfoot, float time)> rfoot; ///right foot function
-        std::function<void(sf::Sprite& eyes, float time)> eyes; ///eyes function
+
+        std::function<void(sf::Sprite& body, float time)> body;
+        std::function<void(sf::Sprite& lfoot, float time)> lfoot;
+        std::function<void(sf::Sprite& rfoot, float time)> rfoot;
+        std::function<void(sf::Sprite& lhand, float time)> lhand;
+        std::function<void(sf::Sprite& rhand, float time)> rhand;
+        std::function<void(sf::Sprite& eyes, float time)> eyes;
     };
 
     typedef std::map<std::string,Animation> AnimationSet; ///Type def for a set of animation
@@ -76,6 +79,8 @@ private:
     mutable sf::Sprite mRFoot;
     mutable sf::Sprite mBody;
     mutable sf::Sprite mEyes;
+    mutable sf::Sprite mLHand;
+    mutable sf::Sprite mRHand;
     Animation* mAnim;
     AnimationSet mAnimationSet;
 };
@@ -83,18 +88,22 @@ namespace Animations {
 const Skin::AnimationSet basic{ ///Basic animation set
     {"idle", ///default idle animation
         {
-            [](sf::Sprite& s,float t){s.setPosition(0,stw(t)+2);}, ///Body up down
-            [](sf::Sprite& s,float t){s.setRotation(0);}, ///No move
-            [](sf::Sprite& s,float t){s.setRotation(0);}, ///No move
-            [](sf::Sprite& s,float t){s.setPosition(-32,stw(t-0.3)*0.5);} ///Dephased eye up down
+            [](sf::Sprite& s,float t){s.setPosition(0,stw(t)+2);},
+            [](sf::Sprite& s,float t){s.setRotation(0);},
+            [](sf::Sprite& s,float t){s.setRotation(0);},
+            [](sf::Sprite& s,float t){s.setRotation(20);s.setPosition(8,stw(t-0.3)*0.5-12);},
+            [](sf::Sprite& s,float t){s.setRotation(20);s.setPosition(-1,stw(t-0.3)*0.5-12);},
+            [](sf::Sprite& s,float t){s.setPosition(-32,stw(t-0.3)*0.5);}
         }
     },
     {"walk", ///walk animation
         {
-            [](sf::Sprite& s,float t){s.setPosition(0,stw(t*3)+2);}, ///Faster body up-down
-            [](sf::Sprite& s,float t){s.setRotation(stw(t*3)*90);}, ///lfoot swing
-            [](sf::Sprite& s,float t){s.setRotation(stw((t+0.5)*3)*90);}, ///rfoot swing
-            [](sf::Sprite& s,float t){s.setPosition(-32,stw((t+0.3)*3)*0.5);} ///faster dephased eye up down
+            [](sf::Sprite& s,float t){s.setPosition(0,stw(t*3)+2);},
+            [](sf::Sprite& s,float t){s.setRotation(stw(t*3)*90);},
+            [](sf::Sprite& s,float t){s.setRotation(stw((t+0.5)*3)*90);},
+            [](sf::Sprite& s,float t){s.setRotation(stw((t+0.5)*3)*90);s.setPosition(8,stw(t-0.3)*0.5-12);},
+            [](sf::Sprite& s,float t){s.setRotation(stw(t*3)*90);s.setPosition(-1,stw(t-0.3)*0.5-12);},
+            [](sf::Sprite& s,float t){s.setPosition(-32,stw(t-5+0.3)*0.5);}
         }
     }
 };
