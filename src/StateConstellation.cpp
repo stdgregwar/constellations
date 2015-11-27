@@ -65,9 +65,9 @@ void StateConstellation::onBegin()
                                auto pl = s->collideWithPlanet(p.pos);
 
                                if(!pl) {
-                                    p.speed+=(s->getGravFieldAt(p.pos)-p.speed*4.f)*dt;
+                                    p.speed+=(s->getGravFieldAt(p.pos)-p.speed*3.f)*dt;
                                } else {
-                                    p.speed = mirror(p.speed,pl->normalAt(p.pos));
+                                    p.speed = {0,0};//bounce(p.speed,pl->normalAt(p.pos))*0.8f;
                                }
                                p.pos+=p.speed*dt;
                            },this,_1,_2,_3),
@@ -154,11 +154,11 @@ void StateConstellation::defaultUpdate(float delta_s)
     );*/
     for(Players::iterator it = mPlayers.begin(); it != mPlayers.end(); it++)
     {
-        constexpr float eS = 600;
+        constexpr float eS = 500;
         if((*it)->character()->isDead()) {
             mExplLow.play();
             mExplHigh.play();
-            mExpl.uniformDistribution((*it)->character()->getBounds(),700,{-eS,-eS,2*eS,2*eS});
+            mExpl.uniformDistribution((*it)->character()->getBounds(),800,{-eS,-eS,2*eS,2*eS});
             if(it == mCurrentPlayer)
                 nextPlayer();
             mPlayers.erase(it++);
