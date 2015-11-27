@@ -9,10 +9,18 @@ Skin::Skin(sf::Texture* skinTex, const AnimationSet& set)
     mEyes.setTexture(*mTexture);
     mLFoot.setTexture(*mTexture);
     mRFoot.setTexture(*mTexture);
+    mRHand.setTexture(*mTexture);
+    mLHand.setTexture(*mTexture);
     mBody.setTextureRect({0,0,32,32}); //TODO modularize
     mLFoot.setTextureRect({0,32,16,16});
     mRFoot.setTextureRect({0,32,16,16});
     mEyes.setTextureRect({16,32,16,16});
+    mRHand.setTextureRect({0,48,16,16});
+    mLHand.setTextureRect({0,48,16,16});
+    mLHand.setOrigin(8,4);
+    mRHand.setOrigin(8,4);
+    mLHand.setPosition(0,-12);
+    mRHand.setPosition(0,-12);
     mBody.setOrigin(16,32);
     mLFoot.setOrigin(6,2);
     mRFoot.setOrigin(10,2);
@@ -26,6 +34,8 @@ Skin::Skin(sf::Texture* skinTex, const AnimationSet& set)
 void Skin::setColor(sf::Color col)
 {
     mBody.setColor(col);
+    mRHand.setColor(col);
+    mLHand.setColor(col);
 }
 
 void Skin::setAnimation(const std::string& name)
@@ -63,13 +73,17 @@ void Skin::drawBody(sf::RenderTarget &target, sf::RenderStates states) const
         mAnim->eyes(mEyes,time);
         mAnim->lfoot(mLFoot,time);
         mAnim->rfoot(mRFoot,time);
+        mAnim->lhand(mLHand,time);
+        mAnim->rhand(mRHand,time);
     }
 
     //Draw order
     target.draw(mLFoot,states);
+    target.draw(mLHand,states);
     target.draw(mBody,states);
     target.draw(mEyes,states);
     target.draw(mRFoot,states);
+    target.draw(mRHand,states);
 }
 
 Skin::~Skin()

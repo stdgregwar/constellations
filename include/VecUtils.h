@@ -64,9 +64,19 @@ inline float operator*(const sf::Vector2f& a, const sf::Vector2f& b)
     return a.x*b.x+a.y*b.y;
 }
 
-inline sf::Vector2f mirror(const sf::Vector2f& d, const sf::Vector2f& n)
+/**
+ * @brief mirror the given vector by the given normal only if it goes toward the plane
+ * @param d vector direction
+ * @param n normal vector
+ * @return d if d in same 'direction' than n, d mirrored by n otherwise
+ */
+inline sf::Vector2f bounce(const sf::Vector2f& d, const sf::Vector2f& n)
 {
-    return d - (2.f*d*n)*n;
+    float r = (2.f*d*n);
+    if(r < 0)
+        return d - r*n;
+    else
+        return d;
 }
 
 #endif // VECUTILS_H

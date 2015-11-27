@@ -15,6 +15,8 @@ public:
         std::function<void(sf::Sprite& body, float time)> body;
         std::function<void(sf::Sprite& lfoot, float time)> lfoot;
         std::function<void(sf::Sprite& rfoot, float time)> rfoot;
+        std::function<void(sf::Sprite& lhand, float time)> lhand;
+        std::function<void(sf::Sprite& rhand, float time)> rhand;
         std::function<void(sf::Sprite& eyes, float time)> eyes;
     };
 
@@ -36,6 +38,8 @@ private:
     mutable sf::Sprite mRFoot;
     mutable sf::Sprite mBody;
     mutable sf::Sprite mEyes;
+    mutable sf::Sprite mLHand;
+    mutable sf::Sprite mRHand;
     Animation* mAnim;
     AnimationSet mAnimationSet;
 };
@@ -46,6 +50,8 @@ const Skin::AnimationSet basic{
             [](sf::Sprite& s,float t){s.setPosition(0,stw(t)+2);},
             [](sf::Sprite& s,float t){s.setRotation(0);},
             [](sf::Sprite& s,float t){s.setRotation(0);},
+            [](sf::Sprite& s,float t){s.setRotation(20);s.setPosition(8,stw(t-0.3)*0.5-12);},
+            [](sf::Sprite& s,float t){s.setRotation(20);s.setPosition(-1,stw(t-0.3)*0.5-12);},
             [](sf::Sprite& s,float t){s.setPosition(-32,stw(t-0.3)*0.5);}
         }
     },
@@ -54,6 +60,8 @@ const Skin::AnimationSet basic{
             [](sf::Sprite& s,float t){s.setPosition(0,stw(t*3)+2);},
             [](sf::Sprite& s,float t){s.setRotation(stw(t*3)*90);},
             [](sf::Sprite& s,float t){s.setRotation(stw((t+0.5)*3)*90);},
+            [](sf::Sprite& s,float t){s.setRotation(stw((t+0.5)*3)*90);s.setPosition(8,stw(t-0.3)*0.5-12);},
+            [](sf::Sprite& s,float t){s.setRotation(stw(t*3)*90);s.setPosition(-1,stw(t-0.3)*0.5-12);},
             [](sf::Sprite& s,float t){s.setPosition(-32,stw(t-5+0.3)*0.5);}
         }
     }
