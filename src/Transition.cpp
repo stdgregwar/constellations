@@ -14,6 +14,6 @@ void Transition::setTexture(sf::Texture* tex)
 
 const sf::Texture* Transition::tRender() const
 {
-    return mTex;
+    return mTexture;
 }
 >>>>>>> Transition abstract
