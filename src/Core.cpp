@@ -10,7 +10,7 @@ using namespace std;
 
 Core* Core::mInstance = nullptr;
 
-Core::Core() : mGlobalTime(0), mTimeFactor(1), mTargetFactor(1),
+Core::Core() : mGlobalTime(0), mTimeFactor(1), mTargetFactor(1), mTransition(nullptr),
     mTextureCache([](const std::string& id)->sf::Texture*{
                     sf::Texture* tex = new sf::Texture();
                     if(tex->loadFromFile(id))
@@ -101,17 +101,37 @@ bool Core::start()
             mTimeFactor = 0.8f*mTimeFactor+0.2f*mTargetFactor;
         else
             mTimeFactor = 0.98f*mTimeFactor+0.02f*mTargetFactor;
-        mLastDt = basic_dt*mTimeFactor;
+
+        //mLastDt = basic_dt*mTimeFactor;
+        mLastDt = time.asSeconds()*mTimeFactor;
         mGlobalTime += mLastDt;
         if(mStateStack)
         {
             mRenderWindow.clear(sf::Color(30,10,30));
-            for(int i = 0; i < substeps; i++)
-                mStateStack->update((mLastDt)/substeps);
-            mStateStack->drawAll(mRenderWindow);
+            if(mTransition) {
+                mPrimaryRenderTex.clear(sf::Color(30,10,30));
+                mSecondRenderTex.clear(sf::Color(30,10,30));
+                mFromTransition->draw(mPrimaryRenderTex);
+                mStateStack->draw(mSecondRenderTex);
+                switch(mTransition->update())
+                {
+                    case Transition::END:
+                        delete mTransition;
+                        mTransition = nullptr;
+                        mStateStack->drawAll(mRenderWindow);
+                        break;
+                    default:
+                        mTransition->render(mRenderWindow,mPrimaryRenderTex.getTexture(),mSecondRenderTex.getTexture());
+                }
+
+
+            } else {
+                for(int i = 0; i < substeps; i++)
+                    mStateStack->update((mLastDt)/substeps);
+                mStateStack->drawAll(mRenderWindow);
+            }
             mRenderWindow.display();
         }
-
     }
 }
 
@@ -158,19 +178,19 @@ Core &Core::get()
     return *mInstance;
 }
 
-void Core::replaceState(SharedState state)
+void Core::replaceState(SharedState state, Transition *t)
 {
     popState(); //TODO avoid resume and pause parent state
     pushState(state);
 }
 
-SharedState Core::delayedPop()
+SharedState Core::delayedPop(Transition* t)
 {
     mScheduledPops++;
     return mStateStack;
 }
 
-SharedState Core::popState()
+SharedState Core::popState(Transition* t)
 {
     SharedState poped = mStateStack;
     mStateStack = poped->child();
@@ -189,8 +209,12 @@ SharedState Core::currentState()
     return mStateStack;
 }
 
-void Core::pushState(SharedState state)
+void Core::pushState(SharedState state, Transition* t)
 {
+    if(t) {
+        setTransition(t);
+        mFromTransition = mStateStack;
+    }
     SharedState child = mStateStack;
     mStateStack = state;
     if(child and mStateStack) {
@@ -217,6 +241,13 @@ void Core::endGame()
     while(mStateStack)
         popState();
     mRenderWindow.close();
+}
+
+void Core::setTransition(Transition *t)
+{
+    mTransition = t;
+    mPrimaryRenderTex.create(mRenderWindow.getSize().x,mRenderWindow.getSize().y); //Create two render textures to render states
+    mSecondRenderTex.create(mRenderWindow.getSize().x,mRenderWindow.getSize().y);
 }
 
 float Core::lastDt()

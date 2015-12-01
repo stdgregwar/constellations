@@ -3,24 +3,27 @@
 #include <cmath>
 #include "Core.h"
 
-Planet::Planet(const sf::Vector3f &pos, float mass, float radius) :
+Planet::Planet(const sf::Vector3f &pos, float mass, float radius) : mSkin(radius),
     mMass(mass), m3DPos(pos), m3DRadius(radius)
 {
     //setFillColor(getColor());
-    setTexture(*Core::get().textureCache().get("data/planet.png"));
-    setOrigin(getTexture()->getSize().x/2,getTexture()->getSize().y/2);
-    setScale(radius/25.f,radius/25.f);
+    setPosition(pos.x,pos.y);
     //update2DPos();
 }
 
-Planet::Planet(const Planet& other) : mMass(other.mMass), m3DPos(other.m3DPos)
+Planet::Planet(const Planet& other) : mMass(other.mMass), m3DPos(other.m3DPos), mSkin(other.m3DRadius)
 {
 
 }
 
-Planet::Planet(const Planet&& other) : mMass(other.mMass), m3DPos(other.m3DPos)
+Planet::Planet(const Planet&& other) : mMass(other.mMass), m3DPos(other.m3DPos), mSkin(other.m3DRadius)
 {
 
+}
+
+void Planet::draw(sf::RenderTarget &target, sf::RenderStates states) const
+{
+    mSkin.draw(target,sf::RenderStates(getTransform()));
 }
 
 const sf::Vector3f& Planet::get3DPos() const
@@ -75,5 +78,4 @@ sf::Vector2f Planet::normalAt(const sf::Vector2f& pos)
 
 Planet::~Planet()
 {
-    Core::get().textureCache().free(getTexture());
 }
