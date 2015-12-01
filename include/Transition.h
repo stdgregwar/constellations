@@ -4,21 +4,19 @@
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Texture.hpp>
 
-class Transition : public sf::Drawable
+class Transition
 {
 public:
-    enum Draw
+    enum State
     {
         FIRST,
-        SECOND
+        SECOND,
+        END
     };
 
     Transition();
-    void setTexture(sf::Texture* tex);
-    virtual Draw update() = 0;
-    const sf::Texture* tRender() const;
-private:
-    sf::Texture* mTexture;
+    virtual State update() = 0;
+    virtual void render(sf::RenderTarget& target, const sf::Texture& first, const sf::Texture& second) const = 0;
 };
 
 #endif // TRANSITION_H
