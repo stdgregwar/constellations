@@ -35,6 +35,10 @@ void DynamicParticles::uniformDistribution(sf::FloatRect rect, unsigned count, s
         mVertexArray[j+5].position = {r.left+r.width,r.top+r.height};*/
 
         mParticles.push_back({phase(gen),Core::get().time(),pos,speed,&mVertexArray[i*6]});
+        for(int j = 0; j<6; j++)
+        {
+            mVertexArray[i*6+j].color = sf::Color(0x888888ff);
+        }
     }
 }
 
@@ -120,7 +124,9 @@ void DynamicParticles::setTexture(const sf::Texture* tex, int frames)
 void DynamicParticles::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     updateParticles();
-    target.draw(mVertexArray,sf::RenderStates(mTexture));
+    states.texture = mTexture;
+    states.blendMode = sf::BlendAdd;
+    target.draw(mVertexArray,states);
 }
 
 DynamicParticles::~DynamicParticles()

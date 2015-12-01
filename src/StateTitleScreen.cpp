@@ -4,6 +4,7 @@
 #include "Button.h"
 #include "SpinBox.h"
 #include <functional>
+#include "CrossFadeTransition.h"
 
 StateTitleScreen::StateTitleScreen() : mMainWidget(new Widget())
 {
@@ -67,7 +68,7 @@ void StateTitleScreen::onPause()
 void StateTitleScreen::launchStateConstellation()
 {
     setVisible(false);
-    Core::get().pushState(SharedState(new StateConstellation()));
+    Core::get().pushState(SharedState(new StateConstellation()), new CrossFadeTransition(0.5));
 }
 
 void StateTitleScreen::draw(sf::RenderTarget &target)

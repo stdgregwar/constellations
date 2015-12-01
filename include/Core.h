@@ -7,6 +7,7 @@
 #include "Properties.h"
 #include "ResourceCache.h"
 #include "Timer.h"
+#include "Transition.h"
 
 /**
  * @brief Main application class representing the whole game logic with a StateStack. Singleton class.
@@ -49,19 +50,19 @@ public:
      * @brief Put a new state in place of the current one
      * @param state
      */
-    void replaceState(SharedState state);
+    void replaceState(SharedState state, Transition* t = nullptr);
 
     /**
      * @brief popState and resume the previous one, exiting if none
      * @return
      */
-    SharedState popState();
+    SharedState popState(Transition* t = nullptr);
 
     /**
      * @brief pop state on next tick
      * @return
      */
-    SharedState delayedPop();
+    SharedState delayedPop(Transition* t = nullptr);
 
     /**
      * @brief get currentState
@@ -73,7 +74,7 @@ public:
      * @brief Pushes a new state on the stack, keeping the older ones and keeping drawing them
      * @param state
      */
-    void pushState(SharedState state);
+    void pushState(SharedState state, Transition* t = nullptr);
 
     /**
      * @brief pop all states and close the window
@@ -170,6 +171,8 @@ private:
      */
     void popScheduled();
 
+    void setTransition(Transition* t);
+
     TextureCache mTextureCache;
     FontCache mFontCache;
     SoundBufferCache mSoundBufferCache;
@@ -183,6 +186,10 @@ private:
     Properties mGlobalDict;
     int mScheduledPops;
     std::list<SharedTimer> mTimers;
+    Transition* mTransition;
+    SharedState mFromTransition;
+    sf::RenderTexture mPrimaryRenderTex;
+    sf::RenderTexture mSecondRenderTex;
 };
 
 #endif // CORE_H

@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include "Mat4.h"
+#include "PlanetSkin.h"
 
 class Planet;
 
@@ -12,7 +13,7 @@ typedef std::shared_ptr<Planet> SharedPlanet;
 /**
  * @brief Represet a planet with 3D coordinates projeted in 2D
  */
-class Planet : public sf::Sprite
+class Planet : public sf::Drawable, public sf::Transformable
 {
 public:
     Planet(const sf::Vector3f& pos, float mass, float radius);
@@ -31,6 +32,8 @@ public:
      */
     void update2DPos(const Mat4& trans);
     //void draw(sf::RenderTarget& target) const;
+
+    void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
     /**
      * @brief get the vectorial gravitational field contribution of this planet on given position
@@ -77,6 +80,7 @@ public:
 
     virtual ~Planet();
 private:
+    PlanetSkin mSkin;
     sf::Vector3f m3DPos;
     float m3DRadius;
     float mMass;
