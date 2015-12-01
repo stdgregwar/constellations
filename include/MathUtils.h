@@ -3,6 +3,10 @@
 
 #include <cmath>
 
+#ifndef M_PI
+#define M_PI 3.14159265359
+#endif
+
 constexpr float TO_DEGREES = 180/3.1415;
 
 /**
