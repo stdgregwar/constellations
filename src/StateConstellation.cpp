@@ -38,7 +38,9 @@ void StateConstellation::onBegin()
     int numberOfPlayers = Core::get().globalDict()["player_count"].toInt();
     while(constellations[i].maxNumberOfPlayers < numberOfPlayers)
     {
-        i = (i +1)%numbersOfMap;
+        //May be very bad, but since pool is quite limited, may work...
+        i =  int_dist(rng);
+        //i = (i +1)%numbersOfMap;
     }
     constellation.buildFromConstellationDef(constellations[i],numberOfPlayers);
     mPlanets = constellation.getPlanets();
