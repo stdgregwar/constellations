@@ -18,27 +18,17 @@ void StateTitleScreen::onBegin()
     mTitle.setTexture(*titleTex);
     mTitle.setScale(2.5f,2.5f);
     Core::get().textureCache().get("data/constellations.png")->setSmooth(false);
-    //mTitle.setString("Constellations");
-    sf::Text text;
-    text.setFont(*Core::get().fontCache().get("default"));
-    text.setString("Start!");
-    text.setCharacterSize(50);
 
     mTitle.setPosition(1280/2,200);
-    //mTitle.setCharacterSize(156);
-    text.setPosition(1280/2-150,720/2);
 
-    mMainWidget->add(new Button(text,std::bind(&StateTitleScreen::launchStateConstellation,this)));
-    text.move(0,60);
-    text.setString("Players :");
-    mMainWidget->add(new SpinBox(text,2,2,5,std::bind(&StateTitleScreen::setPlayerCount,this,_1)));
-    text.move(0,60);
-    text.setString("Life points :");
-    mMainWidget->add(new SpinBox(text,1,1,10,std::bind(&StateTitleScreen::setPlayerPv,this,_1)));
-    text.move(0,60);
-    text.setString(L"Quit");
-    mMainWidget->add(new Button(text,[]{Core::get().endGame();}));
+    SharedWidget start = mMainWidget->add(new Button(L"Start!",std::bind(&StateTitleScreen::launchStateConstellation,this)));
+    start->setPosition(1280/2-150+90,720/2+90);
+    start->add(new SpinBox("Players",2,2,5,std::bind(&StateTitleScreen::setPlayerCount,this,_1)))->setPosition(0,60);
+    start->add(new SpinBox("Life points",1,1,10,std::bind(&StateTitleScreen::setPlayerPv,this,_1)))->setPosition(0,120);
+    start->add(new Button(L"Quit",[]{Core::get().endGame();}))->setPosition(0,180);
     mMainWidget->show();
+    start->show();
+    start->setOrigin(90,90);
 
     mBackground.setTexture(Core::get().textureCache().get("data/stars_w_4.png"),4);
     mBackground.uniformDistribution({0,0,1280,720}, 150);
@@ -48,11 +38,13 @@ void StateTitleScreen::onBegin()
 void StateTitleScreen::update(float delta_s)
 {
     //NA
+    mMainWidget->children()[0]->setRotation(stw(Core::get().time())*5);
 }
 
 void StateTitleScreen::onResume()
 {
-    mView = Core::get().renderWindow().getDefaultView();
+    sf::Vector2u size = Core::get().renderWindow().getSize();
+    mView.setSize(size.x,size.y);
 }
 
 void StateTitleScreen::onEnd()
@@ -81,7 +73,7 @@ void StateTitleScreen::draw(sf::RenderTarget &target)
 
 void StateTitleScreen::pushEvent(const sf::Event &e)
 {
-    mMainWidget->pushEvent(e);
+    mMainWidget->pushEvent(e,mView);
     switch(e.type)
     {
         case sf::Event::KeyReleased:
@@ -89,7 +81,9 @@ void StateTitleScreen::pushEvent(const sf::Event &e)
                 launchStateConstellation();
             if(e.key.code == sf::Keyboard::Escape)
                 Core::get().endGame();
-            break;
+        break;
+    case sf::Event::Resized:
+        mView.setSize(e.size.width,e.size.height);
     }
 }
 

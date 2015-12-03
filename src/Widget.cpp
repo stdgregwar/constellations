@@ -9,8 +9,11 @@ Widget::Widget(SharedWidget parent) : mParent(parent)
 void Widget::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     if(mVisible)
-        for(auto c : mChildren)
-            c->draw(target,states);
+        for(auto c : mChildren) {
+            sf::RenderStates s = states;
+            s.transform *= c->getTransform();
+            c->draw(target,s);
+        }
 }
 
 void Widget::add(SharedWidget w)
@@ -20,9 +23,11 @@ void Widget::add(SharedWidget w)
     mChildren.push_back(w);
 }
 
-void Widget::add(Widget* w)
+SharedWidget Widget::add(Widget* w)
 {
-    add(SharedWidget(w));
+    SharedWidget sw(w);
+    add(sw);
+    return sw;
 }
 
 void Widget::setParent(SharedWidget w)
@@ -54,16 +59,27 @@ bool Widget::visible()
     return mVisible;
 }
 
-bool Widget::onEvent(const sf::Event& e)
+sf::Transform Widget::getFullTransform() const
+{
+    if(!mParent.expired())
+    {
+        SharedWidget sw(mParent);
+        return sw->getFullTransform() * getTransform();
+    }
+    else
+        return getTransform();
+}
+
+bool Widget::onEvent(const sf::Event& e, const sf::View& view)
 {
 
 }
 
-bool Widget::pushEvent(const sf::Event &e){
+bool Widget::pushEvent(const sf::Event &e, const sf::View& view){
     if(mVisible)
         for(auto c : mChildren) {
-            c->onEvent(e);
-            c->pushEvent(e);
+            c->onEvent(e,view);
+            c->pushEvent(e,view);
         }
     return true;
 }

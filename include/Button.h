@@ -19,7 +19,7 @@ public:
      * @param text an sf::Text instance
      * @param c callback function
      */
-    Button(const sf::Text& text, std::function<void()> c);
+    Button(const sf::String& text, std::function<void()> c, int csize = 50);
 
     /**
      * @brief draw the button on the given target
@@ -50,10 +50,9 @@ public:
      * @param e
      * @return
      */
-    bool onEvent(const sf::Event& e);
+    bool onEvent(const sf::Event& e, const sf::View& view);
 private:
     bool mHovered;
-    sf::View mView;
     sf::Text mText;
     std::function<void()> mCallback;
 };
