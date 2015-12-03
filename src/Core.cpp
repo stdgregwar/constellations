@@ -61,7 +61,10 @@ SoundBufferCache& Core::soundBufferCache()
 void Core::popScheduled()
 {
     for(;mScheduledPops>0; --mScheduledPops)
-        popState();
+    {
+        popState(mScheduledTransition);
+        mScheduledTransition = nullptr;
+    }
 }
 
 bool Core::init(sf::Vector2u size)
@@ -109,10 +112,6 @@ bool Core::start()
         {
             mRenderWindow.clear(sf::Color(30,10,30));
             if(mTransition) {
-                mPrimaryRenderTex.clear(sf::Color(30,10,30));
-                mSecondRenderTex.clear(sf::Color(30,10,30));
-                mFromTransition->draw(mPrimaryRenderTex);
-                mStateStack->draw(mSecondRenderTex);
                 switch(mTransition->update())
                 {
                     case Transition::END:
@@ -120,10 +119,15 @@ bool Core::start()
                         mTransition = nullptr;
                         mStateStack->drawAll(mRenderWindow);
                         break;
-                    default:
-                        mTransition->render(mRenderWindow,mPrimaryRenderTex.getTexture(),mSecondRenderTex.getTexture());
+                    case Transition::FIRST:
+                        mFromTransition->draw(mRenderWindow);
+                        mRenderWindow.draw(*mTransition);
+                        break;
+                    case Transition::SECOND:
+                        mStateStack->drawAll(mRenderWindow);
+                        mRenderWindow.draw(*mTransition);
+                        break;
                 }
-
 
             } else {
                 for(int i = 0; i < substeps; i++)
@@ -187,6 +191,7 @@ void Core::replaceState(SharedState state, Transition *t)
 SharedState Core::delayedPop(Transition* t)
 {
     mScheduledPops++;
+    mScheduledTransition = t;
     return mStateStack;
 }
 
@@ -200,7 +205,8 @@ SharedState Core::popState(Transition* t)
         mStateStack->onResume();
         mStateStack->setVisible(true);
     }
-
+    mFromTransition = poped;
+    setTransition(t);
     return poped;
 }
 
@@ -246,8 +252,6 @@ void Core::endGame()
 void Core::setTransition(Transition *t)
 {
     mTransition = t;
-    mPrimaryRenderTex.create(mRenderWindow.getSize().x,mRenderWindow.getSize().y); //Create two render textures to render states
-    mSecondRenderTex.create(mRenderWindow.getSize().x,mRenderWindow.getSize().y);
 }
 
 float Core::lastDt()

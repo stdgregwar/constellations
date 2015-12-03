@@ -187,9 +187,8 @@ private:
     int mScheduledPops;
     std::list<SharedTimer> mTimers;
     Transition* mTransition;
+    Transition* mScheduledTransition;
     SharedState mFromTransition;
-    sf::RenderTexture mPrimaryRenderTex;
-    sf::RenderTexture mSecondRenderTex;
 };
 
 #endif // CORE_H

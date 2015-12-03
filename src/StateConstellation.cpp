@@ -11,6 +11,7 @@
 #include "Mat4.h"
 #include "KeyboardController.h"
 #include "MathUtils.h"
+#include "CrossFadeTransition.h"
 #include "VecUtils.h"
 
 using namespace std;
@@ -287,7 +288,7 @@ void StateConstellation::onWin()
 {
     cout << "Player Won" << endl;
 
-    Timer::create(2,[]{Core::get().delayedPop();});
+    Timer::create(2,[]{Core::get().delayedPop(new CrossFadeTransition(0.5));});
     //Core::get().popState();
 }
 

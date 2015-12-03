@@ -4,7 +4,7 @@
 
 using namespace std;
 
-CrossFadeTransition::CrossFadeTransition(float duration) : mDuration(duration)
+CrossFadeTransition::CrossFadeTransition(float duration) : mDuration(duration), mState(Transition::FIRST)
 {
     mStart = Core::get().time();
     mScreen.resize(6);
@@ -18,12 +18,10 @@ CrossFadeTransition::CrossFadeTransition(float duration) : mDuration(duration)
     mScreen[5] = sf::Vertex({size.x,size.y},{size.x,0});
 }
 
-void CrossFadeTransition::render(sf::RenderTarget& target, const sf::Texture& first, const sf::Texture& second) const
+void CrossFadeTransition::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    setScreenColor(sf::Color(255,255,255,mTargetAlpha));
-    target.draw(mScreen,sf::RenderStates(&first));
-    setScreenColor(sf::Color(255,255,255,255-mTargetAlpha));
-    target.draw(mScreen,sf::RenderStates(&second));
+    target.setView(target.getDefaultView());
+    target.draw(mScreen);
 }
 
 void CrossFadeTransition::setScreenColor(sf::Color c) const
@@ -35,10 +33,30 @@ void CrossFadeTransition::setScreenColor(sf::Color c) const
 Transition::State CrossFadeTransition::update()
 {
     float time = Core::get().time();
-    if(mStart+mDuration > time) {
-        mTargetAlpha = max(0,min(255,int((1-(time-mStart)/mDuration)*255)));
-        return SECOND;
+
+    switch(mState)
+    {
+        case FIRST:
+        if(mStart+mDuration/2 > time) {
+            mTargetAlpha = max(0,min(255,int(((time-mStart)*2/mDuration)*255)));
+            setScreenColor(sf::Color(0,0,0,mTargetAlpha));
+        }
+        else{
+            mState = SECOND;
+            mStart = time;
+        }
+        break;
+        case SECOND:
+        if(mStart+mDuration/2 > time) {
+            mTargetAlpha = max(0,min(255,int((1-(time-mStart)*2/mDuration)*255)));
+            setScreenColor(sf::Color(0,0,0,mTargetAlpha));
+        }
+        else
+            mState = END;
+        break;
+        case END:
+        break;
     }
-    else
-        return END;
+
+    return mState;
 }

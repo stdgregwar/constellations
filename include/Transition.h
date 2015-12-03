@@ -4,7 +4,7 @@
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Texture.hpp>
 
-class Transition
+class Transition : public sf::Drawable
 {
 public:
     enum State
@@ -16,7 +16,6 @@ public:
 
     Transition();
     virtual State update() = 0;
-    virtual void render(sf::RenderTarget& target, const sf::Texture& first, const sf::Texture& second) const = 0;
 };
 
 #endif // TRANSITION_H

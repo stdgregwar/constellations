@@ -9,9 +9,10 @@ class CrossFadeTransition : public Transition
 {
 public:
     CrossFadeTransition(float duration);
-    void render(sf::RenderTarget& target, const sf::Texture& first, const sf::Texture& second) const;
+    void draw(sf::RenderTarget &target, sf::RenderStates states) const;
     Transition::State update();
 private:
+    Transition::State mState;
     void setScreenColor(sf::Color c) const;
     mutable sf::VertexArray mScreen;
     float mDuration;
