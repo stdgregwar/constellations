@@ -8,6 +8,7 @@
 #include "Controller.h"
 #include "Character.h"
 #include "Counter.h"
+#include "Trail.h"
 
 class Arrow;
 
@@ -94,6 +95,7 @@ private:
     sf::Vector2f mSpeed;
     mutable sf::Sprite mSprite;
     mutable sf::Sprite mCursor;
+    Trail mTrail;
     SharedPlanet mPlanet;
     float mPhi;
     float mTimeStamp;

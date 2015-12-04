@@ -220,6 +220,22 @@ void StateConstellation::defaultEvent(const sf::Event &e)
     {
         case sf::Event::Resized:
             correctViews(e.size.width,e.size.height);
+        case sf::Event::KeyReleased:
+            if(e.key.code == sf::Keyboard::B)
+            {
+                sf::Vector2i pos = sf::Mouse::getPosition(Core::get().renderWindow());
+                sf::Vector2f rpos = Core::get().renderWindow().mapPixelToCoords(pos,mView);
+                int count = 100;
+                float magn = 300;
+                for(int i = 0; i < count; i++)
+                {
+
+                    float angle = (float(i) / count)*M_PI*2;
+                    sf::Vector2f speed = {magn*cos(angle),magn*sin(angle)};
+                    pushArrow(SharedArrow(new Arrow(rpos,speed,-1)),false);
+                    //Core::get().timeStretch(0.5,1);
+                }
+            }
         break;
     }
 
@@ -271,10 +287,12 @@ SharedCharacter StateConstellation::collideWithCharacter(const sf::Vector2f &p) 
     return SharedCharacter();
 }
 
-void StateConstellation::pushArrow(SharedArrow a)
+void StateConstellation::pushArrow(SharedArrow a, bool addCallback)
 {
-    mIState = {nullptr,&StateConstellation::waitingEvent};
-    a->setCallback(std::bind(&StateConstellation::onArrowDecayed, this));
+    if(addCallback) {
+        mIState = {nullptr,&StateConstellation::waitingEvent};
+        a->setCallback(std::bind(&StateConstellation::onArrowDecayed, this));
+    }
     mArrows.push_back(a);
 }
 
