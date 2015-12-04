@@ -1,5 +1,6 @@
-#include "../include/Skin.h"
+#include "Skin.h"
 #include "Core.h"
+#include "VecUtils.h"
 
 Skin::Skin(sf::Texture* skinTex, const AnimationSet& set)
     : mTexture(skinTex), mAnimationSet(set)
@@ -21,7 +22,7 @@ Skin::Skin(sf::Texture* skinTex, const AnimationSet& set)
     mRHand.setOrigin(8,4);
     mLHand.setPosition(0,-12);
     mRHand.setPosition(0,-12);
-    mBody.setOrigin(16,32);
+    mBody.setOrigin(16,16);
     mLFoot.setOrigin(6,2);
     mRFoot.setOrigin(10,2);
     mLFoot.setPosition(0,-12);
@@ -62,6 +63,13 @@ void Skin::defaultAnimation()
 sf::FloatRect Skin::getGlobalBounds() const
 {
     return getTransform().transformRect(mBody.getGlobalBounds());
+}
+
+bool Skin::inBody(const sf::Vector2f& p) const
+{
+    sf::Vector2f bodyCenter = getTransform().transformPoint(mBody.getPosition());
+    float bodyRadiusS = 23*23;
+    return lengthSquared(bodyCenter-p) < bodyRadiusS;
 }
 
 void Skin::drawBody(sf::RenderTarget &target, sf::RenderStates states) const

@@ -64,6 +64,8 @@ public:
      */
     sf::FloatRect getGlobalBounds() const;
 
+    bool inBody(const sf::Vector2f& p) const;
+
     /**
      * @brief set Body and Hands color
      * @param col
@@ -87,7 +89,7 @@ namespace Animations {
 const Skin::AnimationSet basic{ ///Basic animation set
     {"idle", ///default idle animation
         {
-            [](sf::Sprite& s,float t){s.setPosition(0,stw(t)+2);},
+            [](sf::Sprite& s,float t){s.setPosition(0,-14+stw(t)+2);},
             [](sf::Sprite& s,float t){s.setRotation(0);},
             [](sf::Sprite& s,float t){s.setRotation(0);},
             [](sf::Sprite& s,float t){s.setRotation(20);s.setPosition(8,stw(t-0.3)*0.5-12);},
@@ -97,7 +99,7 @@ const Skin::AnimationSet basic{ ///Basic animation set
     },
     {"walk", ///walk animation
         {
-            [](sf::Sprite& s,float t){s.setPosition(0,stw(t*3)+2);},
+            [](sf::Sprite& s,float t){s.setPosition(0,-14+stw(t*3)+2);},
             [](sf::Sprite& s,float t){s.setRotation(stw(t*3)*90);},
             [](sf::Sprite& s,float t){s.setRotation(stw((t+0.5)*3)*90);},
             [](sf::Sprite& s,float t){s.setRotation(stw((t+0.5)*3)*90);s.setPosition(8,stw(t-0.3)*0.5-12);},
