@@ -4,6 +4,7 @@
 #include "Button.h"
 #include "SpinBox.h"
 #include <functional>
+#include <CheckBox.h>
 #include "CrossFadeTransition.h"
 
 StateTitleScreen::StateTitleScreen() : mMainWidget(new Widget())
@@ -25,7 +26,8 @@ void StateTitleScreen::onBegin()
     start->setPosition(1280/2-150+90,720/2+90);
     start->add(new SpinBox("Players",2,2,5,std::bind(&StateTitleScreen::setPlayerCount,this,_1)))->setPosition(0,60);
     start->add(new SpinBox("Life points",1,1,10,std::bind(&StateTitleScreen::setPlayerPv,this,_1)))->setPosition(0,120);
-    start->add(new Button(L"Quit",[]{Core::get().endGame();}))->setPosition(0,180);
+    start->add(new CheckBox("Hint",true,std::bind(&StateTitleScreen::setHint,this,_1)))->setPosition(0,180);
+    start->add(new Button(L"Quit",[]{Core::get().endGame();}))->setPosition(0,240);
     mMainWidget->show();
     start->show();
     start->setOrigin(90,90);
@@ -38,7 +40,7 @@ void StateTitleScreen::onBegin()
 void StateTitleScreen::update(float delta_s)
 {
     //NA
-    mMainWidget->children()[0]->setRotation(stw(Core::get().time())*5);
+    //mMainWidget->children()[0]->setRotation(stw(Core::get().time())*5);
 }
 
 void StateTitleScreen::onResume()
@@ -95,4 +97,9 @@ void StateTitleScreen::setPlayerCount(int count)
 void StateTitleScreen::setPlayerPv(int pv)
 {
     Core::get().globalDict()["player_pv"] = pv;
+}
+
+void StateTitleScreen::setHint(bool set)
+{
+    Core::get().globalDict()["hint"] = set;
 }

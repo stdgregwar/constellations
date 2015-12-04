@@ -355,6 +355,15 @@ std::vector<sf::Vector2f> StateConstellation::pathForInitials(sf::Vector2f pos, 
 {
     std::vector<sf::Vector2f> path;
     auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
+    std::function<sf::Vector2f(const sf::Vector2f &p, const sf::Vector2f &v)> eq;
+    if(Core::get().globalDict()["hint"].toBool())
+    {
+        using namespace std::placeholders;
+        eq = std::bind(&StateConstellation::getGravFieldAt, cstate.get(), _1);
+    } else
+    {
+        eq = [] (const sf::Vector2f &p, const sf::Vector2f &v){return sf::Vector2f(0,0);};
+    }
     path.reserve(precision);
     //TODO tweak
     float delta_t = 1.f/60;
@@ -364,8 +373,7 @@ std::vector<sf::Vector2f> StateConstellation::pathForInitials(sf::Vector2f pos, 
     {
         for(int j = 0; j < substeps; j++)
         {
-            using namespace std::placeholders;
-            integrateEC(pos, speed, udelta, std::bind(&StateConstellation::getGravFieldAt, cstate.get(), _1));
+            integrateEC(pos, speed, udelta, eq);
         }
         if(collideWithPlanet(pos))
             break;

@@ -1,8 +1,8 @@
 #include "Button.h"
 #include "Core.h"
 
-Button::Button(const sf::String &text, std::function<void()> c, int csize)
-    : mCallback(c)
+Button::Button(const sf::String &text, std::function<void()> c, int csize,const sf::Color& hoveredColor,const sf::Color& defaultColor)
+    : mCallback(c),mHoveredColor(hoveredColor),mDefaultColor(defaultColor)
 {
     mText.setFont(*Core::get().fontCache().get("default"));
     mText.setString(text);
@@ -22,7 +22,7 @@ void Button::trigger()
 
 void Button::setHovered(bool hover)
 {
-    mText.setColor(hover ? sf::Color::Yellow : sf::Color::White); //TODO parametrize colors
+    mText.setColor(hover ? mHoveredColor : mDefaultColor); //TODO parametrize colors
 }
 
 sf::FloatRect Button::bounds()
@@ -48,4 +48,14 @@ bool Button::onEvent(const sf::Event& e, const sf::View &view)
             break;
         }
     }
+}
+
+void Button::setHoveredColor(const sf::Color &c)
+{
+    mHoveredColor = c;
+}
+
+void Button::setDefaultColor(const sf::Color &c)
+{
+    mDefaultColor = c;
 }

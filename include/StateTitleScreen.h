@@ -64,6 +64,8 @@ public:
      * @param pv
      */
     void setPlayerPv(int pv);
+
+    void setHint(bool set);
 private:
     sf::Sprite mTitle;
     StaticParticles mBackground;

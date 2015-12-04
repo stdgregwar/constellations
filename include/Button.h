@@ -6,6 +6,8 @@
 #include "Widget.h"
 #include <functional>
 
+class Button;
+typedef std::shared_ptr<Button> SharedButton;
 /**
  * @brief Represent a button that can be given to a widget
  *
@@ -19,8 +21,7 @@ public:
      * @param text an sf::Text instance
      * @param c callback function
      */
-    Button(const sf::String& text, std::function<void()> c, int csize = 50);
-
+    Button(const sf::String& text, std::function<void()> c, int csize = 50,const sf::Color& hoveredColor = sf::Color::Yellow,const sf::Color& defaultColor = sf::Color::White);
     /**
      * @brief draw the button on the given target
      * @param target
@@ -51,9 +52,14 @@ public:
      * @return
      */
     bool onEvent(const sf::Event& e, const sf::View& view);
+
+    void setHoveredColor(const sf::Color& c);
+    void setDefaultColor(const sf::Color& c);
 private:
     bool mHovered;
     sf::Text mText;
+    sf::Color mHoveredColor;
+    sf::Color mDefaultColor;
     std::function<void()> mCallback;
 };
 
