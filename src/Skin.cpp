@@ -68,7 +68,7 @@ sf::FloatRect Skin::getGlobalBounds() const
 bool Skin::inBody(const sf::Vector2f& p) const
 {
     sf::Vector2f bodyCenter = getTransform().transformPoint(mBody.getPosition());
-    float bodyRadiusS = 23*23;
+    float bodyRadiusS = 12*12; //TODO Deduce
     return lengthSquared(bodyCenter-p) < bodyRadiusS;
 }
 
