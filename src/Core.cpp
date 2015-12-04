@@ -117,6 +117,7 @@ bool Core::start()
                     case Transition::END:
                         delete mTransition;
                         mTransition = nullptr;
+                        mFromTransition.reset();
                         mStateStack->drawAll(mRenderWindow);
                         break;
                     case Transition::FIRST:
