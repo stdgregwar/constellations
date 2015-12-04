@@ -79,7 +79,7 @@ public:
      * @brief add arrow to the state
      * @param a
      */
-    void pushArrow(SharedArrow a);
+    void pushArrow(SharedArrow a, bool addCallback = true);
 
     /**
      * @brief called when the Player iterator return on the first player

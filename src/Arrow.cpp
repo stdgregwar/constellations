@@ -12,7 +12,7 @@ bool Arrow::mSelfhit = false;
 
 Arrow::Arrow(const sf::Vector2f &pos, const sf::Vector2f &speed, const PlayerID& ownerID)
     : mPos(pos), mSpeed(speed), mTimeStamp(Core::get().time()), mOwnerID(ownerID),
-      mPut(false), mCallback(nullptr), mCounter(sf::Color::Red,50), mTimeOut(false)
+      mPut(false), mCallback(nullptr), mCounter(sf::Color::Red,50), mTimeOut(false), mTrail(1.2,2,128)
 {
     //Setup sounds
     mPutSound.setBuffer(*Core::get().soundBufferCache().get("data/arrowput.wav"));
@@ -42,6 +42,7 @@ Arrow::Arrow(const sf::Vector2f &pos, const sf::Vector2f &speed, const PlayerID&
 
 bool Arrow::update(float delta_s)
 {
+    delta_s*=1.5f;
     //TODO Arrow follow planet in which putted
     if(mPlanet)
     {
@@ -76,11 +77,15 @@ bool Arrow::update(float delta_s)
             mSwiftSound.setVolume(lenght(mSpeed)/30.f);
             mSprite.setRotation(angle(mSpeed)*TO_DEGREES);
 
+            //Trail
+
+
             //Warning sound
             if(lastMoments() && mWarnSound.getStatus() == sf::Sound::Status::Stopped)
                 mWarnSound.play();
         }
     }
+    mTrail.addPoint(getPos());
     mSprite.setPosition(mPos);
 
     if(Core::get().isStretchin()) {
@@ -104,6 +109,7 @@ void Arrow::draw(sf::RenderTarget &target, sf::RenderStates states) const
     if(!(lastMoments() && !mPut && (int(ceilf(Core::get().time()*6.f))%2==0)))
     {
         target.draw(mSprite);
+        target.draw(mTrail);
     }
     if(lastMoments() && !mPut && !mTimeOut)
         drawCounter(target,cstate);
