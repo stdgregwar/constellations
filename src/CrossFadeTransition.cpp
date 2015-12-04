@@ -20,6 +20,8 @@ CrossFadeTransition::CrossFadeTransition(float duration) : mDuration(duration), 
 
 void CrossFadeTransition::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
+    sf::View s = target.getDefaultView();
+    s.setSize(Core::get().renderWindow().getSize().x,Core::get().renderWindow().getSize().y);
     target.setView(target.getDefaultView());
     target.draw(mScreen);
 }

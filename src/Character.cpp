@@ -179,7 +179,7 @@ void Character::setPhi(float phi)
 
 bool Character::collideWith(const sf::Vector2f& p) const
 {
-    return mSkin.getGlobalBounds().contains(p);
+    return mSkin.inBody(p);
 }
 
 const PlayerID& Character::id() const

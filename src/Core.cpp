@@ -105,8 +105,8 @@ bool Core::start()
         else
             mTimeFactor = 0.98f*mTimeFactor+0.02f*mTargetFactor;
 
-        //mLastDt = basic_dt*mTimeFactor;
-        mLastDt = time.asSeconds()*mTimeFactor;
+        mLastDt = basic_dt*mTimeFactor;
+        //mLastDt = time.asSeconds()*mTimeFactor;
         mGlobalTime += mLastDt;
         if(mStateStack)
         {
