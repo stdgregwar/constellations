@@ -8,6 +8,7 @@
 
 #include <iostream>
 using namespace std;
+bool Arrow::mSelfhit = false;
 
 Arrow::Arrow(const sf::Vector2f &pos, const sf::Vector2f &speed, const PlayerID& ownerID)
     : mPos(pos), mSpeed(speed), mTimeStamp(Core::get().time()), mOwnerID(ownerID),
@@ -36,6 +37,7 @@ Arrow::Arrow(const sf::Vector2f &pos, const sf::Vector2f &speed, const PlayerID&
     mSwiftSound.setLoop(true);
     mSwiftSound.play();
     mThrowSound.play();
+    mSelfhit = Core::get().globalDict()["selfHit"].toBool();
 }
 
 bool Arrow::update(float delta_s)
@@ -56,7 +58,7 @@ bool Arrow::update(float delta_s)
             //TODO find which type cstate must be...
             auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
             SharedCharacter c = cstate->collideWithCharacter(mPos);
-            if(c) {
+            if(c && (c->id() != mOwnerID || mSelfhit)) {
                 c->hit(50);
                 mTouchSound.play();
                 if(c->isDead())

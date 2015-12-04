@@ -66,6 +66,8 @@ public:
     void setPlayerPv(int pv);
 
     void setHint(bool set);
+
+    void setSelfHit(bool set);
 private:
     sf::Sprite mTitle;
     StaticParticles mBackground;

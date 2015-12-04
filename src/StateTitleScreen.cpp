@@ -27,7 +27,8 @@ void StateTitleScreen::onBegin()
     start->add(new SpinBox("Players",2,2,5,std::bind(&StateTitleScreen::setPlayerCount,this,_1)))->setPosition(0,60);
     start->add(new SpinBox("Life points",1,1,10,std::bind(&StateTitleScreen::setPlayerPv,this,_1)))->setPosition(0,120);
     start->add(new CheckBox("Hint",true,std::bind(&StateTitleScreen::setHint,this,_1)))->setPosition(0,180);
-    start->add(new Button(L"Quit",[]{Core::get().endGame();}))->setPosition(0,240);
+    start->add(new CheckBox("Friendly fire",true,std::bind(&StateTitleScreen::setSelfHit,this,_1)))->setPosition(0,240);
+    start->add(new Button(L"Quit",[]{Core::get().endGame();}))->setPosition(0,300);
     mMainWidget->show();
     start->show();
     start->setOrigin(90,90);
@@ -102,4 +103,9 @@ void StateTitleScreen::setPlayerPv(int pv)
 void StateTitleScreen::setHint(bool set)
 {
     Core::get().globalDict()["hint"] = set;
+}
+
+void StateTitleScreen::setSelfHit(bool set)
+{
+    Core::get().globalDict()["selfHit"] = set;
 }

@@ -101,6 +101,7 @@ private:
     bool mTimeOut;
     std::function<void()> mCallback;
     mutable Counter mCounter;
+    static bool mSelfhit;
 
     //Sounds
     sf::Sound mSwiftSound;
