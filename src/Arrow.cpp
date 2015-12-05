@@ -12,7 +12,7 @@ bool Arrow::mSelfhit = false;
 
 Arrow::Arrow(const sf::Vector2f &pos, const sf::Vector2f &speed, const PlayerID& ownerID)
     : mPos(pos), mSpeed(speed), mTimeStamp(Core::get().time()), mOwnerID(ownerID),
-      mPut(false), mCallback(nullptr), mCounter(sf::Color::Red,50), mTimeOut(false), mTrail(1.2,2,128)
+      mPut(false), mCallback(nullptr), mCounter(sf::Color::Red,50), mTimeOut(false), mTrail(1.2,12,16)
 {
     //Setup sounds
     mPutSound.setBuffer(*Core::get().soundBufferCache().get("data/arrowput.wav"));
@@ -46,7 +46,7 @@ bool Arrow::update(float delta_s)
     //TODO Arrow follow planet in which putted
     if(mPlanet)
     {
-        mPos = mPlanet->getPosOn(mPhi);
+       //mPos = mPlanet->getPosOn(mPhi);
     }
     else
     {
@@ -69,6 +69,7 @@ bool Arrow::update(float delta_s)
             if(mPlanet) {
                 mSprite.setTextureRect({0,0,10,5});
                 mPhi = angle(mPos-mPlanet->getPosition());
+                mPos = mPlanet->getPosOn(mPhi);
                 mPut = true;
                 onPut();
             }
@@ -85,7 +86,7 @@ bool Arrow::update(float delta_s)
                 mWarnSound.play();
         }
     }
-    mTrail.addPoint(getPos());
+
     mSprite.setPosition(mPos);
 
     if(Core::get().isStretchin()) {
@@ -101,13 +102,14 @@ bool Arrow::update(float delta_s)
 void Arrow::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
-
+    mTrail.addPoint(getPos());
     if(!mTimeOut)
         drawCursor(target,cstate);
 
 
     if(!(lastMoments() && !mPut && (int(ceilf(Core::get().time()*6.f))%2==0)))
     {
+
         target.draw(mSprite);
         target.draw(mTrail);
     }
@@ -146,7 +148,7 @@ bool Arrow::dead()
     return hasTimeOut() && mDeathSound.getStatus() == sf::Sound::Stopped; //Wait for end of sound to destroy arrow
 }
 
-const sf::Vector2f& Arrow::getPos()
+const sf::Vector2f& Arrow::getPos() const
 {
     return mPos;
 }

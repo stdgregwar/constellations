@@ -88,7 +88,7 @@ void StateConstellation::onBegin()
 void StateConstellation::onEnd()
 {
     cout << "Ending constellation state" << endl;
-    mPlanets.clear();
+    //mPlanets.clear();
     mPlayers.clear();
 }
 
@@ -176,9 +176,18 @@ void StateConstellation::defaultUpdate(float delta_s)
             }
         }
     }
-    for(Arrows::iterator it = mArrows.begin(); it != mArrows.end(); it++)
+    /*for(Arrows::iterator it = mArrows.begin(); it != mArrows.end(); it++)
     {
         if((*it)->dead()) mArrows.erase(it++);
+    }*/
+    for(size_t i = 0; i < mArrows.size(); i++)
+    {
+        if(mArrows[i]->dead())
+        {
+            swap(mArrows[i], mArrows.back());
+            mArrows.pop_back();
+            i--;
+        }
     }
 }
 
@@ -227,7 +236,7 @@ void StateConstellation::defaultEvent(const sf::Event &e)
                 sf::Vector2i pos = sf::Mouse::getPosition(Core::get().renderWindow());
                 sf::Vector2f rpos = Core::get().renderWindow().mapPixelToCoords(pos,mView);
                 int count = 100;
-                float magn = 300;
+                float magn = 100;
                 for(int i = 0; i < count; i++)
                 {
 

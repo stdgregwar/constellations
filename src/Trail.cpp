@@ -13,6 +13,10 @@ Trail::Trail(float width, float threshold, size_t size) : mLastPoint(10e6,10e6),
 
 void Trail::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
+    if(mVertexArray.empty()) //Don't do anything if empty
+        return;
+
+
     if(mEnd<=mStart && mLoop)
     {
         target.draw(&mVertexArray[mStart],mVertexArray.size()-mStart,sf::Triangles,states);
@@ -24,10 +28,23 @@ void Trail::draw(sf::RenderTarget &target, sf::RenderStates states) const
     }
 }
 
-void Trail::addPoint(const sf::Vector2f &p)
+void Trail::empty()
 {
-    for(sf::Vertex& v : mVertexArray)
-        v.color.a = max(0,v.color.a-2);
+    mVertexArray.clear();
+    mStart = mEnd = 0;
+}
+
+bool Trail::addPoint(const sf::Vector2f &p)
+{
+    if(mVertexArray.empty()) //Don't do anything if empty
+        return true;
+
+    int nDec(0);
+    for(sf::Vertex& v : mVertexArray) {
+        v.color.a = max(0,v.color.a-8);
+        if(v.color.a != 0)
+            nDec++;
+    }
 
     if(!mStarted){
         mLastPoint = p;
@@ -61,10 +78,18 @@ void Trail::addPoint(const sf::Vector2f &p)
             mVertexArray[base+3].position = b;
             mVertexArray[base+4].position = c;
             mVertexArray[base+5].position = d;
-            for(int i = 0; i < 6; i++)
-            {
-                mVertexArray[base+i].color.a = 255;
-            }
+
+
+            mVertexArray[base+0].color.a = 255;
+            mVertexArray[base+2].color.a = 255;
+            mVertexArray[base+3].color.a = 255;
+
+            //Temp
+            mVertexArray[base+1].color.a = 255;
+            mVertexArray[base+4].color.a = 255;
+            mVertexArray[base+5].color.a = 255;
+
+
             mA = a;
             mB = b;
         }
@@ -75,6 +100,8 @@ void Trail::addPoint(const sf::Vector2f &p)
             mLoop = true;
         }
     }
-
+    if(nDec == 0)
+        empty();
+    return nDec == 0;
 }
 

@@ -10,7 +10,8 @@ class Trail : public sf::Drawable
 public:
     Trail(float width,float threshold, size_t size);
     void draw(sf::RenderTarget &target, sf::RenderStates states) const;
-    void addPoint(const sf::Vector2f& p);
+    bool addPoint(const sf::Vector2f& p);
+    void empty();
 private:
     size_t mStart,mEnd;
     float mWidth;

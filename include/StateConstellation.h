@@ -153,7 +153,7 @@ private:
     void correctViews(float vx, float vy);
 
     typedef std::list<SharedController> Players;
-    typedef std::list<SharedArrow> Arrows;
+    typedef std::vector<SharedArrow> Arrows;
 
     InternalState mIState;
     sf::Vector2i mOldMousePos;

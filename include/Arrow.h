@@ -38,7 +38,7 @@ public:
      * @brief get the arrow position
      * @return
      */
-    const sf::Vector2f& getPos();
+    const sf::Vector2f& getPos() const;
 
     /**
      * @brief tells wether the arrow has liven more than lifetime
@@ -95,7 +95,7 @@ private:
     sf::Vector2f mSpeed;
     mutable sf::Sprite mSprite;
     mutable sf::Sprite mCursor;
-    Trail mTrail;
+    mutable Trail mTrail;
     SharedPlanet mPlanet;
     float mPhi;
     float mTimeStamp;
