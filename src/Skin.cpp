@@ -28,7 +28,7 @@ Skin::Skin(sf::Texture* skinTex, const AnimationSet& set)
     mLFoot.setPosition(0,-12);
     mRFoot.setPosition(0,-12);
     mEyes.setOrigin(-32,26);
-    mBody.setScale(0.9,0.9);
+    //mBody.setScale(0.9,0.9);
     mEyes.setScale(0.9,0.9);
 }
 
