@@ -2,11 +2,12 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include "VecUtils.h"
 #include <cmath>
+#include "Core.h"
 
 using namespace std;
 
-Trail::Trail(float width, float threshold, size_t size) : mLastPoint(10e6,10e6), mVertexArray(size*6),
-    mStart(0), mEnd(0), mWidth(width), mThreshold(threshold), mLoop(false), mStarted(false)
+Trail::Trail(float width, float dt, size_t size) : mLastPoint(10e6,10e6), mVertexArray(size*6),
+    mStart(0), mEnd(0), mDt(dt), mWidth(width), mLoop(false), mStarted(false),mLastTime(0)
 {
 
 }
@@ -40,8 +41,9 @@ bool Trail::addPoint(const sf::Vector2f &p)
         return true;
 
     int nDec(0);
+    float dt = Core::get().lastDt();
     for(sf::Vertex& v : mVertexArray) {
-        v.color.a = max(0,v.color.a-8);
+        v.color.a = max(0,int(v.color.a-(480*dt)));
         if(v.color.a != 0)
             nDec++;
     }
@@ -51,8 +53,11 @@ bool Trail::addPoint(const sf::Vector2f &p)
         mA = mB = p;
         mStarted = true;
     }
-    if(lengthSquared(p-mLastPoint) > mThreshold*mThreshold)
+
+    float time = Core::get().time();
+    if(time-mLastTime >= mDt)
     {
+        mLastTime = time;
 
         if(mEnd != mStart || mLoop)
         {
@@ -85,9 +90,9 @@ bool Trail::addPoint(const sf::Vector2f &p)
             mVertexArray[base+3].color.a = 255;
 
             //Temp
-            mVertexArray[base+1].color.a = 255;
-            mVertexArray[base+4].color.a = 255;
-            mVertexArray[base+5].color.a = 255;
+            mVertexArray[base+1].color.a = 255-8;
+            mVertexArray[base+4].color.a = 255-8;
+            mVertexArray[base+5].color.a = 255-8;
 
 
             mA = a;
