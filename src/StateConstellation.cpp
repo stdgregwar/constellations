@@ -246,6 +246,7 @@ void StateConstellation::defaultEvent(const sf::Event &e)
                     //Core::get().timeStretch(0.5,1);
                 }
             }
+            if(e.key.code == sf::Keyboard::L) Core::get().timeStretch(0.125,4);
         break;
     }
 
