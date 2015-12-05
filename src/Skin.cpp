@@ -2,16 +2,18 @@
 #include "Core.h"
 #include "VecUtils.h"
 
-Skin::Skin(sf::Texture* skinTex, const AnimationSet& set)
-    : mTexture(skinTex), mAnimationSet(set)
+Skin::Skin(sf::Texture* skinTex, sf::Texture *hatTex, int hatID, const AnimationSet& set)
+    : mTexture(skinTex), mAnimationSet(set), mHatTex(hatTex)
 {
     defaultAnimation();
+    mHat.setTexture(*mHatTex);
     mBody.setTexture(*mTexture);
     mEyes.setTexture(*mTexture);
     mLFoot.setTexture(*mTexture);
     mRFoot.setTexture(*mTexture);
     mRHand.setTexture(*mTexture);
     mLHand.setTexture(*mTexture);
+    mHat.setTextureRect({48*hatID,0,48,48});
     mBody.setTextureRect({0,0,32,32}); //TODO modularize
     mLFoot.setTextureRect({0,32,16,16});
     mRFoot.setTextureRect({0,32,16,16});
@@ -23,13 +25,14 @@ Skin::Skin(sf::Texture* skinTex, const AnimationSet& set)
     mLHand.setPosition(0,-12);
     mRHand.setPosition(0,-12);
     mBody.setOrigin(16,16);
+    mHat.setOrigin(24,32);
     mLFoot.setOrigin(6,2);
     mRFoot.setOrigin(10,2);
     mLFoot.setPosition(0,-12);
     mRFoot.setPosition(0,-12);
-    mEyes.setOrigin(-32,26);
+    mEyes.setOrigin(-25,20);
     //mBody.setScale(0.9,0.9);
-    mEyes.setScale(0.9,0.9);
+    //mEyes.setScale(0.9,0.9);
 }
 
 void Skin::setColor(sf::Color col)
@@ -77,6 +80,7 @@ void Skin::drawBody(sf::RenderTarget &target, sf::RenderStates states) const
     float time = Core::get().time();
     if(mAnim)
     {
+        mAnim->body(mHat,time);
         mAnim->body(mBody,time);
         mAnim->eyes(mEyes,time);
         mAnim->lfoot(mLFoot,time);
@@ -90,6 +94,7 @@ void Skin::drawBody(sf::RenderTarget &target, sf::RenderStates states) const
     target.draw(mLHand,states);
     target.draw(mBody,states);
     target.draw(mEyes,states);
+    target.draw(mHat,states);
     target.draw(mRFoot,states);
     target.draw(mRHand,states);
 }

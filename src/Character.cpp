@@ -11,10 +11,10 @@
 using namespace std;
 Path Character::mPath;
 
-Character::Character(SharedPlanet planet, const PlayerID &id, sf::Color c, float phi)
+Character::Character(SharedPlanet planet, const PlayerID &id, sf::Color c, float phi, int hatID)
     : mPlanet(planet), mFrame(0), mWalking(true), mAiming(false), mColor(c),
       mPV(Core::get().globalDict()["player_pv"].toInt()*50), mID(id), mLastHitTime(0),
-      mSkin(Core::get().textureCache().get("data/skin.png"),Animations::basic)
+      mSkin(Core::get().textureCache().get("data/skin.png"),Core::get().textureCache().get("data/hats.png"),hatID,Animations::basic)
 {
     setPhi(phi);
     //mSkin.setTexture(*Core::get().textureCache().get("data/chara_w_6.png"));

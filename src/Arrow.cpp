@@ -21,6 +21,9 @@ Arrow::Arrow(const sf::Vector2f &pos, const sf::Vector2f &speed, const PlayerID&
     mTouchSound.setBuffer(*Core::get().soundBufferCache().get("data/explodehigh.wav"));
     mThrowSound.setBuffer(*Core::get().soundBufferCache().get("data/arrowthrow.wav"));
     mDeathSound.setBuffer(*Core::get().soundBufferCache().get("data/arrowdeath.wav"));
+    mSwiftSound.setLoop(true);
+    mSwiftSound.play();
+    mThrowSound.play();
 
     //Setup textures
     sf::Texture* sTex = Core::get().textureCache().get("data/arrow.png");
@@ -34,9 +37,7 @@ Arrow::Arrow(const sf::Vector2f &pos, const sf::Vector2f &speed, const PlayerID&
     mCounter.setScale(s,s);
 
     //Launch swift sound
-    mSwiftSound.setLoop(true);
-    mSwiftSound.play();
-    mThrowSound.play();
+
     mSelfhit = Core::get().globalDict()["selfHit"].toBool();
 }
 

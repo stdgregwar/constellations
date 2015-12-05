@@ -20,7 +20,8 @@ void Constellation::buildFromConstellationDef(const ConstellationDef& constellat
                                             mPlanets.back(),
                                             currentPlayerNumber,
                                             mColorPool[currentPlayerNumber%mColorPool.size()],
-                                            (planet.playerAngle-90.f)/TO_DEGREES
+                                            (planet.playerAngle-90.f)/TO_DEGREES,
+                                            tempNumberOfPlayers //Hat ID TODO : randomize
                                     )
                             )
                     )
