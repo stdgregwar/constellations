@@ -19,7 +19,7 @@ typedef unsigned PlayerID;
 class Character : public sf::Drawable
 {
 public:
-    Character(SharedPlanet planet, const PlayerID& id, sf::Color color = sf::Color::White, float phi = 0.f);
+    Character(SharedPlanet planet, const PlayerID& id, sf::Color color = sf::Color::White, float phi = 0.f, int hatID = 0);
     Character(const Character& other);
     Character(const Character&& other);
 

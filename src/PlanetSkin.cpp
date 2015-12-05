@@ -6,7 +6,7 @@
 
 PlanetSkin::PlanetSkin(float radius)
 {
-    createHalo(radius-1,radius*1.5,sf::Color(0x222233ff),sf::Color(0x000000ff));
+    createHalo(radius-1,radius*3,sf::Color(0x445566ff),sf::Color(0x00000000));
     mSprite.setTexture(*Core::get().textureCache().get("data/planet.png"));
     mSprite.setOrigin(mSprite.getTexture()->getSize().x/2,mSprite.getTexture()->getSize().y/2);
     mSprite.setScale(radius/25.f,radius/25.f);

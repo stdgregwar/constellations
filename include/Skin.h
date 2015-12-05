@@ -32,7 +32,7 @@ public:
      * @param skinTex
      * @param set
      */
-    Skin(sf::Texture* skinTex, const AnimationSet& set);
+    Skin(sf::Texture* skinTex, sf::Texture* hatTex, int hatID, const AnimationSet& set);
 
     /**
      * @brief return skin height
@@ -76,6 +76,8 @@ private:
     void drawBody(sf::RenderTarget& body,sf::RenderStates states) const;
 
     sf::Texture* mTexture;
+    sf::Texture* mHatTex;
+    mutable sf::Sprite mHat;
     mutable sf::Sprite mLFoot;
     mutable sf::Sprite mRFoot;
     mutable sf::Sprite mBody;
@@ -94,7 +96,7 @@ const Skin::AnimationSet basic{ ///Basic animation set
             [](sf::Sprite& s,float t){s.setRotation(0);},
             [](sf::Sprite& s,float t){s.setRotation(20);s.setPosition(8,stw(t-0.3)*0.5-12);},
             [](sf::Sprite& s,float t){s.setRotation(20);s.setPosition(-1,stw(t-0.3)*0.5-12);},
-            [](sf::Sprite& s,float t){s.setPosition(-32,stw(t-0.3)*0.5);}
+            [](sf::Sprite& s,float t){s.setPosition(-32,stw(t-0.1)*0.5);}
         }
     },
     {"walk", ///walk animation
