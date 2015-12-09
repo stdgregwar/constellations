@@ -89,7 +89,7 @@ public:
     /**
      * @brief called when a player win (alone in player pool)
      */
-    void onWin();
+    void onWin(SharedController winner);
 
     //Seems very improbable to be called
     /**

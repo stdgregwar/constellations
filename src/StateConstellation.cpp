@@ -167,7 +167,7 @@ void StateConstellation::defaultUpdate(float delta_s)
             mPlayers.erase(it++);
             if(mPlayers.size() == 1)
             {
-                onWin();
+                onWin(mPlayers.back());
             }
             if(mPlayers.size() == 0)
             {
@@ -312,10 +312,12 @@ void StateConstellation::onNewRound()
     cout << "New ROUND!!" << endl;
 }
 
-void StateConstellation::onWin()
+void StateConstellation::onWin(SharedController winner)
 {
     cout << "Player Won" << endl;
-
+    Action vic;
+    vic.type = Action::VICTORY;
+    winner->character()->queueAction(vic);
     Timer::create(2,[]{Core::get().delayedPop(new CrossFadeTransition(0.5));});
     //Core::get().popState();
 }

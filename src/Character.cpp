@@ -51,13 +51,6 @@ void Character::updatePos()
     if(mPlanet) {
         mSkin.setPosition(mPlanet->getPosOn(mPhi));
         mSkin.setRotation(mPhi*TO_DEGREES+90);
-        if(mActionSpeed.x)
-        {
-            mSkin.setScale(mActionSpeed.x/abs(mActionSpeed.x),1);
-            mSkin.setAnimation("walk");
-        }
-        else
-            mSkin.setAnimation("idle");
         //TODO position of arrow depedent of texture height, may not be a good solution
         sf::Vector2f height = {0,mSkin.height()};
         height = rotate(height,mPhi- 90/TO_DEGREES);
@@ -115,6 +108,13 @@ void Character::update(float delta_s)
             {
                 mAiming = false;
                 mActionSpeed.x += a.move.distance*(25.f/mPlanet->getRadius());
+                if(mActionSpeed.x)
+                {
+                    mSkin.setScale(mActionSpeed.x/abs(mActionSpeed.x),1);
+                    mSkin.setAnimation("walk");
+                }
+                else
+                    mSkin.setAnimation("idle");
                 break;
             }
             case Action::AIM:
@@ -139,6 +139,9 @@ void Character::update(float delta_s)
                 mAiming = false;
                 break;
             }
+        case Action::VICTORY:
+            mSkin.setAnimation("victory");
+            break;
             default:
                 break;
         }

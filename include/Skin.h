@@ -108,6 +108,16 @@ const Skin::AnimationSet basic{ ///Basic animation set
             [](sf::Sprite& s,float t){s.setRotation(stw(t*3)*90);s.setPosition(-1,stw(t-0.3)*0.5-12);},
             [](sf::Sprite& s,float t){s.setPosition(-32,stw(t-5+0.3)*0.5);}
         }
+    },
+    {"victory",
+        {
+            [](sf::Sprite& s,float t){s.setPosition(0,-14+stw(t*3)+2);},
+            [](sf::Sprite& s,float t){s.setRotation(0);},
+            [](sf::Sprite& s,float t){s.setRotation(0);},
+            [](sf::Sprite& s,float t){s.setRotation(stw((t+0.5)*3)*90-90);s.setPosition(6,stw(t-0.3)*0.5-12);},
+            [](sf::Sprite& s,float t){s.setRotation(stw(t*3)*90-90);s.setPosition(-3,stw(t-0.3)*0.5-12);},
+            [](sf::Sprite& s,float t){s.setPosition(-32,stw(t-5+0.3)*0.5);}
+        }
     }
 };
 }
