@@ -12,7 +12,7 @@ bool Arrow::mSelfhit = false;
 
 Arrow::Arrow(const sf::Vector2f &pos, const sf::Vector2f &speed, const PlayerID& ownerID)
     : mPos(pos), mSpeed(speed), mTimeStamp(Core::get().time()), mOwnerID(ownerID),
-      mPut(false), mCallback(nullptr), mCounter(sf::Color::Red,50), mTimeOut(false), mTrail(1.2,0.01666,128)
+      mPut(false), mCallback(nullptr), mCounter(sf::Color::Red,50), mTimeOut(false), mTrail(1.2,1.6e-2,32)
 {
     //Setup sounds
     mPutSound.setBuffer(*Core::get().soundBufferCache().get("data/arrowput.wav"));

@@ -25,7 +25,8 @@ public:
         AIM, ///Aim at some direction
         CANCEL, ///Cancel action
         THROW, ///Throw arrow
-        PUT ///Reset character on some position
+        PUT, ///Reset character on some position
+        VICTORY,///Tel character to dance
     };
 
     struct Move{
