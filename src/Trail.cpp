@@ -6,8 +6,8 @@
 
 using namespace std;
 
-Trail::Trail(float width, float dt, size_t size) : mLastPoint(10e6,10e6), mVertexArray(size*6),
-    mStart(0), mEnd(0), mDt(dt), mWidth(width), mLoop(false), mStarted(false),mLastTime(0)
+Trail::Trail(float width, float dt, size_t size) : mLastPoint(10e6,10e6), mVertexArray((size+1)*2),
+    mStart(4), mEnd(2), mDt(dt), mWidth(width), mLoop(false), mStarted(false),mLastTime(0)
 {
 
 }
@@ -20,12 +20,12 @@ void Trail::draw(sf::RenderTarget &target, sf::RenderStates states) const
 
     if(mEnd<=mStart && mLoop)
     {
-        target.draw(&mVertexArray[mStart],mVertexArray.size()-mStart,sf::Triangles,states);
-        target.draw(&mVertexArray[0],mEnd,sf::Triangles,states);
+        target.draw(&mVertexArray[mStart],mVertexArray.size()-mStart,sf::TrianglesStrip,states);
+        target.draw(&mVertexArray[0],mEnd,sf::TrianglesStrip,states);
     }
     else
     {
-        target.draw(&mVertexArray[mStart],mEnd-mStart,sf::Triangles,states);
+        target.draw(&mVertexArray[mStart],mEnd-mStart,sf::TrianglesStrip,states);
     }
 }
 
@@ -63,8 +63,8 @@ bool Trail::addPoint(const sf::Vector2f &p)
         {
             sf::Vector2f a = p + perpendicularNorm(p-mLastPoint)*mWidth;
             sf::Vector2f b = p + perpendicularNorm(p-mLastPoint)*-mWidth;
-            sf::Vector2f c = mA;
-            sf::Vector2f d = mB;
+            /*sf::Vector2f c = mA;
+            sf::Vector2f d = mB;*/
 
 
             /**
@@ -75,31 +75,17 @@ bool Trail::addPoint(const sf::Vector2f &p)
              * c----d
             */
 
-            size_t base = (mEnd)%mVertexArray.size();
-
+            size_t base = mEnd;
             mVertexArray[base+0].position = a;
-            mVertexArray[base+1].position = c;
-            mVertexArray[base+2].position = b;
-            mVertexArray[base+3].position = b;
-            mVertexArray[base+4].position = c;
-            mVertexArray[base+5].position = d;
-
-
+            mVertexArray[base+1].position = b;
             mVertexArray[base+0].color.a = 255;
-            mVertexArray[base+2].color.a = 255;
-            mVertexArray[base+3].color.a = 255;
+            mVertexArray[base+1].color.a = 255;
 
-            //Temp
-            mVertexArray[base+1].color.a = 255-8;
-            mVertexArray[base+4].color.a = 255-8;
-            mVertexArray[base+5].color.a = 255-8;
-
-
-            mA = a;
-            mB = b;
+            mVertexArray[0] = mVertexArray[mVertexArray.size()-2];
+            mVertexArray[1] = mVertexArray[mVertexArray.size()-1];
         }
         mLastPoint = p;
-        mEnd = (mEnd+6)%mVertexArray.size();
+        mEnd = (mEnd)%(mVertexArray.size()-2)+2;
         if(mEnd == mStart || mLoop) {
             mStart = mEnd;
             mLoop = true;
