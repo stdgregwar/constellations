@@ -34,15 +34,14 @@ void StateConstellation::onBegin()
     Constellation constellation;
     int numbersOfMap = int(constellations.size());
     random_device rng;
-    uniform_int_distribution<int> int_dist(0,numbersOfMap-1);
-    int i = int_dist(rng);
     int numberOfPlayers = Core::get().globalDict()["player_count"].toInt();
+    int i = 0;
     while(constellations[i].maxNumberOfPlayers < numberOfPlayers)
     {
-        //May be very bad, but since pool is quite limited, may work...
-        i =  int_dist(rng);
-        //i = (i +1)%numbersOfMap;
+        i++;
     }
+    uniform_int_distribution<int> int_dist(i,numbersOfMap-1);
+    i = int_dist(rng);
     constellation.buildFromConstellationDef(constellations[i],numberOfPlayers);
     mPlanets = constellation.getPlanets();
     mPlayers = constellation.getPlayers();
