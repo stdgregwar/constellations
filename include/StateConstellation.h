@@ -10,6 +10,7 @@
 #include "DynamicParticles.h"
 #include <list>
 #include <vector>
+#include "LayerMusic.h"
 
 class StateConstellation;
 typedef std::shared_ptr<StateConstellation> SharedStateConstellation;
@@ -172,6 +173,8 @@ private:
 
     sf::Sound mExplLow;
     sf::Sound mExplHigh;
+
+    SharedLayerMusic mMusic;
 };
 
 #endif // STATECONSTELLATION_H

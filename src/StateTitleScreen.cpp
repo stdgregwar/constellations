@@ -36,6 +36,9 @@ void StateTitleScreen::onBegin()
     mBackground.setTexture(Core::get().textureCache().get("data/stars_w_4.png"),4);
     mBackground.uniformDistribution({0,0,1280,720}, 150);
     mView = Core::get().renderWindow().getDefaultView();
+
+    mMusic = SharedMusic(new FlatMusic("data/Constellations.ogg"));
+    Core::get().soundMgr().play(mMusic,2,SoundManager::DIRECT);
 }
 
 void StateTitleScreen::update(float delta_s)
@@ -48,6 +51,7 @@ void StateTitleScreen::onResume()
 {
     sf::Vector2u size = Core::get().renderWindow().getSize();
     mView.setSize(size.x,size.y);
+    Core::get().soundMgr().play(mMusic,2,SoundManager::CHAINED);
 }
 
 void StateTitleScreen::onEnd()
@@ -57,7 +61,7 @@ void StateTitleScreen::onEnd()
 
 void StateTitleScreen::onPause()
 {
-
+    //mMusic->pause();
 }
 
 void StateTitleScreen::launchStateConstellation()

@@ -17,7 +17,11 @@
 using namespace std;
 
 StateConstellation::StateConstellation() :
-    mIState({nullptr,&StateConstellation::defaultEvent}), mYaw(0), mPitch(0)
+    mIState({nullptr,&StateConstellation::defaultEvent}), mYaw(0), mPitch(0),
+    mMusic(new LayerMusic({
+{"first","data/SmoothConstellations.ogg"},
+{"second","data/SmoothConstellations-Funk.ogg"}
+    }))
 {
 }
 
@@ -83,6 +87,9 @@ void StateConstellation::onBegin()
 
     const sf::RenderTarget& target = Core::get().renderWindow();
     correctViews(target.getSize().x,target.getSize().y);
+
+    //Music
+    Core::get().soundMgr().play(mMusic,1,SoundManager::CHAINED);
 }
 
 void StateConstellation::onEnd()
@@ -247,6 +254,8 @@ void StateConstellation::defaultEvent(const sf::Event &e)
                 }
             }
             if(e.key.code == sf::Keyboard::L) Core::get().timeStretch(0.125,4);
+            if(e.key.code == sf::Keyboard::U) mMusic->switchTo("first");
+            if(e.key.code == sf::Keyboard::I) mMusic->switchTo("second");
         break;
     }
 
