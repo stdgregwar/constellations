@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <GameState.h>
 #include <list>
+#include <random>
 #include "Properties.h"
 #include "ResourceCache.h"
 #include "Timer.h"
@@ -154,6 +155,8 @@ public:
     SoundBufferCache& soundBufferCache();
 
     SoundManager& soundMgr();
+
+    unsigned int randomSeed();
 private:
     static constexpr float basic_dt = 1/60.f;
 
@@ -193,6 +196,7 @@ private:
     Transition* mScheduledTransition;
     SharedState mFromTransition;
     SoundManager mSoundManager;
+    std::random_device rd;
 };
 
 #endif // CORE_H

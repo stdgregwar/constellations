@@ -37,7 +37,6 @@ void StateConstellation::onBegin()
 
     Constellation constellation;
     int numbersOfMap = int(constellations.size());
-    random_device rng;
     int numberOfPlayers = Core::get().globalDict()["player_count"].toInt();
     int i = 0;
     while(constellations[i].maxNumberOfPlayers < numberOfPlayers)
@@ -45,7 +44,8 @@ void StateConstellation::onBegin()
         i++;
     }
     uniform_int_distribution<int> int_dist(i,numbersOfMap-1);
-    i = int_dist(rng);
+    std::mt19937 gen(Core::get().randomSeed());
+    i = int_dist(gen);
     constellation.buildFromConstellationDef(constellations[i],numberOfPlayers);
     mPlanets = constellation.getPlanets();
     mPlayers = constellation.getPlayers();

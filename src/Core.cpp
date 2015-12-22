@@ -268,3 +268,8 @@ SoundManager& Core::soundMgr()
 {
     return mSoundManager;
 }
+
+unsigned int Core::randomSeed()
+{
+    return rd();
+}
