@@ -5,6 +5,8 @@
 #include "StaticParticles.h"
 #include "DynamicParticles.h"
 #include "Widget.h"
+#include <SFML/Audio/Music.hpp>
+#include "FlatMusic.h"
 
 class StateTitleScreen : public GameState
 {
@@ -73,6 +75,7 @@ private:
     StaticParticles mBackground;
     SharedWidget mMainWidget;
     sf::View mView;
+    SharedMusic mMusic;
 };
 
 #endif // STATETITLESCREEN_H

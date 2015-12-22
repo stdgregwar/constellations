@@ -8,6 +8,7 @@
 #include "ResourceCache.h"
 #include "Timer.h"
 #include "Transition.h"
+#include "SoundManager.h"
 
 /**
  * @brief Main application class representing the whole game logic with a StateStack. Singleton class.
@@ -151,6 +152,8 @@ public:
      * @return soundBufferCache
      */
     SoundBufferCache& soundBufferCache();
+
+    SoundManager& soundMgr();
 private:
     static constexpr float basic_dt = 1/60.f;
 
@@ -189,6 +192,7 @@ private:
     Transition* mTransition;
     Transition* mScheduledTransition;
     SharedState mFromTransition;
+    SoundManager mSoundManager;
 };
 
 #endif // CORE_H

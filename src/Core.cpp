@@ -91,6 +91,7 @@ bool Core::start()
         //Pop states if needed
         tickTimers();
         popScheduled();
+
         for(sf::Event e; mRenderWindow.pollEvent(e);)
         {
             if(mStateStack)
@@ -106,8 +107,11 @@ bool Core::start()
             mTimeFactor = 0.98f*mTimeFactor+0.02f*mTargetFactor;
 
         mLastDt = basic_dt*mTimeFactor;
-        mLastDt = time.asSeconds()*mTimeFactor;
+        //mLastDt = time.asSeconds()*mTimeFactor;
         mGlobalTime += mLastDt;
+
+        mSoundManager.update(mLastDt);
+
         if(mStateStack)
         {
             mRenderWindow.clear(sf::Color(30,10,30));
@@ -258,4 +262,9 @@ void Core::setTransition(Transition *t)
 float Core::lastDt()
 {
     return mLastDt;
+}
+
+SoundManager& Core::soundMgr()
+{
+    return mSoundManager;
 }
