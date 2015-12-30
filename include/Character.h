@@ -87,6 +87,8 @@ public:
      */
     sf::FloatRect getBounds() const;
 
+    const Skin& skin(){return mSkin;}
+
     virtual ~Character();
 private:
     /**

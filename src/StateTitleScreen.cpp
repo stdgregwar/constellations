@@ -13,6 +13,9 @@ StateTitleScreen::StateTitleScreen() : mMainWidget(new Widget())
 
 void StateTitleScreen::onBegin()
 {
+    mCenterAnchor.setPosition(1280/2,720/2);
+    mSettingAnchor.setRotation(45);
+
     using namespace std::placeholders;
     sf::Texture* titleTex = Core::get().textureCache().get("data/constellations.png");
     mTitle.setOrigin(titleTex->getSize().x/2.f,titleTex->getSize().y/2.f);
@@ -36,6 +39,7 @@ void StateTitleScreen::onBegin()
     mBackground.setTexture(Core::get().textureCache().get("data/stars_w_4.png"),4);
     mBackground.uniformDistribution({0,0,1280,720}, 150);
     mView = Core::get().renderWindow().getDefaultView();
+    mView.setTarget(mCenterAnchor);
 
     mMusic = SharedMusic(new FlatMusic("data/Constellations.ogg"));
     Core::get().soundMgr().play(mMusic,2,SoundManager::DIRECT);
@@ -44,6 +48,7 @@ void StateTitleScreen::onBegin()
 void StateTitleScreen::update(float delta_s)
 {
     //NA
+    mView.update(delta_s);
     //mMainWidget->children()[0]->setRotation(stw(Core::get().time())*5);
 }
 
@@ -88,6 +93,8 @@ void StateTitleScreen::pushEvent(const sf::Event &e)
                 launchStateConstellation();
             if(e.key.code == sf::Keyboard::Escape)
                 Core::get().endGame();
+            if(e.key.code == sf::Keyboard::L)
+                mView.setTarget(mSettingAnchor);
         break;
     case sf::Event::Resized:
         mView.setSize(e.size.width,e.size.height);

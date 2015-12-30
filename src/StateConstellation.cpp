@@ -17,7 +17,7 @@
 using namespace std;
 
 StateConstellation::StateConstellation() :
-    mIState({nullptr,&StateConstellation::defaultEvent}), mYaw(0), mPitch(0),
+    mIState({nullptr,&StateConstellation::defaultEvent}), mYaw(0), mPitch(0), mView(false),
     mMusic(new LayerMusic({
 {"first","data/SmoothConstellations.ogg"},
 {"second","data/SmoothConstellations-Funk.ogg"}
@@ -59,6 +59,7 @@ void StateConstellation::onBegin()
     for(SharedController& c : mPlayers)
     {
         c->character()->rot(0);
+        mView.addTarget(c->character()->skin());
     }
 
     mCurrentPlayer = mPlayers.begin();
@@ -136,6 +137,7 @@ void StateConstellation::draw(sf::RenderTarget& target)
 
 void StateConstellation::update(float delta_s)
 {
+    mView.update(delta_s);
     if(mIState.uf)
         (*this.*mIState.uf)(delta_s); //Call ptr on function
 
@@ -190,6 +192,7 @@ void StateConstellation::defaultUpdate(float delta_s)
     {
         if(mArrows[i]->dead())
         {
+            mView.removeTarget(*(mArrows[i].get()));
             swap(mArrows[i], mArrows.back());
             mArrows.pop_back();
             i--;
@@ -313,6 +316,7 @@ void StateConstellation::pushArrow(SharedArrow a, bool addCallback)
         a->setCallback(std::bind(&StateConstellation::onArrowDecayed, this));
     }
     mArrows.push_back(a);
+    mView.addTarget(*(a.get()));
 }
 
 void StateConstellation::onNewRound()
@@ -343,6 +347,7 @@ void StateConstellation::nextPlayer()
         mCurrentPlayer = mPlayers.begin();
         onNewRound();
     }
+   // mView.setTarget((*mCurrentPlayer)->character()->skin());
 }
 
 bool StateConstellation::isCurrentPlayer(const PlayerID& id)  const

@@ -11,9 +11,10 @@ using namespace std;
 bool Arrow::mSelfhit = false;
 
 Arrow::Arrow(const sf::Vector2f &pos, const sf::Vector2f &speed, const PlayerID& ownerID)
-    : mPos(pos), mSpeed(speed), mTimeStamp(Core::get().time()), mOwnerID(ownerID),
+    : mSpeed(speed), mTimeStamp(Core::get().time()), mOwnerID(ownerID),
       mPut(false), mCallback(nullptr), mCounter(sf::Color::Red,50), mTimeOut(false), mTrail(1.2,1.6e-2,32)
 {
+    setPosition(pos);
     //Setup sounds
     mPutSound.setBuffer(*Core::get().soundBufferCache().get("data/arrowput.wav"));
     mSwiftSound.setBuffer(*Core::get().soundBufferCache().get("data/arrowswift2.wav"));
@@ -59,23 +60,25 @@ bool Arrow::update(float delta_s)
         {
             //TODO find which type cstate must be...
             auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
-            SharedCharacter c = cstate->collideWithCharacter(mPos);
+            SharedCharacter c = cstate->collideWithCharacter(getPosition());
             if(c && (c->id() != mOwnerID || mSelfhit)) {
                 c->hit(50);
                 mTouchSound.play();
                 if(c->isDead())
                     Core::get().timeStretch(0.125f,2.f);
             }
-            mPlanet = cstate->collideWithPlanet(mPos);
+            mPlanet = cstate->collideWithPlanet(getPosition());
             if(mPlanet) {
                 mSprite.setTextureRect({0,0,10,5});
-                mPhi = angle(mPos-mPlanet->getPosition());
-                mPos = mPlanet->getPosOn(mPhi);
+                mPhi = angle(getPosition()-mPlanet->getPosition());
+                setPosition(mPlanet->getPosOn(mPhi));
                 mPut = true;
                 onPut();
             }
             using namespace std::placeholders;
-            integrateEC(mPos, mSpeed, delta_s, std::bind(&StateConstellation::getGravFieldAt, cstate.get(), _1));
+            sf::Vector2f pos = getPosition();
+            integrateEC(pos, mSpeed, delta_s, std::bind(&StateConstellation::getGravFieldAt, cstate.get(), _1));
+            setPosition(pos);
             mSwiftSound.setVolume(lenght(mSpeed)/30.f);
             mSprite.setRotation(angle(mSpeed)*TO_DEGREES);
 
@@ -88,7 +91,7 @@ bool Arrow::update(float delta_s)
         }
     }
 
-    mSprite.setPosition(mPos);
+    mSprite.setPosition(getPosition());
 
     if(Core::get().isStretchin()) {
         float tf = Core::get().timeFactor();
@@ -103,7 +106,7 @@ bool Arrow::update(float delta_s)
 void Arrow::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
-    mTrail.addPoint(getPos());
+    mTrail.addPoint(getPosition());
     if(!mTimeOut)
         drawCursor(target,cstate);
 
@@ -120,11 +123,11 @@ void Arrow::draw(sf::RenderTarget &target, sf::RenderStates states) const
 
 void Arrow::drawCursor(sf::RenderTarget& target, SConst& cstate) const
 {
-    mCursor.setRotation(angle(mPos)*TO_DEGREES-90);
-    mCursor.setPosition(mPos);
+    mCursor.setRotation(angle(getPosition())*TO_DEGREES-90);
+    mCursor.setPosition(getPosition());
 
-    sf::FloatRect cursorBounds = {mCursor.getLocalBounds().left+mPos.x,
-                                  mCursor.getLocalBounds().top+mPos.y,
+    sf::FloatRect cursorBounds = {mCursor.getLocalBounds().left+getPosition().x,
+                                  mCursor.getLocalBounds().top+getPosition().y,
                                   mCursor.getLocalBounds().width,
                                   mCursor.getLocalBounds().height};
     sf::Vector2f newCursorPos = mCursor.getOrigin() + cstate->clampRect(cursorBounds);
@@ -140,18 +143,13 @@ void Arrow::drawCounter(sf::RenderTarget& target, SConst& cstate) const
 {
     mCounter.setValue(lifetime-Core::get().time()+mTimeStamp);
     sf::FloatRect bounds = mCounter.bounds();
-    mCounter.setPosition(sf::Vector2f{7,-14} + cstate->clampRect({mPos.x+bounds.left,mPos.y-bounds.top,bounds.width,bounds.height}));
+    mCounter.setPosition(sf::Vector2f{7,-14} + cstate->clampRect({getPosition().x+bounds.left,getPosition().y-bounds.top,bounds.width,bounds.height}));
     target.draw(mCounter);
 }
 
 bool Arrow::dead()
 {
     return hasTimeOut() && mDeathSound.getStatus() == sf::Sound::Stopped; //Wait for end of sound to destroy arrow
-}
-
-const sf::Vector2f& Arrow::getPos() const
-{
-    return mPos;
 }
 
 bool Arrow::lastMoments() const

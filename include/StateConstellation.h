@@ -11,6 +11,7 @@
 #include <list>
 #include <vector>
 #include "LayerMusic.h"
+#include "Camera.h"
 
 class StateConstellation;
 typedef std::shared_ptr<StateConstellation> SharedStateConstellation;
@@ -168,7 +169,7 @@ private:
     Arrows mArrows;
     StaticParticles mBackground;
     DynamicParticles mExpl;
-    sf::View mView;
+    Camera mView;
     sf::View mBackView;
 
     sf::Sound mExplLow;

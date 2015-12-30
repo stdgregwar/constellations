@@ -7,6 +7,7 @@
 #include "Widget.h"
 #include <SFML/Audio/Music.hpp>
 #include "FlatMusic.h"
+#include "Camera.h"
 
 class StateTitleScreen : public GameState
 {
@@ -74,7 +75,9 @@ private:
     sf::Sprite mTitle;
     StaticParticles mBackground;
     SharedWidget mMainWidget;
-    sf::View mView;
+    Camera mView;
+    sf::Transformable mCenterAnchor;
+    sf::Transformable mSettingAnchor;
     SharedMusic mMusic;
 };
 

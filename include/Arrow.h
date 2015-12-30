@@ -18,7 +18,7 @@ class StateConstellation; //Parent state forward declaration
 
 typedef std::shared_ptr<StateConstellation> SConst; //typedef of the above
 
-class Arrow : public sf::Drawable
+class Arrow : public sf::Drawable, public sf::Transformable
 {
 public:
     constexpr static float lifetime = 6;
@@ -33,12 +33,6 @@ public:
     * @param states
     */
     void draw(sf::RenderTarget &target, sf::RenderStates states) const;
-
-    /**
-     * @brief get the arrow position
-     * @return
-     */
-    const sf::Vector2f& getPos() const;
 
     /**
      * @brief tells wether the arrow has liven more than lifetime
@@ -91,7 +85,7 @@ private:
      */
     void drawCounter(sf::RenderTarget& target, SConst& cstate) const;
     PlayerID mOwnerID;
-    sf::Vector2f mPos;
+    //sf::Vector2f mPos;
     sf::Vector2f mSpeed;
     mutable sf::Sprite mSprite;
     mutable sf::Sprite mCursor;
