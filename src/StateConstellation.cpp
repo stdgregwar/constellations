@@ -167,6 +167,7 @@ void StateConstellation::defaultUpdate(float delta_s)
     {
         constexpr float eS = 500;
         if((*it)->character()->isDead()) {
+            mView.removeTarget((*it)->character()->skin());
             mExplLow.play();
             mExplHigh.play();
             mExpl.uniformDistribution((*it)->character()->getBounds(),800,{-eS,-eS,2*eS,2*eS});
@@ -326,11 +327,14 @@ void StateConstellation::onNewRound()
 
 void StateConstellation::onWin(SharedController winner)
 {
+    mView.setTarget(winner->character()->skin());
+    mView.setAlpha(0.995);
+    mView.setTargetHeight(200);
     cout << "Player Won" << endl;
     Action vic;
     vic.type = Action::VICTORY;
     winner->character()->queueAction(vic);
-    Timer::create(2,[]{Core::get().delayedPop(new CrossFadeTransition(0.5));});
+    Timer::create(3,[]{Core::get().delayedPop(new CrossFadeTransition(0.5));});
     //Core::get().popState();
 }
 

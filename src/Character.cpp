@@ -108,7 +108,7 @@ void Character::update(float delta_s)
             {
                 mAiming = false;
                 mActionSpeed.x += a.move.distance*(25.f/mPlanet->getRadius());
-                if(mActionSpeed.x)
+                if(abs(mActionSpeed.x) > 10e-4)
                 {
                     mSkin.setScale(mActionSpeed.x/abs(mActionSpeed.x),1);
                     mSkin.setAnimation("walk");

@@ -6,6 +6,7 @@ using namespace std;
 
 Camera::Camera(bool trackRotation) : mAlpha(0.99), mTrackRotation(trackRotation), mZoomOffset(1.5), mBeta(0.995)
 {
+    mTargetSize = getSize();
 }
 
 void Camera::setTarget(const sf::Transformable& t)
@@ -31,6 +32,11 @@ void Camera::removeTarget(const sf::Transformable &t)
     }
 }
 
+void Camera::setTargetHeight(float height)
+{
+    mTargetSize = {height/Core::get().aspectRatio(),height};
+}
+
 void Camera::setAlpha(float alpha)
 {
     mAlpha = min(1.f,max(0.f,alpha));
@@ -39,6 +45,18 @@ void Camera::setAlpha(float alpha)
 Camera& Camera::operator=(const sf::View& other)
 {
     sf::View::operator=(other);
+    mTargetSize = getSize();
+}
+
+void Camera::setSize(float width, float height)
+{
+    sf::View::setSize(width,height);
+    mTargetSize = getSize();
+}
+
+void Camera::setSize(const sf::Vector2f &size)
+{
+    sf::View::setSize(size);
 }
 
 const sf::Transformable* Camera::getTarget() const
@@ -86,13 +104,22 @@ void Camera::update(float delta_t)
             mTargetSize = {bounds.width,bounds.width*vratio};
         }
 
-        setSize(mTargetSize*(1-mBeta) + getSize()*mBeta);
+
     }
+    setSize(mTargetSize*(1-mBeta) + getSize()*mBeta);
 
     if(mTargets.size()) {
         setCenter(getCenter() * mAlpha + center * (1.f-mAlpha));
 
-        /*if(mTrackRotation)
-            setRotation(getRotation() * mAlpha + mTarget->getRotation()* (1.f-mAlpha));*/
+        if(mTargets.size() == 1)
+        {
+            float targetRotation = mTargets.back()->getRotation();
+            while(getRotation() - targetRotation > 180)
+                    targetRotation += 360;
+            while(getRotation() - targetRotation < -180)
+                    targetRotation -= 360;
+
+            setRotation(getRotation() * mAlpha + targetRotation * (1.f-mAlpha));
+        }
     }
 }

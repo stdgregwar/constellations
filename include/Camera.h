@@ -12,9 +12,12 @@ public:
     void addTarget(const sf::Transformable& t);
     void removeTarget(const sf::Transformable& t);
     void setAlpha(float alpha);
+    void setTargetHeight(float height);
     Camera& operator=(const sf::View& other);
     const sf::Transformable* getTarget() const;
     void update(float delta_t);
+    void setSize(float width, float height);
+    void setSize(const sf::Vector2f& size);
 private:
     std::vector<const sf::Transformable*> mTargets;
     sf::Vector2f mTargetSize;
