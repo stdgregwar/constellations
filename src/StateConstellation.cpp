@@ -87,6 +87,7 @@ void StateConstellation::onBegin()
 
     const sf::RenderTarget& target = Core::get().renderWindow();
     correctViews(target.getSize().x,target.getSize().y);
+    mView.parralax(mBackView,2);
 
     //Music
     Core::get().soundMgr().play(mMusic,1,SoundManager::CHAINED);
@@ -138,6 +139,7 @@ void StateConstellation::draw(sf::RenderTarget& target)
 void StateConstellation::update(float delta_s)
 {
     mView.update(delta_s);
+    mView.parralax(mBackView,2);
     if(mIState.uf)
         (*this.*mIState.uf)(delta_s); //Call ptr on function
 
