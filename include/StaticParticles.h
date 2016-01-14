@@ -10,7 +10,7 @@ class StaticParticles : public sf::Drawable
 {
 public:
     StaticParticles();
-    void uniformDistribution(sf::FloatRect rect, unsigned count);
+    void uniformDistribution(sf::FloatRect rect, unsigned count, int seed = -1);
     void setTexture(const sf::Texture* tex, int frames);
     void updateTexCoords() const;
     void draw(sf::RenderTarget &target, sf::RenderStates states) const;

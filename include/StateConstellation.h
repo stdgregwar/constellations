@@ -167,7 +167,8 @@ private:
     Players mPlayers;
     Players::iterator mCurrentPlayer;
     Arrows mArrows;
-    StaticParticles mBackground;
+    std::vector<StaticParticles> mBackground;
+    int mBackLayers;
     DynamicParticles mExpl;
     Camera mView;
     sf::View mBackView;
