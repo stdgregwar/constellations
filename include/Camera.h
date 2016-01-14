@@ -16,6 +16,7 @@ public:
     Camera& operator=(const sf::View& other);
     const sf::Transformable* getTarget() const;
     void update(float delta_t);
+    void parralax(sf::View& v, float factor);
     void setSize(float width, float height);
     void setSize(const sf::Vector2f& size);
 private:
