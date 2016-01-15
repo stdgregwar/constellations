@@ -9,6 +9,7 @@ compiler:
   - clang
 
 before_install:
+  - sudo apt-add-repository -y ppa:kalakris/cmake
   - sudo apt-get update -qq
 
 install:
