@@ -1,0 +1,18 @@
+branches:
+  only:
+    - master
+
+language: cpp
+
+compiler:
+  - gcc
+  - clang
+
+before_install:
+  - sudo apt-get update -qq
+
+install:
+  - sudo apt-get install build-essentials
+  - sudo apt-get install -y cmake libsfml-dev 
+
+script: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && make 
