@@ -1,6 +1,7 @@
 #include "../include/Camera.h"
 #include "Core.h"
 #include <limits>
+#include <iostream>
 
 using namespace std;
 
@@ -30,6 +31,12 @@ void Camera::removeTarget(const sf::Transformable &t)
             mTargets.pop_back();
         }
     }
+}
+
+void Camera::parralax(sf::View& v, float factor)
+{
+    v.setRotation(getRotation());
+    v.setCenter(getCenter() / factor);
 }
 
 void Camera::setTargetHeight(float height)
@@ -69,8 +76,8 @@ void Camera::update(float delta_t)
     sf::Vector2f center;
     sf::FloatRect bounds{std::numeric_limits<float>::max(),
                 std::numeric_limits<float>::max(),
-                std::numeric_limits<float>::min(),
-                std::numeric_limits<float>::min()};
+                -std::numeric_limits<float>::max(),
+                -std::numeric_limits<float>::max()};
     for(const sf::Transformable*& t : mTargets) {
         if(t) {
             bounds.left = min(t->getPosition().x, bounds.left);
@@ -78,16 +85,19 @@ void Camera::update(float delta_t)
             bounds.width = max(t->getPosition().x, bounds.width);
             bounds.height = max(t->getPosition().y, bounds.height);
 
-            center += t->getPosition();
+
         }
     }
+
+    center = {bounds.left+bounds.width,bounds.top+bounds.height};
+    center /= 2.f;
 
     bounds.width = bounds.width - bounds.left;
     bounds.height = bounds.height - bounds.top;
     bounds.width *= mZoomOffset;
     bounds.height *= mZoomOffset;
 
-    center /= float(mTargets.size());
+
 
 
     if(mTargets.size() > 1) {

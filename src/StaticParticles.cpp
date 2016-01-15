@@ -9,9 +9,11 @@ StaticParticles::StaticParticles()
     mVertexArray.setPrimitiveType(sf::Triangles);
 }
 
-void StaticParticles::uniformDistribution(sf::FloatRect rect, unsigned count)
+void StaticParticles::uniformDistribution(sf::FloatRect rect, unsigned count, int seed)
 {
     default_random_engine gen;
+    if(seed != -1)
+        gen.seed(seed);
     uniform_real_distribution<float> vertical(rect.top,rect.top+rect.height);
     uniform_real_distribution<float> horizontal(rect.left,rect.left+rect.width);
     uniform_real_distribution<float> size(mTexture->getSize().y*0.5,mTexture->getSize().y*2);

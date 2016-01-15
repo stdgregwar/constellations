@@ -17,7 +17,7 @@
 using namespace std;
 
 StateConstellation::StateConstellation() :
-    mIState({nullptr,&StateConstellation::defaultEvent}), mYaw(0), mPitch(0), mView(false),
+    mIState({nullptr,&StateConstellation::defaultEvent}), mYaw(0), mPitch(0), mView(false), mBackLayers(8),
     mMusic(new LayerMusic({
 {"first","data/SmoothConstellations.ogg"},
 {"second","data/SmoothConstellations-Funk.ogg"}
@@ -32,8 +32,13 @@ void StateConstellation::onBegin()
     mExplLow.setBuffer(*Core::get().soundBufferCache().get("data/explodelow.wav"));
 
     //Textures
-    mBackground.setTexture(Core::get().textureCache().get("data/stars_w_4.png"),4);
-    mBackground.uniformDistribution({-1280*2,-720*2,1280*4,720*4},1200);
+    mBackground.resize(mBackLayers);
+    float seed = 0;
+    for(StaticParticles& p : mBackground) {
+        seed += 50;
+        p.setTexture(Core::get().textureCache().get("data/stars_w_4.png"),4);
+        p.uniformDistribution({-1280*2,-720*2,1280*4,720*4},2400/mBackLayers,seed);
+    }
 
     Constellation constellation;
     int numbersOfMap = int(constellations.size());
@@ -55,6 +60,7 @@ void StateConstellation::onBegin()
     for(SharedPlanet& p : mPlanets)
     {
         p->update2DPos(mat);
+        mView.addTarget(*p);
     }
     for(SharedController& c : mPlayers)
     {
@@ -87,6 +93,7 @@ void StateConstellation::onBegin()
 
     const sf::RenderTarget& target = Core::get().renderWindow();
     correctViews(target.getSize().x,target.getSize().y);
+    mView.parralax(mBackView,2);
 
     //Music
     Core::get().soundMgr().play(mMusic,1,SoundManager::CHAINED);
@@ -111,8 +118,15 @@ void StateConstellation::onPause()
 
 void StateConstellation::draw(sf::RenderTarget& target)
 {
-    target.setView(mBackView);
-    target.draw(mBackground);
+
+    float factor = 3;
+    for(int i = 0; i < mBackLayers; i++)
+    {
+        mView.parralax(mBackView,factor);
+        target.setView(mBackView);
+        target.draw(mBackground[i]);
+        factor*=1.3;
+    }
     //mView.zoom(1.f/2);
 
     target.setView(mView);
@@ -133,11 +147,19 @@ void StateConstellation::draw(sf::RenderTarget& target)
         target.draw(*a);
     }
     target.draw(mExpl);
+
+    /*for(int i = mBackLayers-2; i < mBackLayers; i++)
+    {
+        mView.parralax(mBackView,1-i*0.25);
+        target.setView(mBackView);
+        target.draw(mBackground[i]);
+    }*/
 }
 
 void StateConstellation::update(float delta_s)
 {
     mView.update(delta_s);
+    //mView.parralax(mBackView,2);
     if(mIState.uf)
         (*this.*mIState.uf)(delta_s); //Call ptr on function
 
