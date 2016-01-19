@@ -10,6 +10,7 @@
 #include "Timer.h"
 #include "Transition.h"
 #include "SoundManager.h"
+#include "NetworkManager.h"
 
 /**
  * @brief Main application class representing the whole game logic with a StateStack. Singleton class.
@@ -196,6 +197,7 @@ private:
     Transition* mScheduledTransition;
     SharedState mFromTransition;
     SoundManager mSoundManager;
+    NetworkManager mNetworkManager;
     std::random_device rd;
 };
 
