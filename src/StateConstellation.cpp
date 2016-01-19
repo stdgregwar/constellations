@@ -120,14 +120,13 @@ void StateConstellation::draw(sf::RenderTarget& target)
 {
 
     float factor = 3;
-    for(int i = 0; i < mBackLayers; i++)
+    for(StaticParticles& p : mBackground)
     {
         mView.parralax(mBackView,factor);
         target.setView(mBackView);
-        target.draw(mBackground[i]);
+        target.draw(p);
         factor*=1.3;
     }
-    //mView.zoom(1.f/2);
 
     target.setView(mView);
 
@@ -147,19 +146,11 @@ void StateConstellation::draw(sf::RenderTarget& target)
         target.draw(*a);
     }
     target.draw(mExpl);
-
-    /*for(int i = mBackLayers-2; i < mBackLayers; i++)
-    {
-        mView.parralax(mBackView,1-i*0.25);
-        target.setView(mBackView);
-        target.draw(mBackground[i]);
-    }*/
 }
 
 void StateConstellation::update(float delta_s)
 {
     mView.update(delta_s);
-    //mView.parralax(mBackView,2);
     if(mIState.uf)
         (*this.*mIState.uf)(delta_s); //Call ptr on function
 
@@ -182,9 +173,6 @@ void StateConstellation::defaultUpdate(float delta_s)
         a->update(delta_s);
     }
 
-    /*mPlayers.remove_if(
-                [](const SharedController& c)->bool{return c->character()->isDead();}
-    );*/
     for(Players::iterator it = mPlayers.begin(); it != mPlayers.end(); it++)
     {
         constexpr float eS = 500;
@@ -207,10 +195,6 @@ void StateConstellation::defaultUpdate(float delta_s)
             }
         }
     }
-    /*for(Arrows::iterator it = mArrows.begin(); it != mArrows.end(); it++)
-    {
-        if((*it)->dead()) mArrows.erase(it++);
-    }*/
     for(size_t i = 0; i < mArrows.size(); i++)
     {
         if(mArrows[i]->dead())
@@ -251,13 +235,6 @@ void StateConstellation::pushEvent(const sf::Event &e)
 
 void StateConstellation::defaultEvent(const sf::Event &e)
 {
-    //DEACTIVATED ROTATION FOR NOW
-    /*if(e.type == sf::Event::MouseButtonPressed && e.mouseButton.button == sf::Mouse::Right){
-        //const sf::Event::MouseButtonEvent& me = e;
-        mOldMousePos = {e.mouseButton.x,e.mouseButton.y};
-        mIState = {&StateConstellation::rotUpdate,&StateConstellation::rotEvent};
-    }*/
-
     switch(e.type)
     {
         case sf::Event::Resized:
@@ -271,7 +248,6 @@ void StateConstellation::defaultEvent(const sf::Event &e)
                 float magn = 100;
                 for(int i = 0; i < count; i++)
                 {
-
                     float angle = (float(i) / count)*M_PI*2;
                     sf::Vector2f speed = {magn*cos(angle),magn*sin(angle)};
                     pushArrow(SharedArrow(new Arrow(rpos,speed,-1)),false);
@@ -425,6 +401,7 @@ std::vector<sf::Vector2f> StateConstellation::pathForInitials(sf::Vector2f pos, 
     std::vector<sf::Vector2f> path;
     auto cstate = std::static_pointer_cast<StateConstellation>(Core::get().currentState());
     std::function<sf::Vector2f(const sf::Vector2f &p, const sf::Vector2f &v)> eq;
+
     if(Core::get().globalDict()["hint"].toBool())
     {
         using namespace std::placeholders;

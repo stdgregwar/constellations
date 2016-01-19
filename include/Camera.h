@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics/View.hpp>
 #include <SFML/Graphics/Transformable.hpp>
+#include <vector>
 
 class Camera : public sf::View
 {
