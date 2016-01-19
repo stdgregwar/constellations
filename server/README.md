@@ -23,41 +23,41 @@ Message
 
 ConnectionRequest
 	input	nick : String
-	output	uid : Int
-	rules	uid == 0 if nick refused
-
+	output	finalNick : String
+	rules 	finalNick empty if connection refused
+	
 MatchRequest
-	input	gameStyle : String, localPlayerCount : Int, totalPlayerCount : Int, desiredPlayers : String 
-	output	finalgameStyle : String
-	rules   finalgamestyle is set to best fitting style or "error" if no match was found
+	input	gameStyle : String, localPlayerCount : Int, totalPlayerCount : Int, desiredPlayers : List[String], mapID : Int
+	output	finalGameStyle : String, playersSlots : List[Int], mapID : Int
+	rules   finalGamestyle is set to best fitting style or "error" if no match was found
 	rules	desiredPlayers is empty => random match else => contains comma separated nicks of desired opponents
+	rules 	playersSlots contain slots assigned to local players
 
 -Match preparation phase
 
 NewPlayer
-	bcast playerSlot : Int, playerUID: Int, playerNick : String, hatID : Int
+	bcast playerSlot : Int, playerNick : String
 
+HatChange
+	input 	hatID: Int, playerSlot : Int
+	bcast 	hatID: Int, playerSlot : Int
+
+RunTaunt
+	input 	tauntID : String, playerSlot : Int
+	bcast 	tauntID : String, playerSlot : Int
+
+Status
+	input 	ready : Boolean, playerSlot : Int
+	bcast 	ready : Boolean, playerSlot : Int
+
+LeaveNotification
+	input 	-
+	
 PlayerLeave
 	bcast playerSlot : Int
 
-HatChange
-	input 	hatID: Int
-	bcast 	uid : Int, hatID: Int
-
-LeavePool
-	input 	wantToLeave : Boolean
-	bcast 	uid : Int, leave : Boolean
-
-RunTaunt
-	input 	tauntID : String
-	bcast 	tauntID : String
-
-ReadyToGo
-	input 	setReady : Boolean
-	bcast 	uid : Int, ready : Boolean
-
 CountDown
-	bcast 	secToStart : Int
+	bcast 	secToStart : Int 
 	rules 	send remaining sec to match start each sec
 
 -Match Launch phase
@@ -65,12 +65,8 @@ CountDown
 MatchCanceled
 	bcast	error : String
 
-MatchStartHandshake
-	bcast 	-
-	input 	ready : Bool
-
-MatchData
-	bcast 	mapID : Int
+MatchStart
+	bcast 	masterSlot : Int
 
 ```
 
@@ -78,4 +74,7 @@ Then the clients start to send binary action that are directly forwarded to othe
 
 ## Match
 
-Todo
+´´´
+MatchEnd
+	input -
+´´´
