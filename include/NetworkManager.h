@@ -4,9 +4,13 @@
 #include "Action.h"
 #include <SFML/Network.hpp>
 #include <thread>
+#include <mutex>
 #include <functional>
+#include <queue>
 
 typedef int UID;
+typedef int Slot;
+typedef std::lock_guard<std::mutex> Lock;
 
 class NetworkManager
 {
@@ -29,7 +33,7 @@ public:
      * @brief tries to connect to server and call the given function(if any) when done
      * @return
      */
-    bool startNetworking(std::function<void()> callback);
+    void startNetworking(std::function<void(bool)> callback);
 
     /**
      * @brief send action to server, if not connected : return false and do nothing
@@ -37,7 +41,7 @@ public:
      * @param uid
      * @return
      */
-    bool sendAction(const Action& action, UID uid);
+    bool sendAction(const Action& action, Slot slot);
 
     /**
      * @brief used to call functions from main thread in a cooperative multitask way
@@ -45,9 +49,28 @@ public:
      */
     void update(float delta_s);
 
+    void receivePacket();
+
     State state() const;
+
+    ~NetworkManager();
 private:
-    std::function<void()> mCallback;
+    static void secondThread(NetworkManager& that);
+    void connectToServer();
+    void disconnect();
+    bool keepGoing() const;
+
+    std::string mHost;
+    sf::Uint8 mPort;
+    std::function<void(bool)> mConnectCallback;
+    std::mutex mToCallMutex;
+    std::function<void()> mToCall;
+    std::thread mThread;
+    bool mContinue;
+
+    std::mutex mPacketBufferMutex;
+    std::queue<sf::Packet> mPacketBuffer;
+
     sf::TcpSocket mSocket;
     State mState;
 
