@@ -46,6 +46,7 @@ void ComboBox::choose(unsigned id)
     if(mCallback)
         mCallback(id);
     hideChoices();
+    mDeployed = false;
 }
 
 void ComboBox::showChoices()

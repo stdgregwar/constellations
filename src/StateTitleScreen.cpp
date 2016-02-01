@@ -70,7 +70,7 @@ void StateTitleScreen::onBegin()
     mMatchMakingWidget->show();
 
     mBackground.setTexture(Core::get().textureCache().get("data/stars_w_4.png"),4);
-    mBackground.uniformDistribution({0,0,1280,720}, 150);
+    mBackground.uniformDistribution({-1280*2,-720*2,1280*4,720*4}, 1290);
     mView = Core::get().renderWindow().getDefaultView();
     mView.setTarget(*mMenuWidget.get());
 
