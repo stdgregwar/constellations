@@ -24,7 +24,7 @@ public:
     Widgets& children();
     virtual bool onEvent(const sf::Event& e, const sf::View& view);
     bool pushEvent(const sf::Event& e, const sf::View &view);
-    bool visible();
+    bool visible() const;
     sf::Transform getFullTransform() const;
 private:
     void setParent(SharedWidget w);

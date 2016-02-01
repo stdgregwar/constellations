@@ -53,6 +53,8 @@ public:
      */
     bool onEvent(const sf::Event& e, const sf::View& view);
 
+    void setText(const sf::String& text);
+
     void setHoveredColor(const sf::Color& c);
     void setDefaultColor(const sf::Color& c);
 private:

@@ -9,11 +9,13 @@ Widget::Widget(SharedWidget parent) : mParent(parent)
 void Widget::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
     if(mVisible)
+    {
         for(auto c : mChildren) {
             sf::RenderStates s = states;
             s.transform *= c->getTransform();
             c->draw(target,s);
         }
+    }
 }
 
 void Widget::add(SharedWidget w)
@@ -54,7 +56,7 @@ Widgets& Widget::children()
     return mChildren;
 }
 
-bool Widget::visible()
+bool Widget::visible() const
 {
     return mVisible;
 }

@@ -75,9 +75,9 @@ private:
     sf::Sprite mTitle;
     StaticParticles mBackground;
     SharedWidget mMainWidget;
+    SharedWidget mMenuWidget;
+    SharedWidget mMatchMakingWidget;
     Camera mView;
-    sf::Transformable mCenterAnchor;
-    sf::Transformable mSettingAnchor;
     SharedMusic mMusic;
 };
 

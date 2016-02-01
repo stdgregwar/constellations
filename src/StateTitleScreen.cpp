@@ -1,45 +1,78 @@
 #include "StateTitleScreen.h"
 #include "Core.h"
 #include "StateConstellation.h"
+#include "CaptionWidget.h"
 #include "Button.h"
 #include "SpinBox.h"
+#include "ComboBox.h"
 #include <functional>
 #include <CheckBox.h>
 #include "CrossFadeTransition.h"
 
-StateTitleScreen::StateTitleScreen() : mMainWidget(new Widget())
+using namespace std;
+
+StateTitleScreen::StateTitleScreen() : mMenuWidget(new Widget()), mMatchMakingWidget(new Widget())
 {
 }
 
 void StateTitleScreen::onBegin()
 {
-    mCenterAnchor.setPosition(1280/2,720/2);
-    mSettingAnchor.setRotation(45);
+    mView.setAlpha(0.95);
 
-    using namespace std::placeholders;
+    mMainWidget = mMenuWidget;
+    mMenuWidget->setPosition(1280/2,720/2);
+    mMatchMakingWidget->setPosition(1280*1.5,720*0.5);
+    mMatchMakingWidget->setRotation(-90);
+
+    //TITLE
     sf::Texture* titleTex = Core::get().textureCache().get("data/constellations.png");
     mTitle.setOrigin(titleTex->getSize().x/2.f,titleTex->getSize().y/2.f);
     mTitle.setTexture(*titleTex);
     mTitle.setScale(2.5f,2.5f);
     Core::get().textureCache().get("data/constellations.png")->setSmooth(false);
-
     mTitle.setPosition(1280/2,200);
 
-    SharedWidget start = mMainWidget->add(new Button(L"Start!",std::bind(&StateTitleScreen::launchStateConstellation,this)));
-    start->setPosition(1280/2-150+90,720/2+90);
-    start->add(new SpinBox("Players",2,2,5,std::bind(&StateTitleScreen::setPlayerCount,this,_1)))->setPosition(0,60);
-    start->add(new SpinBox("Life points",1,1,10,std::bind(&StateTitleScreen::setPlayerPv,this,_1)))->setPosition(0,120);
-    start->add(new CheckBox("Hint",true,std::bind(&StateTitleScreen::setHint,this,_1)))->setPosition(0,180);
-    start->add(new CheckBox("Friendly fire",true,std::bind(&StateTitleScreen::setSelfHit,this,_1)))->setPosition(0,240);
-    start->add(new Button(L"Quit",[]{Core::get().endGame();}))->setPosition(0,300);
-    mMainWidget->show();
+    //MENU
+    using namespace std::placeholders;
+    SharedWidget start = mMenuWidget->add(new Button(L"Start!",[&]{
+        mView.setTarget(*mMatchMakingWidget.get());
+        mMainWidget = mMatchMakingWidget;
+    }));
+    start->setPosition(-150+90,+90);
+    float space = 50;
+    start->add(new SpinBox("Players",2,2,5,std::bind(&StateTitleScreen::setPlayerCount,this,_1)))->setPosition(0,space*1);
+    start->add(new SpinBox("Life points",1,1,10,std::bind(&StateTitleScreen::setPlayerPv,this,_1)))->setPosition(0,space*2);
+    start->add(new CheckBox("Hint",true,std::bind(&StateTitleScreen::setHint,this,_1)))->setPosition(0,space*3);
+    start->add(new CheckBox("Friendly fire",true,std::bind(&StateTitleScreen::setSelfHit,this,_1)))->setPosition(0,space*4);
+    start->add(new Button(L"Quit",[]{Core::get().endGame();}))->setPosition(0,space*5);
+    mMenuWidget->show();
     start->show();
     start->setOrigin(90,90);
+
+    //MatchMaking
+    mMatchMakingWidget->add(new Button(L"Back",[&]{
+        mView.setTarget(*mMenuWidget.get());
+        mMainWidget = mMenuWidget;
+    }, 50, sf::Color::White, sf::Color::Red))->setPosition(-1200*0.5,-700*0.5);
+
+    float lm(-600),rm(300);
+    for(int i = 1; i <= 5; i++)
+    {
+        mMatchMakingWidget->add(new CaptionWidget("Slot " + to_string(i)))->setPosition(lm+i*((rm-lm)/5),-300);
+        mMatchMakingWidget->add(new ComboBox({
+                                                 {0,"Player"},
+                                                 {1,"Bot"},
+                                                 {2,"Online"},
+                                                 {3,"None"}
+                                             },3,nullptr))->setPosition(lm+i*((rm-lm)/5),50);
+    }
+
+    mMatchMakingWidget->show();
 
     mBackground.setTexture(Core::get().textureCache().get("data/stars_w_4.png"),4);
     mBackground.uniformDistribution({0,0,1280,720}, 150);
     mView = Core::get().renderWindow().getDefaultView();
-    mView.setTarget(mCenterAnchor);
+    mView.setTarget(*mMenuWidget.get());
 
     mMusic = SharedMusic(new FlatMusic("data/Constellations.ogg"));
     Core::get().soundMgr().play(mMusic,2,SoundManager::DIRECT);
@@ -79,7 +112,8 @@ void StateTitleScreen::draw(sf::RenderTarget &target)
 {
     target.setView(mView);
     target.draw(mBackground);
-    target.draw(*mMainWidget.get());
+    target.draw(*mMenuWidget.get(),mMenuWidget->getTransform());
+    target.draw(*mMatchMakingWidget.get(), mMatchMakingWidget->getTransform());
     target.draw(mTitle);
 }
 
@@ -93,11 +127,10 @@ void StateTitleScreen::pushEvent(const sf::Event &e)
                 launchStateConstellation();
             if(e.key.code == sf::Keyboard::Escape)
                 Core::get().endGame();
-            if(e.key.code == sf::Keyboard::L)
-                mView.setTarget(mSettingAnchor);
         break;
     case sf::Event::Resized:
-        mView.setSize(e.size.width,e.size.height);
+        //mView.setSize(e.size.width,e.size.height);
+        mView.setSize(1280,720);
     }
 }
 

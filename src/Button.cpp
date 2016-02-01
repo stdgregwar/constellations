@@ -11,7 +11,8 @@ Button::Button(const sf::String &text, std::function<void()> c, int csize,const 
 
 void Button::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
-    target.draw(mText,states);
+    if(visible())
+        target.draw(mText,states);
     Widget::draw(target,states);
 }
 
@@ -48,6 +49,11 @@ bool Button::onEvent(const sf::Event& e, const sf::View &view)
             break;
         }
     }
+}
+
+void Button::setText(const sf::String &text)
+{
+    mText.setString(text);
 }
 
 void Button::setHoveredColor(const sf::Color &c)
