@@ -41,6 +41,9 @@ Core::Core() : mGlobalTime(0), mTimeFactor(1), mTargetFactor(1), mTransition(nul
     mScheduledPops(0)
 {
     mInstance = this;
+    //For net tests
+    globalDict()["host"] = string("localhost");
+    globalDict()["port"] = 1337;
 }
 
 TextureCache& Core::textureCache()
@@ -69,6 +72,7 @@ void Core::popScheduled()
 
 bool Core::init(sf::Vector2u size)
 {
+    mNetworkManager.startNetworking([](bool b){cout << "It's " << (b ? "working!" : "shitting!") << endl;});
     mRenderWindow.create(sf::VideoMode(1280,720),"Constellations " + to_string(myproject_VERSION_MAJOR) + "." + to_string(myproject_VERSION_MINOR) ,sf::Style::Resize | sf::Style::Default);
     mRenderWindow.setKeyRepeatEnabled(false);
     return mRenderWindow.isOpen();
@@ -111,6 +115,7 @@ bool Core::start()
         mGlobalTime += mLastDt;
 
         mSoundManager.update(mLastDt);
+        mNetworkManager.update(mLastDt);
 
         if(mStateStack)
         {

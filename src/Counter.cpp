@@ -5,7 +5,7 @@
 
 using namespace std;
 
-Counter::Counter(sf::Color color, int characterSize, sf::Font *font)
+Counter::Counter(sf::Color color, unsigned characterSize, sf::Font *font)
 {
     mMain.setColor(color);
     mMain.setCharacterSize(characterSize);

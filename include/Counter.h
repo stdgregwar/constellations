@@ -16,7 +16,7 @@ public:
      * @param characterSize characterSize
      * @param font
      */
-    Counter(sf::Color color, int characterSize, sf::Font* font = nullptr);
+    Counter(sf::Color color, unsigned characterSize, sf::Font* font = nullptr);
 
     /**
      * @brief draw counter on given target

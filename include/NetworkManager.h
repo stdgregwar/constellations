@@ -58,19 +58,27 @@ public:
      */
     void update(float delta_s);
 
+    /**
+     * @brief asyncly receive a packet and put it in the buffer
+     */
     void receivePacket();
 
+    /**
+     * @brief get manager state
+     * @return
+     */
     State state() const;
 
     ~NetworkManager();
 private:
-    static void secondThread(NetworkManager& that);
+    //Static function executed in secondary thread
+    void secondThread();
     void connectToServer();
     void disconnect();
     bool keepGoing() const;
 
     std::string mHost;
-    sf::Uint8 mPort;
+    int mPort;
     std::function<void(bool)> mConnectCallback;
     std::mutex mToCallMutex;
     std::function<void()> mToCall;

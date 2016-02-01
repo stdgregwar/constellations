@@ -13,7 +13,7 @@ void NetworkManager::startNetworking(std::function<void(bool)> callback)
     mHost = Core::get().globalDict()["host"].toString();
     mPort = Core::get().globalDict()["port"].toInt();
     mConnectCallback = callback;
-    secondThread(*this);
+    mThread = thread(&NetworkManager::secondThread, this);
 }
 
 bool NetworkManager::sendAction(const Action& action, Slot slot)
@@ -27,24 +27,32 @@ bool NetworkManager::sendJSON(const j::Value &v)
     mSocket.send(str.c_str(),str.size()+1);
 }
 
-void NetworkManager::secondThread(NetworkManager &that)
+void NetworkManager::secondThread()
 {
-    that.connectToServer();
+    connectToServer();
+    sendJSON({
+                       {"Hello","World"},
+                       {"Obj", {
+                                 {"Bonjour", "aurevoir"},
+                                 {"Number", 89},
+                                 {"Tatata", true},
+                                 {"List", j::VArray{"Bla", "Caca", 2,true}}
+                             }
+                         }
+                     });
 
-    while(that.keepGoing())
+    while(keepGoing())
     {
-        that.receivePacket();
-        sf::sleep(sf::milliseconds(5));
+        receivePacket();
     }
 
-    that.disconnect();
+    disconnect();
 }
 
 void NetworkManager::connectToServer()
 {
     Lock lock(mToCallMutex);
-    if(mSocket.connect(mHost,mPort)){
-
+    if(mSocket.connect(mHost,mPort) != sf::Socket::Error){
         mToCall = bind(mConnectCallback,true);
     } else {
         mToCall = bind(mConnectCallback,false);
@@ -75,8 +83,10 @@ void NetworkManager::update(float delta_s)
 {
     { //Lock scope
         Lock lock(mToCallMutex);
-        if(mToCall)
+        if(mToCall) {
                 mToCall();
+                mToCall = nullptr;
+        }
     }
 
     switch(mState)
