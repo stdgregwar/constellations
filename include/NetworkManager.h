@@ -7,6 +7,7 @@
 #include <mutex>
 #include <functional>
 #include <queue>
+#include "JSON.h"
 
 typedef int UID;
 typedef int Slot;
@@ -35,13 +36,21 @@ public:
      */
     void startNetworking(std::function<void(bool)> callback);
 
+
     /**
      * @brief send action to server, if not connected : return false and do nothing
      * @param action
      * @param uid
-     * @return
+     * @return true on succes
      */
     bool sendAction(const Action& action, Slot slot);
+
+    /**
+     * @brief send JSON value trough tcp socket
+     * @param v value
+     * @return true on success
+     */
+    bool sendJSON(const j::Value& v);
 
     /**
      * @brief used to call functions from main thread in a cooperative multitask way
