@@ -26,7 +26,7 @@ void Button::setHovered(bool hover)
     mText.setColor(hover ? mHoveredColor : mDefaultColor); //TODO parametrize colors
 }
 
-sf::FloatRect Button::bounds()
+sf::FloatRect Button::bounds() const
 {
     return getFullTransform().transformRect(mText.getLocalBounds());
 }

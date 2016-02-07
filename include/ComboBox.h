@@ -12,6 +12,7 @@ public:
     void clicked();
     void choose(unsigned id);
     void show();
+    bool onEvent(const sf::Event &e, const sf::View &view);
 private:
     void showChoices();
     void hideChoices();
@@ -21,6 +22,7 @@ private:
     SharedButton mMainButton;
     std::function<void(unsigned id)> mCallback;
     std::vector<SharedWidget> mBChoices;
+    sf::FloatRect mBounds;
     bool mDeployed;
 };
 

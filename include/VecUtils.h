@@ -2,7 +2,16 @@
 #define VECUTILS_H
 
 #include <SFML/System/Vector2.hpp>
+#include <SFML/Graphics/Rect.hpp>
 #include <cmath>
+#include <limits>
+
+const sf::FloatRect INFRECT(
+            std::numeric_limits<float>::max(),
+            std::numeric_limits<float>::max(),
+            -std::numeric_limits<float>::max(),
+            -std::numeric_limits<float>::max()
+);
 
 inline float lengthSquared(const sf::Vector2f &vec){
     return vec.x*vec.x+vec.y*vec.y;
@@ -77,6 +86,18 @@ inline sf::Vector2f bounce(const sf::Vector2f& d, const sf::Vector2f& n)
         return d - r*n;
     else
         return d;
+}
+
+inline sf::FloatRect rectUnion(const sf::FloatRect& first, const sf::FloatRect& second)
+{
+    sf::FloatRect r;
+    r.left = std::min(first.left,second.left);
+    r.top = std::min(first.top,second.top);
+    r.width = std::max(first.left+first.width,second.left+second.width);
+    r.height = std::max(first.top+first.height,second.top+second.height);
+    r.width -= r.left;
+    r.height -= r.top;
+    return r;
 }
 
 #endif // VECUTILS_H

@@ -1,4 +1,7 @@
 #include "ComboBox.h"
+#include "Core.h"
+#include <limits>
+#include "VecUtils.h"
 
 using namespace std;
 
@@ -30,6 +33,17 @@ void ComboBox::show()
     hideChoices();
 }
 
+bool ComboBox::onEvent(const sf::Event &e, const sf::View &view)
+{
+
+    if(e.type == sf::Event::MouseMoved && mDeployed)
+    {
+        sf::Vector2f mapPos = Core::get().renderWindow().mapPixelToCoords({e.mouseMove.x,e.mouseMove.y},view);
+        if(!mBounds.contains(mapPos))
+            hideChoices();
+    }
+}
+
 void ComboBox::clicked()
 {
     if(mDeployed){
@@ -37,7 +51,6 @@ void ComboBox::clicked()
     } else {
         showChoices();
     }
-    mDeployed = !mDeployed;
 }
 
 void ComboBox::choose(unsigned id)
@@ -46,17 +59,24 @@ void ComboBox::choose(unsigned id)
     if(mCallback)
         mCallback(id);
     hideChoices();
-    mDeployed = false;
 }
 
 void ComboBox::showChoices()
 {
+    sf::FloatRect m(INFRECT);
+    m = rectUnion(m,mMainButton->bounds());
+    mDeployed = true;
     for(SharedWidget& w : mBChoices)
+    {
         w->show();
+        m = rectUnion(m,w->bounds());
+    }
+    mBounds = m;
 }
 
 void ComboBox::hideChoices()
 {
+    mDeployed = false;
     for(SharedWidget& w : mBChoices)
         w->hide();
 }

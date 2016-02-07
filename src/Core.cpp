@@ -81,6 +81,9 @@ bool Core::init(sf::Vector2u size)
 bool Core::start()
 {
     mFontCache.put("default",mFontCache.loadOnly("data/8bitmadness.ttf")); //Load default font in cache
+    //Clear font
+    const sf::Texture& tex = mFontCache.get("default")->getTexture(50);
+    ((sf::Texture*)(&tex))->setSmooth(false);
 
     mRenderWindow.setVerticalSyncEnabled(true);
 

@@ -77,10 +77,17 @@ bool Widget::onEvent(const sf::Event& e, const sf::View& view)
 
 }
 
+sf::FloatRect Widget::bounds() const
+{
+    sf::Vector2f pos(getFullTransform().transformPoint(0,0));
+    return {pos.x,pos.y,0,0};
+}
+
 bool Widget::pushEvent(const sf::Event &e, const sf::View& view){
     if(mVisible)
         for(auto c : mChildren) {
-            c->onEvent(e,view);
+            if(c->visible())
+                c->onEvent(e,view);
             c->pushEvent(e,view);
         }
     return true;

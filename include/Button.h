@@ -44,7 +44,7 @@ public:
      * @brief bounds of the button
      * @return
      */
-    sf::FloatRect bounds();
+    sf::FloatRect bounds() const;
 
     /**
      * @brief called with each event of the renderwindow, check if button is clicked

@@ -26,6 +26,7 @@ public:
     bool pushEvent(const sf::Event& e, const sf::View &view);
     bool visible() const;
     sf::Transform getFullTransform() const;
+    virtual sf::FloatRect bounds() const;
 private:
     void setParent(SharedWidget w);
     bool mVisible;
