@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
-#include "Widget.h"
+#include "ProtoButton.h"
 #include <functional>
 
 class Button;
@@ -13,7 +13,7 @@ typedef std::shared_ptr<Button> SharedButton;
  *
  * The widget is given a callback to call if the button is pressed
  */
-class Button : public Widget
+class Button : public ProtoButton
 {
 public:
     /**
@@ -30,11 +30,6 @@ public:
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 
     /**
-     * @brief called when the button is triggered
-     */
-    void trigger();
-
-    /**
      * @brief set if the button is hovered
      * @param hover
      */
@@ -46,23 +41,14 @@ public:
      */
     sf::FloatRect bounds() const;
 
-    /**
-     * @brief called with each event of the renderwindow, check if button is clicked
-     * @param e
-     * @return
-     */
-    bool onEvent(const sf::Event& e, const sf::View& view);
-
     void setText(const sf::String& text);
 
     void setHoveredColor(const sf::Color& c);
     void setDefaultColor(const sf::Color& c);
 private:
-    bool mHovered;
     sf::Text mText;
     sf::Color mHoveredColor;
     sf::Color mDefaultColor;
-    std::function<void()> mCallback;
 };
 
 #endif // BUTTON_H

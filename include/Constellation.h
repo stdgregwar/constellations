@@ -32,13 +32,7 @@ private:
     std::list<SharedPlanet> mPlanets;
     Players mPlayers;
     //TODO add colors
-    const std::vector<sf::Color> mColorPool = {
-            sf::Color(255,150,150),
-            sf::Color(150,150,255),
-            sf::Color(150,255,200),
-            sf::Color(255,255,150),
-            sf::Color(255,203,150)
-    };
+
 };
 
 

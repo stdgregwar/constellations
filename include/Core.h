@@ -135,7 +135,7 @@ public:
      * @brief get the global dictionnary of the core
      * @return dict
      */
-    Properties& globalDict();
+    j::Value& globalDict();
 
     /**
      * @brief get the texture ResourceCache
@@ -156,6 +156,8 @@ public:
     SoundBufferCache& soundBufferCache();
 
     SoundManager& soundMgr();
+
+    NetworkManager& networkMgr();
 
     unsigned int randomSeed();
 private:
@@ -190,7 +192,7 @@ private:
     float mTargetFactor;
     static Core* mInstance;
     SharedState mStateStack;
-    Properties mGlobalDict;
+    j::Value mGlobalDict;
     int mScheduledPops;
     std::list<SharedTimer> mTimers;
     Transition* mTransition;

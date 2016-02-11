@@ -1,10 +1,11 @@
 #include "NetworkManager.h"
 #include "Core.h"
 #include "JSONSerialiser.h"
+#include <iostream>
 
 using namespace std;
 
-NetworkManager::NetworkManager() : mContinue(true)
+NetworkManager::NetworkManager() : mContinue(true), mReceiver(nullptr)
 {
 }
 
@@ -43,7 +44,7 @@ void NetworkManager::secondThread()
 
     while(keepGoing())
     {
-        receivePacket();
+        receiveJSON();
     }
 
     disconnect();
@@ -72,11 +73,32 @@ bool NetworkManager::keepGoing() const
 
 void NetworkManager::receivePacket()
 {
-    sf::Packet p;
+    /*sf::Packet p;
     mSocket.receive(p);
 
     Lock lock(mPacketBufferMutex);
-    mPacketBuffer.push(p);
+    mPacketBuffer.push(p);*/
+}
+
+void NetworkManager::receiveJSON()
+{
+    constexpr size_t BUFFERSIZE = 512;
+    char buf[BUFFERSIZE+1];
+    buf[BUFFERSIZE] = 0; //Null terminate buffer
+    size_t received;
+    mSocket.receive(buf,BUFFERSIZE,received);
+
+    mCurrentString += string(buf);
+    for(size_t i = 0; i < received; i++)
+    {
+        if(buf[i] == 0 || buf[i] == '\n') //Null char meaning end of string
+        {
+            Lock lock(mPacketBufferMutex);
+            cout << mCurrentString << endl;
+            mPacketBuffer.push(j::readFromString(mCurrentString));
+            break;
+        }
+    }
 }
 
 void NetworkManager::update(float delta_s)
@@ -89,12 +111,28 @@ void NetworkManager::update(float delta_s)
         }
     }
 
-    switch(mState)
     {
-        default:
-            break;
+        Lock lock(mPacketBufferMutex);
+        while(!mPacketBuffer.empty())
+        {
+            if(mReceiver) {
+                mReceiver->onReceive(mPacketBuffer.back());
+                mPacketBuffer.pop();
+            }
+        }
     }
 }
+
+void NetworkManager::setReceiver(Receiver *r)
+{
+    mReceiver = r;
+}
+
+NetworkManager::Receiver* NetworkManager::receiver() const
+{
+    return mReceiver;
+}
+
 
 NetworkManager::~NetworkManager()
 {

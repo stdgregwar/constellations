@@ -46,4 +46,6 @@ inline float stw(float x) {
     return smoothCurve(triangleWave(x))-0.5f;
 }
 
+
+
 #endif //CONSTELLATIONS_MATHUTILS_H

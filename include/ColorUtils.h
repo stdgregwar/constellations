@@ -13,6 +13,17 @@
 using namespace std;
 
 /**
+  Color pool
+  */
+const std::vector<sf::Color> COLOR_POOL = {
+        sf::Color(255,150,150),
+        sf::Color(150,150,255),
+        sf::Color(150,255,200),
+        sf::Color(255,255,150),
+        sf::Color(255,203,150)
+};
+
+/**
  * @brief struct defining rgb color in double
  */
 typedef struct {
@@ -162,5 +173,11 @@ inline sf::Color saturate(sf::Color color, double percent)
     int bInt = int(newColor.b*255);
     return sf::Color(rInt,gInt,bInt);
 }
+
+inline const sf::Color& randomColor()
+{
+    return COLOR_POOL[std::rand()%COLOR_POOL.size()];
+}
+
 
 #endif //CONSTELLATIONS_COLORUTILS_H

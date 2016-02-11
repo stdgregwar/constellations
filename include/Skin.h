@@ -46,7 +46,7 @@ public:
      * @param target
      * @param states
      */
-    void draw(sf::RenderTarget &target, sf::RenderStates states) const;
+    void draw(sf::RenderTarget &target, sf::RenderStates states = sf::RenderStates::Default) const;
 
     /**
      * @brief load first animation in animation set
@@ -72,6 +72,13 @@ public:
      * @param col
      */
     void setColor(sf::Color col);
+
+    /**
+     * @brief setHat
+     * @param id
+     */
+    void setHat(int id);
+
     ~Skin();
 private:
     void drawBody(sf::RenderTarget& body,sf::RenderStates states) const;

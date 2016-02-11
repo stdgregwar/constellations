@@ -8,8 +8,10 @@
 #include <SFML/Audio/Music.hpp>
 #include "FlatMusic.h"
 #include "Camera.h"
+#include "NetworkManager.h"
+#include "Skin.h"
 
-class StateTitleScreen : public GameState
+class StateTitleScreen : public GameState, public NetworkManager::Receiver
 {
 public:
     StateTitleScreen();
@@ -71,12 +73,21 @@ public:
     void setHint(bool set);
 
     void setSelfHit(bool set);
+
+    void initNetworking();
+
+    void setSlotMode(int n, int id);
+
+    void onReceive(const j::Value &message);
 private:
     sf::Sprite mTitle;
     StaticParticles mBackground;
     SharedWidget mMainWidget;
     SharedWidget mMenuWidget;
     SharedWidget mMatchMakingWidget;
+
+    Skin mSkins[5];
+
     Camera mView;
     SharedMusic mMusic;
 };

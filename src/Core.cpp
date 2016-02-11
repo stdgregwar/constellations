@@ -10,7 +10,7 @@ using namespace std;
 
 Core* Core::mInstance = nullptr;
 
-Core::Core() : mGlobalTime(0), mTimeFactor(1), mTargetFactor(1), mTransition(nullptr),
+Core::Core() : mGlobalTime(0), mTimeFactor(1), mTargetFactor(1), mTransition(nullptr), mGlobalDict(j::object()),
     mTextureCache([](const std::string& id)->sf::Texture*{
                     sf::Texture* tex = new sf::Texture();
                     if(tex->loadFromFile(id))
@@ -42,8 +42,8 @@ Core::Core() : mGlobalTime(0), mTimeFactor(1), mTargetFactor(1), mTransition(nul
 {
     mInstance = this;
     //For net tests
-    globalDict()["host"] = string("localhost");
-    globalDict()["port"] = 1337;
+    globalDict().set("host", j::string("localhost"));
+    globalDict().set("port", j::number(1337));
 }
 
 TextureCache& Core::textureCache()
@@ -72,7 +72,7 @@ void Core::popScheduled()
 
 bool Core::init(sf::Vector2u size)
 {
-    mNetworkManager.startNetworking([](bool b){cout << "It's " << (b ? "working!" : "shitting!") << endl;});
+
     mRenderWindow.create(sf::VideoMode(1280,720),"Constellations " + to_string(myproject_VERSION_MAJOR) + "." + to_string(myproject_VERSION_MINOR) ,sf::Style::Resize | sf::Style::Default);
     mRenderWindow.setKeyRepeatEnabled(false);
     return mRenderWindow.isOpen();
@@ -253,7 +253,7 @@ float Core::addTimer(SharedTimer timer)
 
 const sf::RenderWindow& Core::renderWindow(){return mRenderWindow;}
 
-Properties& Core::globalDict(){return mGlobalDict;}
+j::Value &Core::globalDict(){return mGlobalDict;}
 
 void Core::endGame()
 {
@@ -275,6 +275,11 @@ float Core::lastDt()
 SoundManager& Core::soundMgr()
 {
     return mSoundManager;
+}
+
+NetworkManager& Core::networkMgr()
+{
+    return mNetworkManager;
 }
 
 unsigned int Core::randomSeed()

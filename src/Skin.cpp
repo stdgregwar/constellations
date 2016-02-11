@@ -13,7 +13,10 @@ Skin::Skin(sf::Texture* skinTex, sf::Texture *hatTex, int hatID, const Animation
     mRFoot.setTexture(*mTexture);
     mRHand.setTexture(*mTexture);
     mLHand.setTexture(*mTexture);
-    mHat.setTextureRect({48*hatID,0,48,48});
+    if(hatID == -1)
+        mHat.setTextureRect({0,0,0,0});
+    else
+        mHat.setTextureRect({48*hatID,0,48,48});
     mBody.setTextureRect({0,0,32,32}); //TODO modularize
     mLFoot.setTextureRect({0,32,16,16});
     mRFoot.setTextureRect({0,32,16,16});
@@ -97,6 +100,14 @@ void Skin::drawBody(sf::RenderTarget &target, sf::RenderStates states) const
     target.draw(mHat,states);
     target.draw(mRFoot,states);
     target.draw(mRHand,states);
+}
+
+void Skin::setHat(int id)
+{
+    if(id == -1)
+        mHat.setTextureRect({0,0,0,0});
+    else
+        mHat.setTextureRect({48*id,0,48,48});
 }
 
 Skin::~Skin()

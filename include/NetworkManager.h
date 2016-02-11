@@ -16,6 +16,15 @@ typedef std::lock_guard<std::mutex> Lock;
 class NetworkManager
 {
 public:
+    /**
+     * @brief Interface for receiving JSON messages
+     */
+    class Receiver
+    {
+        public:
+            virtual void onReceive(const j::Value& message) = 0;
+    };
+
     enum State{
         IDLE,
         TCP_CONNECTING,
@@ -59,15 +68,23 @@ public:
     void update(float delta_s);
 
     /**
-     * @brief asyncly receive a packet and put it in the buffer
+     * @brief receive a packet and put it in the buffer
      */
     void receivePacket();
+
+    /**
+     * @brief receive JSON message (null terminated string)
+     */
+    void receiveJSON();
 
     /**
      * @brief get manager state
      * @return
      */
     State state() const;
+
+    Receiver* receiver() const;
+    void setReceiver(Receiver* r);
 
     ~NetworkManager();
 private:
@@ -85,11 +102,14 @@ private:
     std::thread mThread;
     bool mContinue;
 
+    std::string mCurrentString;
+
     std::mutex mPacketBufferMutex;
-    std::queue<sf::Packet> mPacketBuffer;
+    std::queue<j::Value> mPacketBuffer;
 
     sf::TcpSocket mSocket;
     State mState;
+    Receiver* mReceiver;
 
 };
 

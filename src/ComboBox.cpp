@@ -8,6 +8,7 @@ using namespace std;
 ComboBox::ComboBox(const Choices& choices, unsigned def, std::function<void(unsigned id)> callback, unsigned csize, const sf::Color& hoverColor, const sf::Color& mainColor)
     : mChoices(choices), mCallback(callback), mDefault(def), mDeployed(false)
 {
+
 }
 
 void ComboBox::show()
@@ -27,6 +28,7 @@ void ComboBox::show()
             w->setPosition(0,height+=40);
             mBChoices.push_back(w);
         }
+        choose(mDefault);
     }
     //mMainButton->show();
     Widget::show();

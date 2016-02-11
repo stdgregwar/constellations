@@ -27,7 +27,8 @@ Value readArray(std::istream& s);
 Value readValue(std::istream& s);
 Value readFromStream(std::istream& s);
 
-void writeValue(std::ostream& s, Value const& v, std::size_t indent = 0);
+void writeValue(std::ostream& s, Value const& v, std::size_t indent);
+void writeValue(std::ostream &s, const Value &v);
 
 BadPayload::BadPayload(std::string const& msg)
 : std::runtime_error(msg)
@@ -274,14 +275,14 @@ Value readFromFile(std::string const& fileapath)
     return readFromStream(s);
 }
 
-void writeValue(std::ostream& s, Value const& v, std::size_t indent)
+void writeValue(std::ostream& s, Value const& v)
 {
     if(v.isArray())
     {
         s << "[";
         for(size_t i = 0; i < v.size(); i++)
         {
-            writeValue(s,v[i],indent);
+            writeValue(s,v[i]);
             if(i != v.size()-1)
                 s << ",";
         }
@@ -298,7 +299,7 @@ void writeValue(std::ostream& s, Value const& v, std::size_t indent)
             else
                 then = true;
             s << "\"" << k << "\":";
-            writeValue(s,v[k],indent);
+            writeValue(s,v[k]);
         }
         s << "}";
     }
@@ -316,11 +317,57 @@ void writeValue(std::ostream& s, Value const& v, std::size_t indent)
     }
 }
 
-std::string writeToString(Value const& value)
+void writeValue(std::ostream& s, Value const& v, std::size_t indent)
+{
+    constexpr int tabSize = 4;
+    if(v.isArray())
+    {
+        s << "[";
+        for(size_t i = 0; i < v.size(); i++)
+        {
+            writeValue(s,v[i],indent);
+            if(i != v.size()-1)
+                s << ", ";
+        }
+        s << "]";
+    }
+    else if(v.isObject())
+    {
+        s /*<< std::string(indent,'c')*/ << "{" << std::endl;
+        bool then = false;
+        for(auto& k : v.keys())
+        {
+            if(then)
+                s << "," << std::endl;
+            else
+                then = true;
+            s << std::string(indent+tabSize, ' ') << "\"" << k << "\" : ";
+            writeValue(s,v[k],indent+tabSize);
+        }
+        s << std::endl << std::string(indent,' ') << "}";
+    }
+    else if(v.isNumber())
+    {
+        s << v.toDouble();
+    }
+    else if(v.isBoolean())
+    {
+        s << (v.toBool() ? "true" : "false");
+    }
+    else if(v.isString())
+    {
+        s << "\"" << v.toString() << "\"";
+    }
+}
+
+std::string writeToString(Value const& value, bool humanReadable)
 {
     std::ostringstream s;
 
-    writeValue(s, value);
+    if(humanReadable)
+        writeValue(s, value,0);
+    else
+        writeValue(s,value);
 
     return s.str();
 }

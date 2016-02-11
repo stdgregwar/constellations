@@ -8,10 +8,19 @@
 #include <functional>
 #include <CheckBox.h>
 #include "CrossFadeTransition.h"
+#include "ColorUtils.h"
+#include "BiButton.h"
 
 using namespace std;
 
-StateTitleScreen::StateTitleScreen() : mMenuWidget(new Widget()), mMatchMakingWidget(new Widget())
+StateTitleScreen::StateTitleScreen() : mMenuWidget(new Widget()), mMatchMakingWidget(new Widget()),
+    mSkins{
+            {Core::get().textureCache().get("data/skin.png"),Core::get().textureCache().get("data/hats.png"),-1,Animations::basic},
+            {Core::get().textureCache().get("data/skin.png"),Core::get().textureCache().get("data/hats.png"),-1,Animations::basic},
+            {Core::get().textureCache().get("data/skin.png"),Core::get().textureCache().get("data/hats.png"),-1,Animations::basic},
+            {Core::get().textureCache().get("data/skin.png"),Core::get().textureCache().get("data/hats.png"),-1,Animations::basic},
+            {Core::get().textureCache().get("data/skin.png"),Core::get().textureCache().get("data/hats.png"),-1,Animations::basic}
+        }
 {
 }
 
@@ -33,7 +42,7 @@ void StateTitleScreen::onBegin()
     mTitle.setPosition(1280/2,200);
 
     //MENU
-    using namespace std::placeholders;
+    using namespace std::placeholders; //For using _1,_2,etc
     SharedWidget start = mMenuWidget->add(new Button(L"Start!",[&]{
         mView.setTarget(*mMatchMakingWidget.get());
         mMainWidget = mMatchMakingWidget;
@@ -58,13 +67,18 @@ void StateTitleScreen::onBegin()
     float lm(-600),rm(300);
     for(int i = 1; i <= 5; i++)
     {
+        sf::FloatRect rect{lm+i*((rm-lm)/5)-3,-170,128,128};
+        mSkins[i-1].setRotation(-90);
+        mSkins[i-1].setPosition(930*2,(i-5)*((lm-rm)/5));
+        mSkins[i-1].setScale(4,4);
+        mMatchMakingWidget->add(new BiButton(rect,nullptr,nullptr));
         mMatchMakingWidget->add(new CaptionWidget("Slot " + to_string(i)))->setPosition(lm+i*((rm-lm)/5),-300);
         mMatchMakingWidget->add(new ComboBox({
                                                  {0,"Player"},
                                                  {1,"Bot"},
                                                  {2,"Online"},
                                                  {3,"None"}
-                                             },3,nullptr))->setPosition(lm+i*((rm-lm)/5),50);
+                                             },(i<3 ? 0 : 3),bind(&StateTitleScreen::setSlotMode,this,i-1,_1)))->setPosition(lm+i*((rm-lm)/5),50);
     }
 
     mMatchMakingWidget->show();
@@ -76,6 +90,7 @@ void StateTitleScreen::onBegin()
 
     mMusic = SharedMusic(new FlatMusic("data/Constellations.ogg"));
     Core::get().soundMgr().play(mMusic,2,SoundManager::DIRECT);
+    Core::get().networkMgr().setReceiver(this);
 }
 
 void StateTitleScreen::update(float delta_s)
@@ -83,12 +98,15 @@ void StateTitleScreen::update(float delta_s)
     //NA
     mView.update(delta_s);
     //mMainWidget->children()[0]->setRotation(stw(Core::get().time())*5);
+
+
 }
 
 void StateTitleScreen::onResume()
 {
     sf::Vector2u size = Core::get().renderWindow().getSize();
     mView.setSize(size.x,size.y);
+    mView.setSize(1280,720);
     Core::get().soundMgr().play(mMusic,2,SoundManager::CHAINED);
 }
 
@@ -100,6 +118,11 @@ void StateTitleScreen::onEnd()
 void StateTitleScreen::onPause()
 {
     //mMusic->pause();
+}
+
+void StateTitleScreen::initNetworking()
+{
+    Core::get().networkMgr().startNetworking([&](bool b){});
 }
 
 void StateTitleScreen::launchStateConstellation()
@@ -115,6 +138,10 @@ void StateTitleScreen::draw(sf::RenderTarget &target)
     target.draw(*mMenuWidget.get(),mMenuWidget->getTransform());
     target.draw(*mMatchMakingWidget.get(), mMatchMakingWidget->getTransform());
     target.draw(mTitle);
+    for(int i = 0; i < 5; i++)
+    {
+        mSkins[i].draw(target);
+    }
 }
 
 void StateTitleScreen::pushEvent(const sf::Event &e)
@@ -136,20 +163,41 @@ void StateTitleScreen::pushEvent(const sf::Event &e)
 
 void StateTitleScreen::setPlayerCount(int count)
 {
-    Core::get().globalDict()["player_count"] = count;
+    Core::get().globalDict().set("player_count", j::number(count));
 }
 
 void StateTitleScreen::setPlayerPv(int pv)
 {
-    Core::get().globalDict()["player_pv"] = pv;
+    Core::get().globalDict().set("player_pv", j::number(pv));
 }
 
 void StateTitleScreen::setHint(bool set)
 {
-    Core::get().globalDict()["hint"] = set;
+    Core::get().globalDict().set("hint", j::boolean(set));
 }
 
 void StateTitleScreen::setSelfHit(bool set)
 {
-    Core::get().globalDict()["selfHit"] = set;
+    Core::get().globalDict().set("selfHit",j::boolean(set));
+}
+
+void StateTitleScreen::setSlotMode(int n, int id)
+{
+    if(id == 3) {
+       mSkins[n].setColor(sf::Color(25,25,25,255));
+    } else {
+        mSkins[n].setColor(randomColor());
+    }
+}
+
+void StateTitleScreen::onReceive(const j::Value &message)
+{
+    string kind = message["kind"].toString();
+
+    if(mMainWidget == mMatchMakingWidget) { //In match making
+        if(kind == "ConnectionRequestRes") {
+
+        }
+    }
+
 }

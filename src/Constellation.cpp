@@ -1,5 +1,6 @@
 #include <KeyboardController.h>
 #include "Constellation.h"
+#include "ColorUtils.h"
 
 Constellation::Constellation() { }
 
@@ -19,7 +20,7 @@ void Constellation::buildFromConstellationDef(const ConstellationDef& constellat
                                     new Character(
                                             mPlanets.back(),
                                             currentPlayerNumber,
-                                            mColorPool[currentPlayerNumber%mColorPool.size()],
+                                            COLOR_POOL[currentPlayerNumber%COLOR_POOL.size()],
                                             (planet.playerAngle-90.f)/TO_DEGREES,
                                             tempNumberOfPlayers //Hat ID TODO : randomize
                                     )

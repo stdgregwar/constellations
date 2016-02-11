@@ -29,7 +29,7 @@ Value readFromString(std::string const& payload);
 Value readFromFile(std::string const& fileapath);
 
 // Convert a JSON value to the corresponding payload string
-std::string writeToString(Value const& value);
+std::string writeToString(Value const& value, bool humanReadable = false);
 
 // Like `writeToString` but write it to the given file
 void writeToFile(Value const& value, std::string const& fileapath);
