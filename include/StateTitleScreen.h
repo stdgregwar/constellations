@@ -14,6 +14,13 @@
 class StateTitleScreen : public GameState, public NetworkManager::Receiver
 {
 public:
+    enum Mode{
+        NONE,
+        PLAYER,
+        BOT,
+        ONLINE
+    };
+
     StateTitleScreen();
     /**
      * @brief Called back when the state is pushed on the stack. Used for state initialization.
@@ -76,17 +83,35 @@ public:
 
     void initNetworking();
 
-    void setSlotMode(int n, int id);
+    /**
+     * @brief set control mode of given slot
+     * @param n
+     * @param id
+     */
+    void setSlotMode(int n, int mode);
+
+    void rollSlotColor(int n);
+
+    void rollSlotHat(int n);
 
     void onReceive(const j::Value &message);
 private:
+
+    struct Slot
+    {
+        Mode mode;
+        int hatId;
+        int colorId;
+        Skin skin;
+    };
+
     sf::Sprite mTitle;
     StaticParticles mBackground;
     SharedWidget mMainWidget;
     SharedWidget mMenuWidget;
     SharedWidget mMatchMakingWidget;
 
-    Skin mSkins[5];
+    Slot mSlots[5];
 
     Camera mView;
     SharedMusic mMusic;

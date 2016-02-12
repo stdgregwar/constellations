@@ -14,12 +14,12 @@
 using namespace std;
 
 StateTitleScreen::StateTitleScreen() : mMenuWidget(new Widget()), mMatchMakingWidget(new Widget()),
-    mSkins{
-            {Core::get().textureCache().get("data/skin.png"),Core::get().textureCache().get("data/hats.png"),-1,Animations::basic},
-            {Core::get().textureCache().get("data/skin.png"),Core::get().textureCache().get("data/hats.png"),-1,Animations::basic},
-            {Core::get().textureCache().get("data/skin.png"),Core::get().textureCache().get("data/hats.png"),-1,Animations::basic},
-            {Core::get().textureCache().get("data/skin.png"),Core::get().textureCache().get("data/hats.png"),-1,Animations::basic},
-            {Core::get().textureCache().get("data/skin.png"),Core::get().textureCache().get("data/hats.png"),-1,Animations::basic}
+    mSlots{
+            {PLAYER,-1,0,{Core::get().textureCache().get("data/skin.png"),Core::get().textureCache().get("data/hats.png"),-1,Animations::basic}},
+            {PLAYER,-1,1,{Core::get().textureCache().get("data/skin.png"),Core::get().textureCache().get("data/hats.png"),-1,Animations::basic}},
+            {NONE,-1,2,{Core::get().textureCache().get("data/skin.png"),Core::get().textureCache().get("data/hats.png"),-1,Animations::basic}},
+            {NONE,-1,3,{Core::get().textureCache().get("data/skin.png"),Core::get().textureCache().get("data/hats.png"),-1,Animations::basic}},
+            {NONE,-1,4,{Core::get().textureCache().get("data/skin.png"),Core::get().textureCache().get("data/hats.png"),-1,Animations::basic}}
         }
 {
 }
@@ -68,17 +68,17 @@ void StateTitleScreen::onBegin()
     for(int i = 1; i <= 5; i++)
     {
         sf::FloatRect rect{lm+i*((rm-lm)/5)-3,-170,128,128};
-        mSkins[i-1].setRotation(-90);
-        mSkins[i-1].setPosition(930*2,(i-5)*((lm-rm)/5));
-        mSkins[i-1].setScale(4,4);
-        mMatchMakingWidget->add(new BiButton(rect,nullptr,nullptr));
+        mSlots[i-1].skin.setRotation(-90);
+        mSlots[i-1].skin.setPosition(930*2,(i-5)*((lm-rm)/5));
+        mSlots[i-1].skin.setScale(4,4);
+        mMatchMakingWidget->add(new BiButton(rect,bind(&StateTitleScreen::rollSlotHat,this,i-1),bind(&StateTitleScreen::rollSlotColor,this,i-1)));
         mMatchMakingWidget->add(new CaptionWidget("Slot " + to_string(i)))->setPosition(lm+i*((rm-lm)/5),-300);
         mMatchMakingWidget->add(new ComboBox({
-                                                 {0,"Player"},
-                                                 {1,"Bot"},
-                                                 {2,"Online"},
-                                                 {3,"None"}
-                                             },(i<3 ? 0 : 3),bind(&StateTitleScreen::setSlotMode,this,i-1,_1)))->setPosition(lm+i*((rm-lm)/5),50);
+                                                 {NONE,"None"},
+                                                 {PLAYER,"Player"},
+                                                 {BOT,"Bot"},
+                                                 {ONLINE,"Online"}
+                                             },(i<3 ? PLAYER : NONE),bind(&StateTitleScreen::setSlotMode,this,i-1,_1)))->setPosition(lm+i*((rm-lm)/5),50);
     }
 
     mMatchMakingWidget->show();
@@ -140,7 +140,7 @@ void StateTitleScreen::draw(sf::RenderTarget &target)
     target.draw(mTitle);
     for(int i = 0; i < 5; i++)
     {
-        mSkins[i].draw(target);
+        mSlots[i].skin.draw(target);
     }
 }
 
@@ -181,12 +181,31 @@ void StateTitleScreen::setSelfHit(bool set)
     Core::get().globalDict().set("selfHit",j::boolean(set));
 }
 
-void StateTitleScreen::setSlotMode(int n, int id)
+void StateTitleScreen::setSlotMode(int n, int mode)
 {
-    if(id == 3) {
-       mSkins[n].setColor(sf::Color(25,25,25,255));
+    mSlots[n].mode = (Mode)mode;
+    if(mode == NONE) {
+       mSlots[n].skin.setColor(sf::Color(25,25,25,255));
     } else {
-        mSkins[n].setColor(randomColor());
+        mSlots[n].skin.setColor(COLOR_POOL[mSlots[n].colorId%COLOR_POOL.size()]);
+    }
+}
+
+void StateTitleScreen::rollSlotColor(int n)
+{
+    if(mSlots[n].mode == PLAYER || mSlots[n].mode == BOT)
+    {
+        mSlots[n].colorId = (mSlots[n].colorId+1)%COLOR_POOL.size();
+        mSlots[n].skin.setColor(COLOR_POOL[mSlots[n].colorId]);
+    }
+}
+
+void StateTitleScreen::rollSlotHat(int n)
+{
+    if(mSlots[n].mode == PLAYER || mSlots[n].mode == BOT)
+    {
+        mSlots[n].hatId = (mSlots[n].hatId + 2)%6 - 1;
+        mSlots[n].skin.setHat(mSlots[n].hatId);
     }
 }
 

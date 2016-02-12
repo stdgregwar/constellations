@@ -174,6 +174,10 @@ inline sf::Color saturate(sf::Color color, double percent)
     return sf::Color(rInt,gInt,bInt);
 }
 
+/**
+ * @brief return a random color from the color pool
+ * @return
+ */
 inline const sf::Color& randomColor()
 {
     return COLOR_POOL[std::rand()%COLOR_POOL.size()];
