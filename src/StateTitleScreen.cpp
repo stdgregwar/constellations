@@ -113,6 +113,7 @@ void StateTitleScreen::onResume()
     mView.setSize(size.x,size.y);
     mView.setSize(1280,720);
     Core::get().soundMgr().play(mMusic,2,SoundManager::CHAINED);
+    mModeWidget->show();
 }
 
 void StateTitleScreen::onEnd()

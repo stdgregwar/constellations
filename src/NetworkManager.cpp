@@ -14,6 +14,8 @@ void NetworkManager::startNetworking(std::function<void(bool)> callback)
     mHost = Core::get().globalDict()["host"].toString();
     mPort = Core::get().globalDict()["port"].toInt();
     mConnectCallback = callback;
+    if(mThread.joinable())
+        mThread.join();
     mThread = thread(&NetworkManager::secondThread, this);
 }
 

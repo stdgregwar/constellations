@@ -84,6 +84,9 @@ void SoundManager::update(float delta_s)
 
 void SoundManager::play(SharedMusic m, float duration, FadePolicy f)
 {
+    if(m == mMusic)
+        return;
+
     mDuration = duration;
     mStartTime = Core::get().time();
     mFadePolicy = f;
