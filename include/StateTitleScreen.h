@@ -10,6 +10,7 @@
 #include "Camera.h"
 #include "NetworkManager.h"
 #include "Skin.h"
+#include "Button.h"
 
 class StateTitleScreen : public GameState, public NetworkManager::Receiver
 {
@@ -19,6 +20,20 @@ public:
         PLAYER,
         BOT,
         ONLINE
+    };
+
+    enum NetState{
+        IDLE,
+        CONNECTED,
+        MATCHMAKING,
+        READY
+    };
+
+    const std::map<unsigned,std::string> MODESTR{
+        {NONE, "None"},
+        {PLAYER, "Player"},
+        {BOT, "Bot"},
+        {ONLINE, "Online"}
     };
 
     StateTitleScreen();
@@ -95,6 +110,20 @@ public:
     void rollSlotHat(int n);
 
     void onReceive(const j::Value &message);
+
+    bool needNetworking() const;
+
+    bool matchReady() const;
+
+    void netReady(bool b);
+
+    void launchNetworkMode();
+
+    void requestOnlineMatch();
+
+    unsigned playerCount() const;
+    unsigned localPlayerCount() const;
+    unsigned onlinePlayerCount() const;
 private:
 
     struct Slot
@@ -110,8 +139,11 @@ private:
     SharedWidget mMainWidget;
     SharedWidget mMenuWidget;
     SharedWidget mMatchMakingWidget;
+    SharedWidget mModeWidget;
+    SharedButton mStartMatchButton;
 
     Slot mSlots[5];
+    NetState mNetState;
 
     Camera mView;
     SharedMusic mMusic;

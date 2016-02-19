@@ -40,6 +40,8 @@ public:
      */
     virtual void setHovered(bool hover){mHovered = hover;}
 
+    virtual void setEnabled(bool enabled) {mEnabled = enabled;}
+
     /**
      * @brief bounds of the button
      * @return
@@ -54,8 +56,11 @@ public:
      * @return
      */
     bool onEvent(const sf::Event& e, const sf::View& view);
+
+    bool enabled() const {return mEnabled;}
 private:
     bool mHovered;
+    bool mEnabled;
     std::function<void()> mLCallback,mRCallback;
 };
 

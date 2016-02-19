@@ -25,18 +25,6 @@ public:
             virtual void onReceive(const j::Value& message) = 0;
     };
 
-    enum State{
-        IDLE,
-        TCP_CONNECTING,
-        TCP_CONNECTED,
-        WAITING_FOR_CONNECTION,
-        CONNECTED,
-        WAITING_FOR_MATCH,
-        IN_MATCH_MAKING,
-        MATCH_START_HANDSHAKE,
-        MATCH
-    };
-
     NetworkManager();
 
     /**
@@ -77,14 +65,10 @@ public:
      */
     void receiveJSON();
 
-    /**
-     * @brief get manager state
-     * @return
-     */
-    State state() const;
-
     Receiver* receiver() const;
     void setReceiver(Receiver* r);
+
+    bool connected() const;
 
     ~NetworkManager();
 private:
@@ -108,7 +92,6 @@ private:
     std::queue<j::Value> mPacketBuffer;
 
     sf::TcpSocket mSocket;
-    State mState;
     Receiver* mReceiver;
 
 };

@@ -2,19 +2,19 @@
 #include "Core.h"
 
 ProtoButton::ProtoButton(std::function<void()> lc, std::function<void()> rc)
-    : mRCallback(rc), mLCallback(lc)
+    : mRCallback(rc), mLCallback(lc), mEnabled(true), mHovered(false)
 {
 }
 
 void ProtoButton::Rtrigger()
 {
-    if(mRCallback)
+    if(mRCallback && enabled())
         mRCallback();
 }
 
 void ProtoButton::Ltrigger()
 {
-    if(mLCallback)
+    if(mLCallback && enabled())
         mLCallback();
 }
 

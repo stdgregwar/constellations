@@ -5,6 +5,7 @@
 #include "StateConstellation.h"
 #include "StateTitleScreen.h"
 #include <cmath>
+#include "StateError.h"
 
 using namespace std;
 
@@ -95,6 +96,8 @@ bool Core::start()
     sf::Clock clk;
     while(mRenderWindow.isOpen())
     {
+        try {
+
         //Pop states if needed
         tickTimers();
         popScheduled();
@@ -148,6 +151,14 @@ bool Core::start()
                 mStateStack->drawAll(mRenderWindow);
             }
             mRenderWindow.display();
+        }
+
+        } catch (CException e) {
+            cerr << e.what() << endl;
+            pushState(SharedState(new StateError(e)));
+        } catch (exception e) {
+            cerr << e.what() << endl;
+            pushState(SharedState(new StateError(CException(UNKNOWN,e.what()))));
         }
     }
 }

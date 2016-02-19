@@ -35,6 +35,8 @@ public:
      */
     void setHovered(bool hover);
 
+    void setEnabled(bool enabled);
+
     /**
      * @brief bounds of the button
      * @return

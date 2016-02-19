@@ -10,6 +10,8 @@
 #include "CrossFadeTransition.h"
 #include "ColorUtils.h"
 #include "BiButton.h"
+#include "JSONSerialiser.h"
+#include "Exceptions.h"
 
 using namespace std;
 
@@ -20,7 +22,7 @@ StateTitleScreen::StateTitleScreen() : mMenuWidget(new Widget()), mMatchMakingWi
             {NONE,-1,2,{Core::get().textureCache().get("data/skin.png"),Core::get().textureCache().get("data/hats.png"),-1,Animations::basic}},
             {NONE,-1,3,{Core::get().textureCache().get("data/skin.png"),Core::get().textureCache().get("data/hats.png"),-1,Animations::basic}},
             {NONE,-1,4,{Core::get().textureCache().get("data/skin.png"),Core::get().textureCache().get("data/hats.png"),-1,Animations::basic}}
-        }
+        }, mNetState(IDLE)
 {
 }
 
@@ -43,7 +45,7 @@ void StateTitleScreen::onBegin()
 
     //MENU
     using namespace std::placeholders; //For using _1,_2,etc
-    SharedWidget start = mMenuWidget->add(new Button(L"Start!",[&]{
+    SharedWidget start = mMenuWidget->add(new Button(L"Match!",[&]{
         mView.setTarget(*mMatchMakingWidget.get());
         mMainWidget = mMatchMakingWidget;
     }));
@@ -64,6 +66,8 @@ void StateTitleScreen::onBegin()
         mMainWidget = mMenuWidget;
     }, 50, sf::Color::White, sf::Color::Red))->setPosition(-1200*0.5,-700*0.5);
 
+    mModeWidget = mMatchMakingWidget->add(new Widget());
+
     float lm(-600),rm(300);
     for(int i = 1; i <= 5; i++)
     {
@@ -73,13 +77,14 @@ void StateTitleScreen::onBegin()
         mSlots[i-1].skin.setScale(4,4);
         mMatchMakingWidget->add(new BiButton(rect,bind(&StateTitleScreen::rollSlotHat,this,i-1),bind(&StateTitleScreen::rollSlotColor,this,i-1)));
         mMatchMakingWidget->add(new CaptionWidget("Slot " + to_string(i)))->setPosition(lm+i*((rm-lm)/5),-300);
-        mMatchMakingWidget->add(new ComboBox({
-                                                 {NONE,"None"},
-                                                 {PLAYER,"Player"},
-                                                 {BOT,"Bot"},
-                                                 {ONLINE,"Online"}
-                                             },(i<3 ? PLAYER : NONE),bind(&StateTitleScreen::setSlotMode,this,i-1,_1)))->setPosition(lm+i*((rm-lm)/5),50);
+        mModeWidget->add(new ComboBox(
+                                        MODESTR
+                                    ,(i<3 ? PLAYER : NONE),bind(&StateTitleScreen::setSlotMode,this,i-1,_1)))->setPosition(lm+i*((rm-lm)/5),50);
     }
+
+    mStartMatchButton =  static_pointer_cast<Button>(mMatchMakingWidget->add(new Button(L"Start",
+                                                                                        [&]{if(needNetworking()) launchNetworkMode(); else launchStateConstellation();},100)));
+    mStartMatchButton->setPosition(350,200);
 
     mMatchMakingWidget->show();
 
@@ -122,12 +127,28 @@ void StateTitleScreen::onPause()
 
 void StateTitleScreen::initNetworking()
 {
-    Core::get().networkMgr().startNetworking([&](bool b){});
+    Core::get().networkMgr().startNetworking(bind(&StateTitleScreen::netReady,this,placeholders::_1));
 }
 
 void StateTitleScreen::launchStateConstellation()
 {
     setVisible(false);
+
+    //Push match params in the global dict
+    Core::get().globalDict().set("match",j::array());
+
+    j::Value& v = Core::get().globalDict()["match"];
+    for(int i = 0; i < 5; i++)
+    {
+        v.add({
+                 {"mode",MODESTR.at(mSlots[i].mode)},
+                 {"hatId",mSlots[i].hatId},
+                 {"colorId",mSlots[i].colorId},
+              });
+    }
+
+    //cout << j::writeToString(Core::get().globalDict(),true) << endl;
+
     Core::get().pushState(SharedState(new StateConstellation()), new CrossFadeTransition(0.5));
 }
 
@@ -150,8 +171,8 @@ void StateTitleScreen::pushEvent(const sf::Event &e)
     switch(e.type)
     {
         case sf::Event::KeyReleased:
-            if(e.key.code == sf::Keyboard::Return)
-                launchStateConstellation();
+            /*if(e.key.code == sf::Keyboard::Return)
+                launchStateConstellation();*/
             if(e.key.code == sf::Keyboard::Escape)
                 Core::get().endGame();
         break;
@@ -185,10 +206,13 @@ void StateTitleScreen::setSlotMode(int n, int mode)
 {
     mSlots[n].mode = (Mode)mode;
     if(mode == NONE) {
+       mSlots[n].skin.setHat(-1);
        mSlots[n].skin.setColor(sf::Color(25,25,25,255));
     } else {
         mSlots[n].skin.setColor(COLOR_POOL[mSlots[n].colorId%COLOR_POOL.size()]);
     }
+    if(mStartMatchButton)
+        mStartMatchButton->setEnabled(matchReady());
 }
 
 void StateTitleScreen::rollSlotColor(int n)
@@ -209,12 +233,82 @@ void StateTitleScreen::rollSlotHat(int n)
     }
 }
 
+bool StateTitleScreen::needNetworking() const
+{
+    for(int i = 0; i < 5; i++)
+    {
+        if(mSlots[i].mode == ONLINE)
+            return true;
+    }
+    return false;
+}
+
+void StateTitleScreen::requestOnlineMatch()
+{
+    cout << "Requesting online match.." << endl;
+    Core::get().networkMgr().sendJSON({
+                                          {"GameStyle" ,Core::get().globalDict()["gamestyle"].toString()},
+                                          {"totalPlayerCount",(int)playerCount()},
+                                          {"desiredPlayers" ,Core::get().globalDict()["wantedPlayers"]}
+                                      });
+}
+
+void StateTitleScreen::netReady(bool b)
+{
+    if(b)
+    {
+        requestOnlineMatch();
+    }
+    else
+    {
+        throw CException(WARNING,"Could not connect to network server.");
+    }
+}
+
+void StateTitleScreen::launchNetworkMode()
+{
+    mModeWidget->hide();
+    Core::get().networkMgr().startNetworking(bind(&StateTitleScreen::netReady,this,placeholders::_1));
+}
+
+bool StateTitleScreen::matchReady() const
+{
+    return playerCount() > 1;
+}
+
+unsigned StateTitleScreen::localPlayerCount() const
+{
+    unsigned count(0);
+    for(int i = 0; i < 5; i++)
+        if(mSlots[i].mode == PLAYER || mSlots[i].mode == BOT) count++;
+
+    return count;
+}
+
+unsigned StateTitleScreen::onlinePlayerCount() const
+{
+    unsigned count(0);
+    for(int i = 0; i < 5; i++)
+        if(mSlots[i].mode == ONLINE) count++;
+
+    return count;
+}
+
+unsigned StateTitleScreen::playerCount() const
+{
+    return localPlayerCount()+onlinePlayerCount();
+}
+
 void StateTitleScreen::onReceive(const j::Value &message)
 {
-    string kind = message["kind"].toString();
+    string kind = message["$type"].toString();
 
     if(mMainWidget == mMatchMakingWidget) { //In match making
         if(kind == "ConnectionRequestRes") {
+            cout << "Final nick : " << message["finalNick"].toString() << endl;
+            Core::get().globalDict()["finalNick"] = message["finalNick"];
+        }
+        else if(kind == "MatchRequestRes") {
 
         }
     }

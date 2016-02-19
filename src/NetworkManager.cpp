@@ -31,7 +31,7 @@ bool NetworkManager::sendJSON(const j::Value &v)
 void NetworkManager::secondThread()
 {
     connectToServer();
-    sendJSON({
+    /*sendJSON({
                        {"Hello","World"},
                        {"Obj", {
                                  {"Bonjour", "aurevoir"},
@@ -40,7 +40,7 @@ void NetworkManager::secondThread()
                                  {"List", j::VArray{"Bla", "Caca", 2,true}}
                              }
                          }
-                     });
+                     });*/
 
     while(keepGoing())
     {
@@ -55,15 +55,29 @@ void NetworkManager::connectToServer()
     Lock lock(mToCallMutex);
     if(mSocket.connect(mHost,mPort) != sf::Socket::Error){
         mToCall = bind(mConnectCallback,true);
+
+        sendJSON(j::Value{
+                     {"kind","ConnectionRequest"},
+                     {"obj",{
+                          {"nick",Core::get().globalDict()["nick"].toString()}
+                      }
+                     }
+                 });
     } else {
         mToCall = bind(mConnectCallback,false);
         mContinue = false;
     }
+
 }
 
 void NetworkManager::disconnect()
 {
     mSocket.disconnect();
+}
+
+bool NetworkManager::connected() const
+{
+    return keepGoing();
 }
 
 bool NetworkManager::keepGoing() const
@@ -105,13 +119,14 @@ void NetworkManager::update(float delta_s)
 {
     { //Lock scope
         Lock lock(mToCallMutex);
-        if(mToCall) {
-                mToCall();
-                mToCall = nullptr;
+        std::function<void()> temp = mToCall;
+        mToCall = nullptr;
+        if(temp) {
+            temp();
         }
     }
 
-    {
+    { //Lock scope
         Lock lock(mPacketBufferMutex);
         while(!mPacketBuffer.empty())
         {
